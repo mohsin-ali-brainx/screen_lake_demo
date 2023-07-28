@@ -1,4 +1,4 @@
-package com.example.screen_lake.ui.screens.onboaridng
+package com.example.screen_lake.ui.screens.onboarding
 
 import android.content.pm.ApplicationInfo
 import androidx.compose.animation.core.Spring
@@ -18,8 +18,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,12 +30,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.BottomSheetScaffoldState
 import androidx.compose.material.BottomSheetValue
-import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.runtime.Composable
@@ -59,6 +63,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.screen_lake.R
+import com.example.screen_lake.enums.AppDistractions
+import com.example.screen_lake.extensions.getAppIconBitmap
 import com.example.screen_lake.extensions.getInstalledAppsList
 import com.example.screen_lake.ui.bottomsheets.StartOnBoardingBottomSheet
 import com.example.screen_lake.ui.utils.CustomTextField
@@ -69,8 +75,9 @@ import kotlinx.coroutines.launch
 @Composable
 @ExperimentalMaterialApi
 fun AppListOnboardingScreen(
-     navHostController: NavHostController,
-     onBoardingViewModel: OnBoardingViewModel = hiltViewModel()) {
+    navHostController: NavHostController,
+    onBoardingViewModel: OnBoardingViewModel = hiltViewModel()
+) {
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberBottomSheetState(
         initialValue = BottomSheetValue.Expanded,
@@ -81,7 +88,6 @@ fun AppListOnboardingScreen(
         rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
 
     val appsList by rememberUpdatedState(LocalContext.current.getInstalledAppsList())
-
 
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
@@ -98,13 +104,16 @@ fun AppListOnboardingScreen(
         sheetPeekHeight = 0.dp,
         sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
     ) {
-        MainScreenContent(bottomSheetScaffoldState,appsList)
+        MainScreenContent(bottomSheetScaffoldState, appsList)
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun MainScreenContent(bottomSheetScaffoldState: BottomSheetScaffoldState,appsList: List<ApplicationInfo>){
+private fun MainScreenContent(
+    bottomSheetScaffoldState: BottomSheetScaffoldState,
+    appsList: List<ApplicationInfo>
+) {
     Box(
         modifier = Modifier
             .clickable(!bottomSheetScaffoldState.bottomSheetState.isExpanded) {
@@ -129,11 +138,12 @@ private fun MainScreenContent(bottomSheetScaffoldState: BottomSheetScaffoldState
                         width = Dimension.fillToConstraints
                     }
             )
-            MainBodyContent(appsList = appsList,
+            MainBodyContent(
+                appsList = appsList,
                 modifier = Modifier
                     .constrainAs(body) {
-                        top.linkTo(topBody.bottom, margin = 20.dp)
-                        bottom.linkTo(nextButton.top, margin = 20.dp)
+                        top.linkTo(topBody.bottom)
+                        bottom.linkTo(nextButton.top)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         width = Dimension.fillToConstraints
@@ -141,7 +151,7 @@ private fun MainScreenContent(bottomSheetScaffoldState: BottomSheetScaffoldState
                     },
             )
             Box(modifier = Modifier
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp, vertical = 0.dp)
                 .constrainAs(nextButton) {
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)
@@ -194,7 +204,7 @@ private fun TopBodyContent(modifier: Modifier) {
 }
 
 @Composable
-private fun MainBodyContent(modifier: Modifier,appsList:List<ApplicationInfo>) {
+private fun MainBodyContent(modifier: Modifier, appsList: List<ApplicationInfo>) {
     val textState = remember { mutableStateOf("") }
     Column(
         modifier = modifier.padding(horizontal = 16.dp),
@@ -229,56 +239,130 @@ private fun MainBodyContent(modifier: Modifier,appsList:List<ApplicationInfo>) {
                 )
             }
         )
-
-        Spacer(modifier = Modifier.height(20.dp))
         LazyColumn(
+            contentPadding = PaddingValues(vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(appsList.size) {appInfo ->
-                NotDefinedAppItem()
+            itemsIndexed(appsList){index,item->
+                AppItems(app = item){
+
+                }
             }
         }
     }
 }
 
 @Composable
-private fun NotDefinedAppItem(){
+private fun AppItems(app:ApplicationInfo?,onClick:()->Unit) {
+    app?.let{appInfo->
+        val packageManager = LocalContext.current.packageManager
+        val appName = if (appInfo.labelRes!=0)
+            packageManager.getResourcesForApplication(appInfo).getString(appInfo.labelRes)
+        else
+            appInfo.loadLabel(packageManager).toString()
+
+        val appIcon= LocalContext.current.getAppIconBitmap(appInfo.packageName)
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentSize()
+                .background(
+                    color = MaterialTheme.colors.background,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .padding(vertical = 6.dp, horizontal = 12.dp)
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                ) {
+
+                    if (appIcon!=null){
+                        Image(
+                            bitmap = appIcon,
+                            contentDescription = EMPTY,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(CircleShape)
+                                .border(0.dp, Color.DarkGray, CircleShape)
+                        )
+                    }else{
+                        Image(
+                            painterResource(id =R.drawable.ic_android),
+                            contentDescription = EMPTY,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(CircleShape)
+                                .border(0.dp, Color.DarkGray, CircleShape)
+                        )
+                    }
+                    
+                    Text(
+                        text = appName,
+                        style = MaterialTheme.typography.h2,
+                        color = MaterialTheme.colors.onSurface,
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        maxLines = 1,
+                    )
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable { onClick() }
+                ) {
+                    DistractionItem()
+                    Spacer(modifier = Modifier.width(2.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .background(
+                                color = MaterialTheme.colors.primaryVariant,
+                                shape = RoundedCornerShape(20.dp)
+                            ), contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = EMPTY,
+                            tint = MaterialTheme.colors.surface
+                        )
+                    }
+                }
+
+            }
+        }
+    }
+
+}
+
+@Composable
+private fun DistractionItem(item: AppDistractions = AppDistractions.NOT_DEFINED) {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp)
-            .background(color = MaterialTheme.colors.background, shape = RoundedCornerShape(16.dp))
+            .wrapContentSize()
+            .background(
+                color = item.background,
+                shape = RoundedCornerShape(16.dp)
+            )
     ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-        ) {
-            Row(horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
-
-                Image(
-                    painter = painterResource(R.drawable.iv_rocket),
-                    contentDescription = EMPTY,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .border(0.dp, Color.DarkGray, CircleShape)
-                )
-
-                Text(text = "Instagram",
-                    style = MaterialTheme.typography.h2,
-                    color = MaterialTheme.colors.onSurface,
-                    modifier = Modifier.padding(horizontal = 8.dp))
-            }
-
-        }
+        Text(
+            text = item.distraction,
+            style = MaterialTheme.typography.body2,
+            color = item.color,
+            maxLines = 1,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
+        )
     }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Preview(showBackground = true)
-@Composable
-private fun PreviewStartOnBoardingBottomSheet() {
-    AppListOnboardingScreen(rememberNavController())
 }

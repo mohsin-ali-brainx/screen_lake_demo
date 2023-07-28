@@ -87,7 +87,7 @@ fun CustomTextField(
                                     modifier = Modifier.padding(0.dp),
                                     text = it,
                                     textAlign = TextAlign.Start,
-                                    style = MaterialTheme.typography.body2,
+                                    style = MaterialTheme.typography.body1,
                                     color = LocalContentColor.current.copy(ContentAlpha.medium)
                                 )
                             }

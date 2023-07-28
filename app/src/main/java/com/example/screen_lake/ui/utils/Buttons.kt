@@ -33,7 +33,7 @@ fun RoundedCorneredButton(
     ) {
         Text(text = buttonText,
             color = textColor,
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.button,
             textAlign = TextAlign.Center
         )
     }

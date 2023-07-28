@@ -16,7 +16,8 @@ private val LightDefaultColorScheme = lightColors(
     secondary = PrimaryLight,
     onSurface = PrimaryDark,
     onSecondary = DisableLightColor,
-    secondaryVariant = LightBorderColor
+    secondaryVariant = LightBorderColor,
+    primaryVariant = LightImageButtonBg
 )
 
 @VisibleForTesting
@@ -28,7 +29,8 @@ private val DarkDefaultColorScheme = darkColors(
     secondary = PrimaryDark,
     onSurface = PrimaryLight,
     onSecondary = DisableDarkColor,
-    secondaryVariant = DarkBorderColor
+    secondaryVariant = DarkBorderColor,
+    primaryVariant = DarkImageButtonBg
 )
 
 @Composable

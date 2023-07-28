@@ -1,4 +1,4 @@
-package com.example.screen_lake.ui.screens.onboaridng
+package com.example.screen_lake.ui.screens.onboarding
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

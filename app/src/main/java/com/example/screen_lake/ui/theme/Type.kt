@@ -30,14 +30,19 @@ val ScreenLakeTypography = Typography(
         fontSize = 16.sp,
     ),
     body1 =  TextStyle(
-        fontWeight =  FontWeight(600),
-        fontFamily = appFonts,
-        fontSize = 16.sp,
-    ),
-    body2 = TextStyle(
         fontWeight =  FontWeight(400),
         fontFamily = appFonts,
         fontSize = 14.sp,
     ),
+    body2 = TextStyle(
+        fontWeight =  FontWeight(400),
+        fontFamily = appFonts,
+        fontSize = 12.sp,
+    ),
+    button=TextStyle(
+        fontWeight =  FontWeight(600),
+        fontFamily = appFonts,
+        fontSize = 16.sp,
+    )
 
     )
