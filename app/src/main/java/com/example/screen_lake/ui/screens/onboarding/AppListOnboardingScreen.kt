@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.BottomSheetScaffoldState
 import androidx.compose.material.BottomSheetValue
+import androidx.compose.material.Card
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
@@ -45,17 +49,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -64,6 +74,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.screen_lake.R
 import com.example.screen_lake.enums.AppDistractions
+import com.example.screen_lake.enums.getAppDistractionList
 import com.example.screen_lake.extensions.getAppIconBitmap
 import com.example.screen_lake.extensions.getInstalledAppsList
 import com.example.screen_lake.ui.bottomsheets.StartOnBoardingBottomSheet
@@ -243,8 +254,8 @@ private fun MainBodyContent(modifier: Modifier, appsList: List<ApplicationInfo>)
             contentPadding = PaddingValues(vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            itemsIndexed(appsList){index,item->
-                AppItems(app = item){
+            itemsIndexed(appsList) { index, item ->
+                AppItems(app = item) {
 
                 }
             }
@@ -253,15 +264,19 @@ private fun MainBodyContent(modifier: Modifier, appsList: List<ApplicationInfo>)
 }
 
 @Composable
-private fun AppItems(app:ApplicationInfo?,onClick:()->Unit) {
-    app?.let{appInfo->
+private fun AppItems(app: ApplicationInfo?, onClick: () -> Unit) {
+    app?.let { appInfo ->
         val packageManager = LocalContext.current.packageManager
-        val appName = if (appInfo.labelRes!=0)
+        val appName = if (appInfo.labelRes != 0)
             packageManager.getResourcesForApplication(appInfo).getString(appInfo.labelRes)
         else
             appInfo.loadLabel(packageManager).toString()
 
-        val appIcon= LocalContext.current.getAppIconBitmap(appInfo.packageName)
+        val appIcon = LocalContext.current.getAppIconBitmap(appInfo.packageName)
+
+        var isContextMenuVisible by rememberSaveable {
+            mutableStateOf(false)
+        }
 
         Box(
             modifier = Modifier
@@ -285,7 +300,7 @@ private fun AppItems(app:ApplicationInfo?,onClick:()->Unit) {
                     modifier = Modifier.weight(1f)
                 ) {
 
-                    if (appIcon!=null){
+                    if (appIcon != null) {
                         Image(
                             bitmap = appIcon,
                             contentDescription = EMPTY,
@@ -295,9 +310,9 @@ private fun AppItems(app:ApplicationInfo?,onClick:()->Unit) {
                                 .clip(CircleShape)
                                 .border(0.dp, Color.DarkGray, CircleShape)
                         )
-                    }else{
+                    } else {
                         Image(
-                            painterResource(id =R.drawable.ic_android),
+                            painterResource(id = R.drawable.ic_android),
                             contentDescription = EMPTY,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -306,7 +321,7 @@ private fun AppItems(app:ApplicationInfo?,onClick:()->Unit) {
                                 .border(0.dp, Color.DarkGray, CircleShape)
                         )
                     }
-                    
+
                     Text(
                         text = appName,
                         style = MaterialTheme.typography.h2,
@@ -331,12 +346,25 @@ private fun AppItems(app:ApplicationInfo?,onClick:()->Unit) {
                             .background(
                                 color = MaterialTheme.colors.primaryVariant,
                                 shape = RoundedCornerShape(20.dp)
-                            ), contentAlignment = Alignment.Center
+                            )
+                            .clickable {
+                                isContextMenuVisible=true
+                            },
+                        contentAlignment = Alignment.Center,
                     ) {
                         Icon(
                             Icons.Default.Add,
                             contentDescription = EMPTY,
                             tint = MaterialTheme.colors.surface
+                        )
+                        DistractionDropDownMenu(
+                            isContextMenuVisible,
+                            onClick = {visible,selectedItem->
+                                isContextMenuVisible = visible
+                            },
+                            onDismiss = {
+                                isContextMenuVisible = it
+                            }
                         )
                     }
                 }
@@ -344,7 +372,6 @@ private fun AppItems(app:ApplicationInfo?,onClick:()->Unit) {
             }
         }
     }
-
 }
 
 @Composable
@@ -364,5 +391,55 @@ private fun DistractionItem(item: AppDistractions = AppDistractions.NOT_DEFINED)
             maxLines = 1,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
         )
+    }
+}
+
+@Composable
+private fun DistractionDropDownMenu(
+    isContextMenuVisible:Boolean,
+    onClick:(Boolean,AppDistractions)->Unit,
+    onDismiss:(Boolean)->Unit
+){
+    DropdownMenu(
+        expanded = isContextMenuVisible,
+        onDismissRequest = { onDismiss(false)},
+        modifier = Modifier
+            .background(
+                color = MaterialTheme.colors.background,
+            )
+    ) {
+        getAppDistractionList().forEach { distractionItem ->
+            DropdownMenuItem(
+                onClick = { onClick(false,distractionItem) }) {
+                ConstraintLayout() {
+                    val (iconStart, title) = createRefs()
+                    Box(
+                        modifier = Modifier
+                            .size(6.dp)
+                            .constrainAs(iconStart) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                start.linkTo(parent.start)
+                            }
+                            .background(distractionItem.color, shape = CircleShape)
+                    ) {
+
+                    }
+                    Text(
+                        text = distractionItem.distraction,
+                        style = MaterialTheme.typography.body2,
+                        color = MaterialTheme.colors.onSurface,
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .constrainAs(title) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                start.linkTo(iconStart.end)
+                            },
+                        maxLines = 1,
+                    )
+                }
+            }
+        }
     }
 }
