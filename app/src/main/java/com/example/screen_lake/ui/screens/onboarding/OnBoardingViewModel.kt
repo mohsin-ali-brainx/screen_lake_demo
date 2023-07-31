@@ -1,8 +1,6 @@
 package com.example.screen_lake.ui.screens.onboarding
 
 import android.content.pm.ApplicationInfo
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.screen_lake.appUtils.Resource
@@ -11,7 +9,9 @@ import com.example.screen_lake.ui.screens.onboarding.appListOnboarding.useCase.I
 import com.example.screenlake.utils.Constants.StringConstants.EMPTY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -20,7 +20,7 @@ data class OnboardingScreenState(
     val isLoading: Boolean = false,
     val disableButton:Boolean=true,
     val searchText:String = EMPTY,
-    val installedApps:ArrayList<Pair<ApplicationInfo,AppInfo>> = arrayListOf()
+    val installedApps:List<Pair<ApplicationInfo,AppInfo>> = arrayListOf()
 )
 
 sealed class OnBoardingScreenUiEvent{
@@ -33,9 +33,8 @@ class OnBoardingViewModel @Inject constructor(
     private val getInstalledAppInfoUseCase: InstalledAppInfoUseCase
 ):ViewModel(){
     // region properties
-    private val _state = mutableStateOf(OnboardingScreenState())
-    val state : State<OnboardingScreenState>
-        get()=_state
+    private val _state = MutableStateFlow(OnboardingScreenState())
+    val state = _state.asStateFlow()
 
     private val _eventFlow = MutableSharedFlow<OnBoardingScreenUiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -48,9 +47,12 @@ class OnBoardingViewModel @Inject constructor(
         event.apply {
             when(this){
                 is OnBoardingScreenUiEvent.OnAppSelected->{
-                    val oldList = _state.value.installedApps
-                    oldList[index] = app
-                    _state.value= _state.value.copy(installedApps = oldList, disableButton = false)
+                    val newList =  ArrayList<Pair<ApplicationInfo,AppInfo>>().apply {
+                        clear()
+                        addAll( _state.value.installedApps)
+                    }
+                    newList[index]=app
+                    _state.value= _state.value.copy(installedApps = newList, disableButton = false)
                 }
                 is OnBoardingScreenUiEvent.SearchAppTextUpdated->{
                     _state.value = _state.value.copy(searchText = newText)

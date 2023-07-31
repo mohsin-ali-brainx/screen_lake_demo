@@ -41,6 +41,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -93,7 +94,7 @@ fun AppListOnboardingScreen(
     val bottomSheetScaffoldState =
         rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
 
-    val state by onBoardingViewModel.state
+    val state by onBoardingViewModel.state.collectAsState()
 
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
