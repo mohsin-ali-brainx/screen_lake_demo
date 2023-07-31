@@ -448,7 +448,7 @@ private fun DistractionDropDownMenu(
     ) {
         getAppDistractionList().forEach { distractionItem ->
             DropdownMenuItem(
-                modifier = Modifier.widthIn(120.dp),
+                modifier = Modifier.widthIn(200.dp),
                 contentPadding = PaddingValues(horizontal = 8.dp),
                 onClick = { onClick(false, distractionItem) }) {
                 ConstraintLayout() {
