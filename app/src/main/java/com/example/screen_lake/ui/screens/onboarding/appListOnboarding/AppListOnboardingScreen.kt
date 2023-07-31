@@ -115,7 +115,7 @@ fun AppListOnboardingScreen(
         sheetPeekHeight = 0.dp,
         sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
     ) {
-        MainScreenContent(onBoardingViewModel,bottomSheetScaffoldState, state)
+        MainScreenContent(onBoardingViewModel, bottomSheetScaffoldState, state)
     }
 }
 
@@ -124,7 +124,7 @@ fun AppListOnboardingScreen(
 private fun MainScreenContent(
     onBoardingViewModel: OnBoardingViewModel,
     bottomSheetScaffoldState: BottomSheetScaffoldState,
-    state:OnboardingScreenState
+    state: OnboardingScreenState
 ) {
     Box(
         modifier = Modifier
@@ -151,9 +151,10 @@ private fun MainScreenContent(
                     }
             )
             MainBodyContent(
-                onBoardingViewModel=onBoardingViewModel,
-                searchText = state.searchText ?: EMPTY,
+                onBoardingViewModel = onBoardingViewModel,
+                searchText = state.searchText,
                 appsList = state.installedApps,
+                expandedList = state.expandedList,
                 modifier = Modifier
                     .constrainAs(body) {
                         top.linkTo(topBody.bottom)
@@ -174,7 +175,7 @@ private fun MainScreenContent(
                 }) {
                 RoundedCorneredButton(buttonText = stringResource(id = R.string.next),
                     buttonColor = if (state.disableButton) MaterialTheme.colors.onPrimary else MaterialTheme.colors.surface,
-                    textColor =if (state.disableButton) MaterialTheme.colors.onError else  MaterialTheme.colors.primary,
+                    textColor = if (state.disableButton) MaterialTheme.colors.onError else MaterialTheme.colors.primary,
                     onClickAction = {
                     })
             }
@@ -222,9 +223,11 @@ private fun TopBodyContent(modifier: Modifier) {
 private fun MainBodyContent(
     onBoardingViewModel: OnBoardingViewModel,
     searchText: String,
+    expandedList: Boolean,
     modifier: Modifier,
-    appsList: List<Pair<ApplicationInfo,AppInfo>>
+    appsList: List<Pair<ApplicationInfo, AppInfo>>
 ) {
+    val context = LocalContext.current
     Column(
         modifier = modifier.padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -242,7 +245,7 @@ private fun MainBodyContent(
                 )
                 .background(MaterialTheme.colors.background)
                 .padding(vertical = 2.dp, horizontal = 10.dp),
-            text =searchText,
+            text = searchText,
             placeHolderText = stringResource(id = R.string.search_app),
             onValueChange = {
                 onBoardingViewModel.onEventUpdate(OnBoardingScreenUiEvent.SearchAppTextUpdated(it))
@@ -258,38 +261,51 @@ private fun MainBodyContent(
                 )
             }
         )
-       if (!appsList.isNullOrEmpty()){
-        LazyColumn(
-            contentPadding = PaddingValues(vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            itemsIndexed(appsList.subList(ZERO,FIVE)) { index, item ->
-                AppItems(app = item.first, info = item.second) {
-                    onBoardingViewModel.onEventUpdate(
-                        OnBoardingScreenUiEvent.OnAppSelected(
-                            index,
-                            Pair(
-                                item.first,
-                                item.second.copy(distractionLevel = it.key)
+        if (appsList.isNotEmpty()) {
+            LazyColumn(
+                contentPadding = PaddingValues(vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                itemsIndexed(
+                    if (expandedList) appsList else appsList.subList(
+                        ZERO,
+                        FIVE
+                    )
+                ) { index, item ->
+                    AppItems(app = item.first, info = item.second) {
+                        onBoardingViewModel.onEventUpdate(
+                            OnBoardingScreenUiEvent.OnAppSelected(
+                                index,
+                                Pair(item.first, item.second.copy(distractionLevel = it.key))
                             )
                         )
-                    )
+                    }
                 }
             }
+            Text(
+                text = if (expandedList) context.getString(R.string.show_less) else context.getString(R.string.show_more_apps, appsList.size - FIVE),
+                style = MaterialTheme.typography.subtitle2,
+                color = MaterialTheme.colors.onSecondary,
+                maxLines = 1,
+                modifier = Modifier
+                    .padding(horizontal = 8.dp, vertical = 2.dp)
+                    .clickable {
+                        onBoardingViewModel.onEventUpdate(OnBoardingScreenUiEvent.OnExpandAppList(!expandedList))
+                    }
+            )
+            if (expandedList) {
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp)
+                )
+            }
         }
-        Text(
-            text = LocalContext.current.getString(R.string.show_more_apps,appsList.size-FIVE),
-            style = MaterialTheme.typography.subtitle2,
-            color = MaterialTheme.colors.onSecondary,
-            maxLines = 1,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-        )
-       }
     }
 }
 
 @Composable
-private fun AppItems(app: ApplicationInfo?,info: AppInfo, onClick: (AppDistractions) -> Unit) {
+private fun AppItems(app: ApplicationInfo?, info: AppInfo, onClick: (AppDistractions) -> Unit) {
     app?.let { appInfo ->
         val appIcon = LocalContext.current.getAppIconBitmap(appInfo.packageName)
 
@@ -342,7 +358,7 @@ private fun AppItems(app: ApplicationInfo?,info: AppInfo, onClick: (AppDistracti
                     }
 
                     Text(
-                        text = info.realAppName?: EMPTY,
+                        text = info.realAppName ?: EMPTY,
                         style = MaterialTheme.typography.h2,
                         color = MaterialTheme.colors.onSurface,
                         modifier = Modifier.padding(horizontal = 8.dp),
@@ -372,14 +388,14 @@ private fun AppItems(app: ApplicationInfo?,info: AppInfo, onClick: (AppDistracti
                     ) {
                         Icon(
                             modifier = Modifier.size(20.dp),
-                            imageVector =  if(info.distractionLevel==AppDistractions.NOT_DEFINED.key) Icons.Default.Add else Icons.Outlined.Edit,
+                            imageVector = if (info.distractionLevel == AppDistractions.NOT_DEFINED.key) Icons.Default.Add else Icons.Outlined.Edit,
                             contentDescription = EMPTY,
                             tint = MaterialTheme.colors.surface,
                         )
                         DistractionDropDownMenu(
                             isContextMenuVisible,
-                            info.distractionLevel?:AppDistractions.NOT_DEFINED.key,
-                            onClick = {visible,selectedItem->
+                            info.distractionLevel ?: AppDistractions.NOT_DEFINED.key,
+                            onClick = { visible, selectedItem ->
                                 isContextMenuVisible = visible
                                 onClick(selectedItem)
                             },
@@ -417,14 +433,14 @@ private fun DistractionItem(item: AppDistractions = AppDistractions.NOT_DEFINED)
 
 @Composable
 private fun DistractionDropDownMenu(
-    isContextMenuVisible:Boolean,
-    selectedKey:String,
-    onClick:(Boolean,AppDistractions)->Unit,
-    onDismiss:(Boolean)->Unit
-){
+    isContextMenuVisible: Boolean,
+    selectedKey: String,
+    onClick: (Boolean, AppDistractions) -> Unit,
+    onDismiss: (Boolean) -> Unit
+) {
     DropdownMenu(
         expanded = isContextMenuVisible,
-        onDismissRequest = { onDismiss(false)},
+        onDismissRequest = { onDismiss(false) },
         modifier = Modifier
             .background(
                 color = MaterialTheme.colors.background,
@@ -434,9 +450,9 @@ private fun DistractionDropDownMenu(
             DropdownMenuItem(
                 modifier = Modifier.widthIn(120.dp),
                 contentPadding = PaddingValues(horizontal = 8.dp),
-                onClick = { onClick(false,distractionItem) }) {
+                onClick = { onClick(false, distractionItem) }) {
                 ConstraintLayout() {
-                    val (iconStart, title,checkedIcon) = createRefs()
+                    val (iconStart, title, checkedIcon) = createRefs()
                     Box(
                         modifier = Modifier
                             .size(6.dp)
@@ -452,7 +468,7 @@ private fun DistractionDropDownMenu(
                     Text(
                         text = distractionItem.distraction,
                         style = MaterialTheme.typography.body2,
-                        color = if(selectedKey==distractionItem.key) MaterialTheme.colors.onBackground else MaterialTheme.colors.onError,
+                        color = if (selectedKey == distractionItem.key) MaterialTheme.colors.onBackground else MaterialTheme.colors.onError,
                         textAlign = TextAlign.Start,
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
@@ -464,7 +480,7 @@ private fun DistractionDropDownMenu(
                             },
                         maxLines = 1,
                     )
-                    if (selectedKey==distractionItem.key){
+                    if (selectedKey == distractionItem.key) {
                         Box(
                             modifier = Modifier
                                 .size(16.dp)
@@ -477,7 +493,7 @@ private fun DistractionDropDownMenu(
                             contentAlignment = Alignment.Center,
                         ) {
                             Icon(
-                                modifier=Modifier.size(12.dp),
+                                modifier = Modifier.size(12.dp),
                                 imageVector = Icons.Default.Done,
                                 tint = MaterialTheme.colors.primary,
                                 contentDescription = EMPTY

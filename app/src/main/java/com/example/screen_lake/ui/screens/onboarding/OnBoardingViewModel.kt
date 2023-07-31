@@ -20,12 +20,14 @@ data class OnboardingScreenState(
     val isLoading: Boolean = false,
     val disableButton:Boolean=true,
     val searchText:String = EMPTY,
-    val installedApps:List<Pair<ApplicationInfo,AppInfo>> = arrayListOf()
+    val installedApps:List<Pair<ApplicationInfo,AppInfo>> = arrayListOf(),
+    val expandedList:Boolean=false
 )
 
 sealed class OnBoardingScreenUiEvent{
     data class SearchAppTextUpdated(val newText: String) : OnBoardingScreenUiEvent()
     data class OnAppSelected(val index:Int,val app:Pair<ApplicationInfo,AppInfo>):OnBoardingScreenUiEvent()
+    data class OnExpandAppList(val expand:Boolean) : OnBoardingScreenUiEvent()
 }
 
 @HiltViewModel
@@ -56,6 +58,9 @@ class OnBoardingViewModel @Inject constructor(
                 }
                 is OnBoardingScreenUiEvent.SearchAppTextUpdated->{
                     _state.value = _state.value.copy(searchText = newText)
+                }
+                is OnBoardingScreenUiEvent.OnExpandAppList->{
+                    _state.value = _state.value.copy(expandedList = expand)
                 }
                 else -> {}
             }
