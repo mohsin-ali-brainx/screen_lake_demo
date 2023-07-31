@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.screen_lake.ui.screens.onboarding.AppListOnboardingScreen
+import com.example.screen_lake.ui.screens.onboarding.appListOnboarding.AppListOnboardingScreen
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
