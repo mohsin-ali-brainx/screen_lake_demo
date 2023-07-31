@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -38,6 +39,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.runtime.Composable
@@ -57,6 +60,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -367,12 +371,14 @@ private fun AppItems(app: ApplicationInfo?,info: AppInfo, onClick: (AppDistracti
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
-                            Icons.Default.Add,
+                            modifier = Modifier.size(20.dp),
+                            imageVector =  if(info.distractionLevel==AppDistractions.NOT_DEFINED.key) Icons.Default.Add else Icons.Outlined.Edit,
                             contentDescription = EMPTY,
-                            tint = MaterialTheme.colors.surface
+                            tint = MaterialTheme.colors.surface,
                         )
                         DistractionDropDownMenu(
                             isContextMenuVisible,
+                            info.distractionLevel?:AppDistractions.NOT_DEFINED.key,
                             onClick = {visible,selectedItem->
                                 isContextMenuVisible = visible
                                 onClick(selectedItem)
@@ -412,6 +418,7 @@ private fun DistractionItem(item: AppDistractions = AppDistractions.NOT_DEFINED)
 @Composable
 private fun DistractionDropDownMenu(
     isContextMenuVisible:Boolean,
+    selectedKey:String,
     onClick:(Boolean,AppDistractions)->Unit,
     onDismiss:(Boolean)->Unit
 ){
@@ -425,9 +432,11 @@ private fun DistractionDropDownMenu(
     ) {
         getAppDistractionList().forEach { distractionItem ->
             DropdownMenuItem(
+                modifier = Modifier.widthIn(120.dp),
+                contentPadding = PaddingValues(horizontal = 8.dp),
                 onClick = { onClick(false,distractionItem) }) {
                 ConstraintLayout() {
-                    val (iconStart, title) = createRefs()
+                    val (iconStart, title,checkedIcon) = createRefs()
                     Box(
                         modifier = Modifier
                             .size(6.dp)
@@ -443,16 +452,38 @@ private fun DistractionDropDownMenu(
                     Text(
                         text = distractionItem.distraction,
                         style = MaterialTheme.typography.body2,
-                        color = MaterialTheme.colors.onSurface,
+                        color = if(selectedKey==distractionItem.key) MaterialTheme.colors.onBackground else MaterialTheme.colors.onError,
+                        textAlign = TextAlign.Start,
                         modifier = Modifier
-                            .padding(horizontal = 4.dp)
+                            .padding(horizontal = 8.dp)
                             .constrainAs(title) {
                                 top.linkTo(parent.top)
                                 bottom.linkTo(parent.bottom)
                                 start.linkTo(iconStart.end)
+                                end.linkTo(checkedIcon.start)
                             },
                         maxLines = 1,
                     )
+                    if (selectedKey==distractionItem.key){
+                        Box(
+                            modifier = Modifier
+                                .size(16.dp)
+                                .constrainAs(checkedIcon) {
+                                    top.linkTo(parent.top)
+                                    bottom.linkTo(parent.bottom)
+                                    end.linkTo(parent.end)
+                                }
+                                .background(MaterialTheme.colors.onBackground, shape = CircleShape),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Icon(
+                                modifier=Modifier.size(12.dp),
+                                imageVector = Icons.Default.Done,
+                                tint = MaterialTheme.colors.primary,
+                                contentDescription = EMPTY
+                            )
+                        }
+                    }
                 }
             }
         }
