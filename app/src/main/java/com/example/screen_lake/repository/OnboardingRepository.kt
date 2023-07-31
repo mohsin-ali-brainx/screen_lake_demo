@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class OnboardingRepository @Inject constructor(@ApplicationContext private val context: Context) {
 
-    suspend fun getInstalledAppList():List<Pair<ApplicationInfo,AppInfo>>{
+    suspend fun getInstalledAppList():ArrayList<Pair<ApplicationInfo,AppInfo>>{
         return getInstalledApps().toAppInfoList(context)
     }
 

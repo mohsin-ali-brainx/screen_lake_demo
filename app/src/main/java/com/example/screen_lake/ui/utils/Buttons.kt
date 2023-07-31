@@ -1,7 +1,5 @@
 package com.example.screen_lake.ui.utils
 
-import android.service.autofill.OnClickAction
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,7 +21,9 @@ fun RoundedCorneredButton(
     isClickable:Boolean=true,
     onClickAction: ()->Unit
 ){
-    Button(onClick = { onClickAction() },
+    Button(
+        onClick = { onClickAction() },
+        elevation = ButtonDefaults.elevation(defaultElevation = 0.dp),
         enabled = isClickable,
         modifier = Modifier
             .fillMaxWidth()

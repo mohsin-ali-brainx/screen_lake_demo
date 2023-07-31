@@ -63,12 +63,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
 import com.example.screen_lake.enums.AppDistractions
+import com.example.screen_lake.enums.getAppDistractionFromKey
 import com.example.screen_lake.enums.getAppDistractionList
 import com.example.screen_lake.extensions.getAppIconBitmap
 import com.example.screen_lake.models.AppInfo
 import com.example.screen_lake.ui.bottomsheets.StartOnBoardingBottomSheet
 import com.example.screen_lake.ui.screens.onboarding.OnBoardingScreenUiEvent
 import com.example.screen_lake.ui.screens.onboarding.OnBoardingViewModel
+import com.example.screen_lake.ui.screens.onboarding.OnboardingScreenState
 import com.example.screen_lake.ui.utils.CustomTextField
 import com.example.screen_lake.ui.utils.RoundedCorneredButton
 import com.example.screenlake.utils.Constants.IntegerConstants.FIVE
@@ -91,8 +93,7 @@ fun AppListOnboardingScreen(
     val bottomSheetScaffoldState =
         rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
 
-    val appsList = onBoardingViewModel.state.value.installedApps
-    val searchText = onBoardingViewModel.state.value.searchText
+    val state by onBoardingViewModel.state
 
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
@@ -109,7 +110,7 @@ fun AppListOnboardingScreen(
         sheetPeekHeight = 0.dp,
         sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
     ) {
-        MainScreenContent(onBoardingViewModel,searchText,bottomSheetScaffoldState, appsList)
+        MainScreenContent(onBoardingViewModel,bottomSheetScaffoldState, state)
     }
 }
 
@@ -117,9 +118,8 @@ fun AppListOnboardingScreen(
 @Composable
 private fun MainScreenContent(
     onBoardingViewModel: OnBoardingViewModel,
-    searchText:String?,
     bottomSheetScaffoldState: BottomSheetScaffoldState,
-    appsList: List<Pair<ApplicationInfo,AppInfo>>
+    state:OnboardingScreenState
 ) {
     Box(
         modifier = Modifier
@@ -147,8 +147,8 @@ private fun MainScreenContent(
             )
             MainBodyContent(
                 onBoardingViewModel=onBoardingViewModel,
-                searchText = searchText ?: EMPTY,
-                appsList = appsList,
+                searchText = state.searchText ?: EMPTY,
+                appsList = state.installedApps,
                 modifier = Modifier
                     .constrainAs(body) {
                         top.linkTo(topBody.bottom)
@@ -168,9 +168,10 @@ private fun MainScreenContent(
                     width = Dimension.fillToConstraints
                 }) {
                 RoundedCorneredButton(buttonText = stringResource(id = R.string.next),
-                    buttonColor = MaterialTheme.colors.surface,
-                    textColor = MaterialTheme.colors.primary,
-                    onClickAction = {})
+                    buttonColor = if (state.disableButton) MaterialTheme.colors.onPrimary else MaterialTheme.colors.surface,
+                    textColor =if (state.disableButton) MaterialTheme.colors.onError else  MaterialTheme.colors.primary,
+                    onClickAction = {
+                    })
             }
         }
     }
@@ -252,13 +253,22 @@ private fun MainBodyContent(
                 )
             }
         )
+       if (!appsList.isNullOrEmpty()){
         LazyColumn(
             contentPadding = PaddingValues(vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             itemsIndexed(appsList.subList(ZERO,FIVE)) { index, item ->
                 AppItems(app = item.first, info = item.second) {
-
+                    onBoardingViewModel.onEventUpdate(
+                        OnBoardingScreenUiEvent.OnAppSelected(
+                            index,
+                            Pair(
+                                item.first,
+                                item.second.copy(distractionLevel = it.key)
+                            )
+                        )
+                    )
                 }
             }
         }
@@ -269,18 +279,13 @@ private fun MainBodyContent(
             maxLines = 1,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
         )
+       }
     }
 }
 
 @Composable
-private fun AppItems(app: ApplicationInfo?,info: AppInfo, onClick: () -> Unit) {
+private fun AppItems(app: ApplicationInfo?,info: AppInfo, onClick: (AppDistractions) -> Unit) {
     app?.let { appInfo ->
-//        val packageManager = LocalContext.current.packageManager
-//        val appName = if (appInfo.labelRes != 0)
-//            packageManager.getResourcesForApplication(appInfo).getString(appInfo.labelRes)
-//        else
-//            appInfo.loadLabel(packageManager).toString()
-
         val appIcon = LocalContext.current.getAppIconBitmap(appInfo.packageName)
 
         var isContextMenuVisible by rememberSaveable {
@@ -345,9 +350,8 @@ private fun AppItems(app: ApplicationInfo?,info: AppInfo, onClick: () -> Unit) {
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .weight(1f)
-                        .clickable { onClick() }
                 ) {
-                    DistractionItem()
+                    DistractionItem(getAppDistractionFromKey(info.distractionLevel))
                     Spacer(modifier = Modifier.width(2.dp))
                     Box(
                         modifier = Modifier
@@ -370,6 +374,7 @@ private fun AppItems(app: ApplicationInfo?,info: AppInfo, onClick: () -> Unit) {
                             isContextMenuVisible,
                             onClick = {visible,selectedItem->
                                 isContextMenuVisible = visible
+                                onClick(selectedItem)
                             },
                             onDismiss = {
                                 isContextMenuVisible = it

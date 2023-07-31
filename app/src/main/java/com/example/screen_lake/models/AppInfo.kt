@@ -2,10 +2,8 @@ package com.example.screen_lake.models
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
-import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.screen_lake.ScreenLakeApp
 import com.example.screen_lake.enums.AppDistractions
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
 
@@ -19,7 +17,7 @@ data class AppInfo(
     var bitmapResource:String?=null,
 )
 
-fun List<ApplicationInfo>.toAppInfoList(context:Context):List<Pair<ApplicationInfo,AppInfo>>{
+fun List<ApplicationInfo>.toAppInfoList(context:Context):ArrayList<Pair<ApplicationInfo,AppInfo>>{
     val newAppInfoList = ArrayList<Pair<ApplicationInfo,AppInfo>>()
     val packageManager = context.packageManager
     forEach {

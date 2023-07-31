@@ -17,7 +17,7 @@ fun getAppDistractionList():List<AppDistractions>{
     }
 }
 
-fun getAppDistractionFromKey(key:String):AppDistractions{
+fun getAppDistractionFromKey(key:String?):AppDistractions{
     return when(key){
         AppDistractions.VERY_DISTRACTING.key->AppDistractions.VERY_DISTRACTING
         AppDistractions.DISTRACTING.key->AppDistractions.DISTRACTING
