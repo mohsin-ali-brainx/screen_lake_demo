@@ -1,4 +1,4 @@
-package com.example.screen_lake.ui.screens.onboarding
+package com.example.screen_lake.ui.screens.onboarding.appListOnboarding
 
 import android.content.pm.ApplicationInfo
 import androidx.lifecycle.ViewModel
@@ -15,9 +15,10 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class OnboardingScreenState(
+data class AppListOnboardingScreenState(
     val isLoading: Boolean = false,
     val disableButton:Boolean=true,
     val searchText:String = EMPTY,
@@ -26,31 +27,37 @@ data class OnboardingScreenState(
     val expandedList:Boolean=false
 )
 
-sealed class OnBoardingScreenUiEvent{
-    data class SearchAppTextUpdated(val newText: String) : OnBoardingScreenUiEvent()
-    data class OnAppSelected(val index:Int,val app:Pair<ApplicationInfo,AppInfo>):OnBoardingScreenUiEvent()
-    data class OnExpandAppList(val expand:Boolean) : OnBoardingScreenUiEvent()
+sealed class AppListOnBoardingScreenEvent{
+    data class SearchAppTextUpdated(val newText: String) : AppListOnBoardingScreenEvent()
+    data class OnAppSelected(val index:Int,val app:Pair<ApplicationInfo,AppInfo>):
+        AppListOnBoardingScreenEvent()
+    data class OnExpandAppList(val expand:Boolean) : AppListOnBoardingScreenEvent()
+    object OnNextClicked : AppListOnBoardingScreenEvent()
+}
+
+sealed class AppListOnBoardingScreenUiEvents{
+    object NavigateToBehaviorOnboardingScreen:AppListOnBoardingScreenUiEvents()
 }
 
 @HiltViewModel
-class OnBoardingViewModel @Inject constructor(
+class AppListOnBoardingViewModel @Inject constructor(
     private val getInstalledAppInfoUseCase: InstalledAppInfoUseCase
 ):ViewModel(){
     // region properties
-    private val _state = MutableStateFlow(OnboardingScreenState())
+    private val _state = MutableStateFlow(AppListOnboardingScreenState())
     val state = _state.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<OnBoardingScreenUiEvent>()
+    private val _eventFlow = MutableSharedFlow<AppListOnBoardingScreenUiEvents>()
     val eventFlow = _eventFlow.asSharedFlow()
     // end region
     init {
         getInstalledAppInfo()
     }
     // region public method
-    fun onEventUpdate(event: OnBoardingScreenUiEvent){
+    fun onEventUpdate(event: AppListOnBoardingScreenEvent){
         event.apply {
             when(this){
-                is OnBoardingScreenUiEvent.OnAppSelected->{
+                is AppListOnBoardingScreenEvent.OnAppSelected ->{
                     val newList =  ArrayList<Pair<ApplicationInfo,AppInfo>>().apply {
                         clear()
                         addAll(_state.value.installedApps)
@@ -73,12 +80,17 @@ class OnBoardingViewModel @Inject constructor(
                     }
                     _state.value= _state.value.copy(installedApps = newList, filteredList = newFilteredList, disableButton = false)
                 }
-                is OnBoardingScreenUiEvent.SearchAppTextUpdated->{
+                is AppListOnBoardingScreenEvent.SearchAppTextUpdated ->{
                     val filteredList = _state.value.installedApps.filter { it.second.doesMatchSearchQuery(newText) }
                     _state.value = _state.value.copy(searchText = newText, filteredList = filteredList)
                 }
-                is OnBoardingScreenUiEvent.OnExpandAppList->{
+                is AppListOnBoardingScreenEvent.OnExpandAppList ->{
                     _state.value = _state.value.copy(expandedList = expand)
+                }
+                is AppListOnBoardingScreenEvent.OnNextClicked ->{
+                    viewModelScope.launch {
+                        _eventFlow.emit(AppListOnBoardingScreenUiEvents.NavigateToBehaviorOnboardingScreen)
+                    }
                 }
                 else -> {}
             }

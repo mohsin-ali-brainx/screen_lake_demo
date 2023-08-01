@@ -19,31 +19,26 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.BottomSheetScaffoldState
 import androidx.compose.material.BottomSheetValue
 import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
-import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,11 +55,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
 import com.example.screen_lake.enums.AppDistractions
@@ -72,22 +67,24 @@ import com.example.screen_lake.enums.getAppDistractionFromKey
 import com.example.screen_lake.enums.getAppDistractionList
 import com.example.screen_lake.extensions.getAppIconBitmap
 import com.example.screen_lake.models.AppInfo
+import com.example.screen_lake.navigation.Screen
 import com.example.screen_lake.ui.bottomsheets.StartOnBoardingBottomSheet
-import com.example.screen_lake.ui.screens.onboarding.OnBoardingScreenUiEvent
-import com.example.screen_lake.ui.screens.onboarding.OnBoardingViewModel
-import com.example.screen_lake.ui.screens.onboarding.OnboardingScreenState
+import com.example.screen_lake.ui.utils.BottomButtonContent
 import com.example.screen_lake.ui.utils.CustomTextField
-import com.example.screen_lake.ui.utils.RoundedCorneredButton
+import com.example.screen_lake.ui.utils.DropDownSelectionItem
+import com.example.screen_lake.ui.utils.OptionSelectedItem
+import com.example.screen_lake.ui.utils.TopBodyContent
 import com.example.screenlake.utils.Constants.IntegerConstants.FIVE
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
 import com.example.screenlake.utils.Constants.StringConstants.EMPTY
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
 @ExperimentalMaterialApi
 fun AppListOnboardingScreen(
     navHostController: NavHostController,
-    onBoardingViewModel: OnBoardingViewModel = hiltViewModel()
+    onBoardingViewModel: AppListOnBoardingViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberBottomSheetState(
@@ -99,6 +96,17 @@ fun AppListOnboardingScreen(
         rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
 
     val state by onBoardingViewModel.state.collectAsState()
+
+    LaunchedEffect(key1 = true){
+        onBoardingViewModel.eventFlow.collectLatest {
+            when(it){
+                is AppListOnBoardingScreenUiEvents.NavigateToBehaviorOnboardingScreen->{
+                    navigateToBehaviorOnBoardingScreen(navHostController)
+                }
+                else->{}
+            }
+        }
+    }
 
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
@@ -122,9 +130,9 @@ fun AppListOnboardingScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MainScreenContent(
-    onBoardingViewModel: OnBoardingViewModel,
+    onBoardingViewModel: AppListOnBoardingViewModel,
     bottomSheetScaffoldState: BottomSheetScaffoldState,
-    state: OnboardingScreenState
+    state: AppListOnboardingScreenState
 ) {
     Box(
         modifier = Modifier
@@ -142,6 +150,9 @@ private fun MainScreenContent(
         ) {
             val (nextButton, topBody, body) = createRefs()
             TopBodyContent(
+                progress=0.5f,
+                title=stringResource(id = R.string.onboarding_distracting_apps_title),
+                description=stringResource(id = R.string.onboarding_distracting_apps_description),
                 modifier = Modifier
                     .constrainAs(topBody) {
                         start.linkTo(parent.start)
@@ -163,64 +174,31 @@ private fun MainScreenContent(
                         height = Dimension.fillToConstraints
                     },
             )
-            Box(modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 0.dp)
-                .constrainAs(nextButton) {
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    width = Dimension.fillToConstraints
-                }) {
-                RoundedCorneredButton(buttonText = stringResource(id = R.string.next),
-                    buttonColor = if (state.disableButton) MaterialTheme.colors.onPrimary else MaterialTheme.colors.surface,
-                    textColor = if (state.disableButton) MaterialTheme.colors.onError else MaterialTheme.colors.primary,
-                    onClickAction = {
-                    })
+            BottomButtonContent(
+                stateDisabled = state.disableButton,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 0.dp)
+                    .constrainAs(nextButton) {
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
+                    }
+            ) {
+                if (!state.disableButton){
+                    onBoardingViewModel.onEventUpdate(AppListOnBoardingScreenEvent.OnNextClicked)
+                }
             }
         }
     }
 }
 
-@Composable
-private fun TopBodyContent(modifier: Modifier) {
-    Column(
-        modifier = modifier.verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        LinearProgressIndicator(
-            progress = 0.5f,
-            color = MaterialTheme.colors.surface,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(8.dp),
-            backgroundColor = MaterialTheme.colors.background
-        )
-        Column(
-            Modifier.padding(horizontal = 16.dp, vertical = 20.dp)
-        ) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.onboarding_distracting_apps_title),
-                color = MaterialTheme.colors.onSurface,
-                style = MaterialTheme.typography.h1
-            )
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                text = stringResource(id = R.string.onboarding_shift_distraction_description),
-                color = MaterialTheme.colors.onSurface,
-                style = MaterialTheme.typography.h3
-            )
-        }
-    }
-}
+
 
 @Composable
 private fun MainBodyContent(
-    onBoardingViewModel: OnBoardingViewModel,
-    state: OnboardingScreenState,
+    onBoardingViewModel: AppListOnBoardingViewModel,
+    state: AppListOnboardingScreenState,
     modifier: Modifier,
 ) {
     val context = LocalContext.current
@@ -245,7 +223,7 @@ private fun MainBodyContent(
             text = searchText,
             placeHolderText = stringResource(id = R.string.search_app),
             onValueChange = {
-                onBoardingViewModel.onEventUpdate(OnBoardingScreenUiEvent.SearchAppTextUpdated(it))
+                onBoardingViewModel.onEventUpdate(AppListOnBoardingScreenEvent.SearchAppTextUpdated(it))
             },
             keyboardType = KeyboardType.Text,
             paddingLeadingIconEnd = 8.dp,
@@ -271,7 +249,7 @@ private fun MainBodyContent(
                 ) { index, item ->
                     AppItems(app = item.first, info = item.second) {
                         onBoardingViewModel.onEventUpdate(
-                            OnBoardingScreenUiEvent.OnAppSelected(
+                            AppListOnBoardingScreenEvent.OnAppSelected(
                                 index,
                                 Pair(item.first, item.second.copy(distractionLevel = it.key))
                             )
@@ -288,7 +266,11 @@ private fun MainBodyContent(
                 modifier = Modifier
                     .padding(horizontal = 8.dp, vertical = 2.dp)
                     .clickable {
-                        onBoardingViewModel.onEventUpdate(OnBoardingScreenUiEvent.OnExpandAppList(!expandedList))
+                        onBoardingViewModel.onEventUpdate(
+                            AppListOnBoardingScreenEvent.OnExpandAppList(
+                                !expandedList
+                            )
+                        )
                     }
             )
             }
@@ -365,7 +347,9 @@ private fun AppItems(app: ApplicationInfo?, info: AppInfo, onClick: (AppDistract
                     modifier = Modifier
                         .weight(1f)
                 ) {
-                    DistractionItem(getAppDistractionFromKey(info.distractionLevel))
+                    getAppDistractionFromKey(info.distractionLevel).apply{
+                        OptionSelectedItem(text=distraction,background=background, textColor = color)
+                    }
                     Spacer(modifier = Modifier.width(2.dp))
                     Box(
                         modifier = Modifier
@@ -405,26 +389,6 @@ private fun AppItems(app: ApplicationInfo?, info: AppInfo, onClick: (AppDistract
 }
 
 @Composable
-private fun DistractionItem(item: AppDistractions = AppDistractions.NOT_DEFINED) {
-    Box(
-        modifier = Modifier
-            .wrapContentSize()
-            .background(
-                color = item.background,
-                shape = RoundedCornerShape(16.dp)
-            )
-    ) {
-        Text(
-            text = item.distraction,
-            style = MaterialTheme.typography.body2,
-            color = item.color,
-            maxLines = 1,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-        )
-    }
-}
-
-@Composable
 private fun DistractionDropDownMenu(
     isContextMenuVisible: Boolean,
     selectedKey: String,
@@ -440,61 +404,17 @@ private fun DistractionDropDownMenu(
             )
     ) {
         getAppDistractionList().forEach { distractionItem ->
-            DropdownMenuItem(
-                modifier = Modifier.widthIn(200.dp),
-                contentPadding = PaddingValues(horizontal = 8.dp),
-                onClick = { onClick(false, distractionItem) }) {
-                ConstraintLayout() {
-                    val (iconStart, title, checkedIcon) = createRefs()
-                    Box(
-                        modifier = Modifier
-                            .size(6.dp)
-                            .constrainAs(iconStart) {
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                                start.linkTo(parent.start)
-                            }
-                            .background(distractionItem.color, shape = CircleShape)
-                    ) {
-
-                    }
-                    Text(
-                        text = distractionItem.distraction,
-                        style = MaterialTheme.typography.body2,
-                        color = if (selectedKey == distractionItem.key) MaterialTheme.colors.onBackground else MaterialTheme.colors.onError,
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .constrainAs(title) {
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                                start.linkTo(iconStart.end)
-                                end.linkTo(checkedIcon.start)
-                            },
-                        maxLines = 1,
-                    )
-                    if (selectedKey == distractionItem.key) {
-                        Box(
-                            modifier = Modifier
-                                .size(16.dp)
-                                .constrainAs(checkedIcon) {
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                    end.linkTo(parent.end)
-                                }
-                                .background(MaterialTheme.colors.onBackground, shape = CircleShape),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(12.dp),
-                                imageVector = Icons.Default.Done,
-                                tint = MaterialTheme.colors.primary,
-                                contentDescription = EMPTY
-                            )
-                        }
-                    }
-                }
-            }
+            DropDownSelectionItem(
+                key=distractionItem.key,
+                text=distractionItem.distraction,
+                background = distractionItem.color,
+                selectedKey=selectedKey,
+                onClick = { onClick(false,distractionItem) } )
         }
     }
+}
+
+private fun navigateToBehaviorOnBoardingScreen(navController: NavController) {
+    navController.popBackStack()
+    navController.navigate(Screen.BehaviorOnboardingScreenRoute.route)
 }

@@ -5,8 +5,17 @@
     <string name="start_on_boarding">Start Onboarding</string>
     <string name="next">Next</string>
     <string name="onboarding_distracting_apps_title">Which apps do you think of as \"distracting\"?</string>
-    <string name="onboarding_distracting_apps_description">All apps can be healthy sometimes and distracting other times.\nJust let us know how you feel about these apps in general.</string>
+    <string name="onboarding_distracting_apps_description">All apps can be healthy sometimes and distracting other times. Just let us know how you feel about these apps in general.</string>
     <string name="search_app">Search app</string>
     <string name="show_more_apps">Show more apps (%d)</string>
     <string name="show_less">Show less</string>
+    <string name="onboarding_distracting_behavior_title">Regardless of apps, which behaviors do you want to limit?</string>
+    <string name="onboarding_distracting_behavior_description">Sift can measure when these things are happening on the screen.</string>
+    <string name="doom_scrolling">Doom Scrolling</string>
+    <string name="habitual_pick_ups">Habitual pick-ups</string>
+    <string name="gaming">Gaming</string>
+    <string name="watching_videos">Gaming</string>
+    <string name="viewing_adult_content">Viewing adult content</string>
+    <string name="texting_too_much">Texting too much</string>
+    <string name="calling_too_much">Calling too much</string>
 </resources>
