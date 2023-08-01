@@ -149,7 +149,7 @@ private fun MainBodyContent(
 ) {
     LazyColumn(
         modifier= modifier,
-        contentPadding = PaddingValues(vertical = 16.dp),
+        contentPadding = PaddingValues(vertical = 16.dp, horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ){
         itemsIndexed(state.appBehaviors){index, item ->
