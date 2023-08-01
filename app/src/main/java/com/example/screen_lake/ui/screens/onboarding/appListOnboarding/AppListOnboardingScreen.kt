@@ -152,9 +152,7 @@ private fun MainScreenContent(
             )
             MainBodyContent(
                 onBoardingViewModel = onBoardingViewModel,
-                searchText = state.searchText,
-                appsList = state.installedApps,
-                expandedList = state.expandedList,
+                state=state,
                 modifier = Modifier
                     .constrainAs(body) {
                         top.linkTo(topBody.bottom)
@@ -222,12 +220,11 @@ private fun TopBodyContent(modifier: Modifier) {
 @Composable
 private fun MainBodyContent(
     onBoardingViewModel: OnBoardingViewModel,
-    searchText: String,
-    expandedList: Boolean,
+    state: OnboardingScreenState,
     modifier: Modifier,
-    appsList: List<Pair<ApplicationInfo, AppInfo>>
 ) {
     val context = LocalContext.current
+    state.apply {
     Column(
         modifier = modifier.padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -261,13 +258,13 @@ private fun MainBodyContent(
                 )
             }
         )
-        if (appsList.isNotEmpty()) {
+        if (filteredList.isNotEmpty()) {
             LazyColumn(
                 contentPadding = PaddingValues(vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 itemsIndexed(
-                    if (expandedList) appsList else appsList.subList(
+                    if (expandedList||searchText.isNotEmpty()) filteredList else filteredList.subList(
                         ZERO,
                         FIVE
                     )
@@ -282,8 +279,9 @@ private fun MainBodyContent(
                     }
                 }
             }
+            if (searchText.isEmpty()){
             Text(
-                text = if (expandedList) context.getString(R.string.show_less) else context.getString(R.string.show_more_apps, appsList.size - FIVE),
+                text = if (expandedList) context.getString(R.string.show_less) else context.getString(R.string.show_more_apps, installedApps.size - FIVE),
                 style = MaterialTheme.typography.subtitle2,
                 color = MaterialTheme.colors.onSecondary,
                 maxLines = 1,
@@ -293,14 +291,9 @@ private fun MainBodyContent(
                         onBoardingViewModel.onEventUpdate(OnBoardingScreenUiEvent.OnExpandAppList(!expandedList))
                     }
             )
-            if (expandedList) {
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(120.dp)
-                )
             }
         }
+    }
     }
 }
 

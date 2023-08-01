@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.screen_lake.appUtils.Resource
 import com.example.screen_lake.models.AppInfo
 import com.example.screen_lake.ui.screens.onboarding.appListOnboarding.useCase.InstalledAppInfoUseCase
+import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
 import com.example.screenlake.utils.Constants.StringConstants.EMPTY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,6 +22,7 @@ data class OnboardingScreenState(
     val disableButton:Boolean=true,
     val searchText:String = EMPTY,
     val installedApps:List<Pair<ApplicationInfo,AppInfo>> = arrayListOf(),
+    val filteredList:List<Pair<ApplicationInfo,AppInfo>> = arrayListOf(),
     val expandedList:Boolean=false
 )
 
@@ -51,13 +53,29 @@ class OnBoardingViewModel @Inject constructor(
                 is OnBoardingScreenUiEvent.OnAppSelected->{
                     val newList =  ArrayList<Pair<ApplicationInfo,AppInfo>>().apply {
                         clear()
-                        addAll( _state.value.installedApps)
+                        addAll(_state.value.installedApps)
                     }
-                    newList[index]=app
-                    _state.value= _state.value.copy(installedApps = newList, disableButton = false)
+                    val newFilteredList = ArrayList<Pair<ApplicationInfo,AppInfo>>().apply {
+                        clear()
+                        addAll(_state.value.filteredList)
+                    }
+                    if (_state.value.searchText.isEmpty()){
+                        newList[index]=app
+                        newFilteredList[index]=app
+                    }else{
+                        var position=ZERO
+                         newList.filterIndexed { index, pair ->
+                             position = index
+                             pair.second.apk == app.second.apk
+                        }
+                        newList[position]=app
+                        newFilteredList[index]=app
+                    }
+                    _state.value= _state.value.copy(installedApps = newList, filteredList = newFilteredList, disableButton = false)
                 }
                 is OnBoardingScreenUiEvent.SearchAppTextUpdated->{
-                    _state.value = _state.value.copy(searchText = newText)
+                    val filteredList = _state.value.installedApps.filter { it.second.doesMatchSearchQuery(newText) }
+                    _state.value = _state.value.copy(searchText = newText, filteredList = filteredList)
                 }
                 is OnBoardingScreenUiEvent.OnExpandAppList->{
                     _state.value = _state.value.copy(expandedList = expand)
@@ -73,7 +91,7 @@ class OnBoardingViewModel @Inject constructor(
             when (resource){
                 is Resource.Success->{
                     resource.data?.apply {
-                        _state.value = _state.value.copy(isLoading = false, installedApps = this)
+                        _state.value = _state.value.copy(isLoading = false, installedApps = this, filteredList = this)
                     }
                 }
                 is Resource.Error->{

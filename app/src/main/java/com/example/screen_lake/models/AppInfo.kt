@@ -15,7 +15,11 @@ data class AppInfo(
     var distractionLevel:String?=null,
     var appPrimaryUser:String?=null,
     var bitmapResource:String?=null,
-)
+){
+    fun doesMatchSearchQuery(query:String):Boolean{
+       return realAppName?.contains(query,true)?:false
+    }
+}
 
 fun List<ApplicationInfo>.toAppInfoList(context:Context):ArrayList<Pair<ApplicationInfo,AppInfo>>{
     val newAppInfoList = ArrayList<Pair<ApplicationInfo,AppInfo>>()
