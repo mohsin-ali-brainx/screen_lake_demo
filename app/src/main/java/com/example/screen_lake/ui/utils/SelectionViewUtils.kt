@@ -39,13 +39,28 @@ fun SelectableItem(
 ){
     Box(
         modifier = modifier
-            .background(
-                color = MaterialTheme.colors.background,
-                shape = RoundedCornerShape(16.dp)
-            )
             .clickable {
                 onClick()
             }
+            .then(
+                if (!isChecked) {
+                    Modifier.background(
+                        color = MaterialTheme.colors.background,
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                } else {
+                    Modifier
+                        .background(
+                            color = MaterialTheme.colors.background,
+                        )
+                        .clip(RoundedCornerShape(16.dp))
+                        .border(
+                            width=1.dp,
+                            color = MaterialTheme.colors.onBackground,
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                }
+            )
     ){
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
