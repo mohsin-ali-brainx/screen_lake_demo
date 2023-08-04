@@ -75,12 +75,13 @@ fun TopBodyContent(
 
 @Composable
 fun BottomButtonContent(
+    buttonText:String?=null,
     stateDisabled:Boolean,
     modifier: Modifier,
     onClick:()->Unit
 ){
     Box(modifier = modifier) {
-        RoundedCorneredButton(buttonText = stringResource(id = R.string.next),
+        RoundedCorneredButton(buttonText = buttonText?:stringResource(id = R.string.next),
             buttonColor = if (stateDisabled) MaterialTheme.colors.onPrimary else MaterialTheme.colors.surface,
             textColor = if (stateDisabled) MaterialTheme.colors.onError else MaterialTheme.colors.primary,
             onClickAction = {

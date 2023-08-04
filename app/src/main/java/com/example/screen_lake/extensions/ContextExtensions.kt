@@ -12,3 +12,16 @@ fun getInstalledApps(context: Context):List<ApplicationInfo>{
         return activities.mapNotNull { it.activityInfo.applicationInfo }
     }
 }
+
+fun getInstalledApps(context: Context,categories: List<String> = listOf(Intent.CATEGORY_LAUNCHER)):List<ApplicationInfo>{
+    context.apply {
+        val mainIntent = Intent(Intent.ACTION_MAIN, null)
+        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER)
+        with(Intent(Intent.ACTION_MAIN,null)){
+            categories.forEach {
+                addCategory(it)
+            }
+            return  packageManager.queryIntentActivities(this, android.content.pm.PackageManager.MATCH_DEFAULT_ONLY).mapNotNull { it.activityInfo.applicationInfo }
+        }
+    }
+}

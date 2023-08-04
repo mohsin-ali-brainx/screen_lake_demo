@@ -7,6 +7,7 @@ import com.example.screen_lake.models.AppInfo
 import com.example.screen_lake.models.Behavior
 import com.example.screen_lake.models.getAppBehaviorList
 import com.example.screen_lake.models.toAppInfoList
+import com.example.screen_lake.models.toWorkAppInfoList
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -14,6 +15,10 @@ class OnboardingRepository @Inject constructor(@ApplicationContext private val c
 
     suspend fun getInstalledAppList():ArrayList<Pair<ApplicationInfo,AppInfo>>{
         return getInstalledApps(context).toAppInfoList(context)
+    }
+
+    suspend fun getWorkAppList():ArrayList<Pair<ApplicationInfo,AppInfo>>{
+        return getInstalledApps(context).toWorkAppInfoList(context)
     }
 
     suspend fun getAppBehaviourList():ArrayList<Behavior>{

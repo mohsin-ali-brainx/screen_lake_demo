@@ -44,12 +44,14 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
 import com.example.screen_lake.enums.AppBehaviors
 import com.example.screen_lake.enums.getAppBehaviorFromImportance
 import com.example.screen_lake.enums.getAppBehaviorList
 import com.example.screen_lake.models.Behavior
+import com.example.screen_lake.navigation.Screen
 import com.example.screen_lake.ui.utils.BottomButtonContent
 import com.example.screen_lake.ui.utils.DropDownSelectionItem
 import com.example.screen_lake.ui.utils.OptionSelectedItem
@@ -70,6 +72,9 @@ fun BehaviorOnboardingScreen(
     LaunchedEffect(key1 = true){
         onBoardingViewModel.eventFlow.collectLatest {
             when(it){
+                is BehaviorOnBoardingScreenUiEvents.NavigateToWorkAppsOnboardingScreen->{
+                    navigateToWorkAppsOnBoardingScreen(navHostController)
+                }
                 else->{}
             }
         }
@@ -155,7 +160,7 @@ private fun MainBodyContent(
         itemsIndexed(state.appBehaviors){index, item ->
             BehaviorItems(item){
                 item.importance = it.importance
-                onBoardingViewModel.onEventUpdate(BehaviorOnBoardingScreenEvent.onBehaviorSelected(index,item))
+                onBoardingViewModel.onEventUpdate(BehaviorOnBoardingScreenEvent.OnBehaviorSelected(index,item))
             }
         }
     }
@@ -275,4 +280,9 @@ private fun BehaviorDropDownMenu(
                 onClick = { onClick(false,behavior) } )
         }
     }
+}
+
+private fun navigateToWorkAppsOnBoardingScreen(navController: NavController) {
+    navController.popBackStack()
+    navController.navigate(Screen.WorkAppsOnboardingScreenRoute.route)
 }

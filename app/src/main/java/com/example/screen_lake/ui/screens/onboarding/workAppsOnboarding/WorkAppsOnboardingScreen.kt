@@ -1,4 +1,4 @@
-package com.example.screen_lake.ui.screens.onboarding.appListOnboarding
+package com.example.screen_lake.ui.screens.onboarding.workAppsOnboarding
 
 import android.content.pm.ApplicationInfo
 import androidx.compose.animation.core.Spring
@@ -12,13 +12,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -27,24 +25,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomSheetScaffold
 import androidx.compose.material.BottomSheetScaffoldState
 import androidx.compose.material.BottomSheetValue
-import androidx.compose.material.DropdownMenu
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -59,20 +52,13 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
-import com.example.screen_lake.enums.AppDistractions
-import com.example.screen_lake.enums.getAppDistractionFromKey
-import com.example.screen_lake.enums.getAppDistractionList
 import com.example.screen_lake.extensions.getAppIconBitmap
 import com.example.screen_lake.models.AppInfo
-import com.example.screen_lake.navigation.Screen
 import com.example.screen_lake.ui.bottomsheets.StartOnBoardingBottomSheet
 import com.example.screen_lake.ui.utils.BottomButtonContent
 import com.example.screen_lake.ui.utils.CustomTextField
-import com.example.screen_lake.ui.utils.DropDownSelectionItem
-import com.example.screen_lake.ui.utils.OptionSelectedItem
 import com.example.screen_lake.ui.utils.TopBodyContent
 import com.example.screenlake.utils.Constants.IntegerConstants.FIVE
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
@@ -82,13 +68,13 @@ import kotlinx.coroutines.launch
 
 @Composable
 @ExperimentalMaterialApi
-fun AppListOnboardingScreen(
+fun WorkAppListOnboardingScreen(
     navHostController: NavHostController,
-    onBoardingViewModel: AppListOnBoardingViewModel = hiltViewModel()
+    onBoardingViewModel: WorkAppsOnboardingViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberBottomSheetState(
-        initialValue = BottomSheetValue.Expanded,
+        initialValue = BottomSheetValue.Collapsed,
         animationSpec = spring(Spring.DampingRatioNoBouncy),
         confirmStateChange = { false },
     )
@@ -100,13 +86,14 @@ fun AppListOnboardingScreen(
     LaunchedEffect(key1 = true){
         onBoardingViewModel.eventFlow.collectLatest {
             when(it){
-                is AppListOnBoardingScreenUiEvents.NavigateToBehaviorOnboardingScreen->{
-                    navigateToBehaviorOnBoardingScreen(navHostController)
+                is WorkAppAppListOnBoardingScreenUiEvents.OpenQuestionsBottomSheet->{
+                    bottomSheetScaffoldState.bottomSheetState.expand()
                 }
                 else->{}
             }
         }
     }
+
 
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
@@ -130,9 +117,9 @@ fun AppListOnboardingScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MainScreenContent(
-    onBoardingViewModel: AppListOnBoardingViewModel,
+    onBoardingViewModel: WorkAppsOnboardingViewModel,
     bottomSheetScaffoldState: BottomSheetScaffoldState,
-    state: AppListOnboardingScreenState
+    state: WorkAppListOnboardingScreenState
 ) {
     Box(
         modifier = Modifier
@@ -150,9 +137,9 @@ private fun MainScreenContent(
         ) {
             val (nextButton, topBody, body) = createRefs()
             TopBodyContent(
-                progress=0.5f,
-                title=stringResource(id = R.string.onboarding_distracting_apps_title),
-                description=stringResource(id = R.string.onboarding_distracting_apps_description),
+                progress=1f,
+                title= stringResource(id = R.string.which_app_are_used_for_work),
+                description= stringResource(id = R.string.select_work_apps),
                 modifier = Modifier
                     .constrainAs(topBody) {
                         start.linkTo(parent.start)
@@ -162,8 +149,7 @@ private fun MainScreenContent(
                     }
             )
             MainBodyContent(
-                onBoardingViewModel = onBoardingViewModel,
-                state=state,
+                onBoardingViewModel, state,
                 modifier = Modifier
                     .constrainAs(body) {
                         top.linkTo(topBody.bottom)
@@ -174,7 +160,9 @@ private fun MainScreenContent(
                         height = Dimension.fillToConstraints
                     },
             )
+
             BottomButtonContent(
+                buttonText=if (state.checkedItems== ZERO) null else "${stringResource(id = R.string.next)} (${state.checkedItems})",
                 stateDisabled = state.disableButton,
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 0.dp)
@@ -186,108 +174,100 @@ private fun MainScreenContent(
                     }
             ) {
                 if (!state.disableButton){
-                    onBoardingViewModel.onEventUpdate(AppListOnBoardingScreenEvent.OnNextClicked)
+                    onBoardingViewModel.onEventUpdate(WorkAppListOnBoardingScreenEvent.OnNextClicked)
                 }
             }
         }
     }
 }
 
-
-
 @Composable
 private fun MainBodyContent(
-    onBoardingViewModel: AppListOnBoardingViewModel,
-    state: AppListOnboardingScreenState,
+    onBoardingViewModel: WorkAppsOnboardingViewModel,
+    state: WorkAppListOnboardingScreenState,
     modifier: Modifier,
 ) {
     val context = LocalContext.current
     state.apply {
-    Column(
-        modifier = modifier.padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top,
-    ) {
-        CustomTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(45.dp)
-                .clip(RoundedCornerShape(20.dp))
-                .border(
-                    width = 1.dp,
-                    color = MaterialTheme.colors.secondaryVariant,
-                    RoundedCornerShape(20.dp)
-                )
-                .background(MaterialTheme.colors.background)
-                .padding(vertical = 2.dp, horizontal = 10.dp),
-            text = searchText,
-            placeHolderText = stringResource(id = R.string.search_app),
-            onValueChange = {
-                onBoardingViewModel.onEventUpdate(AppListOnBoardingScreenEvent.SearchAppTextUpdated(it))
-            },
-            keyboardType = KeyboardType.Text,
-            paddingLeadingIconEnd = 8.dp,
-            paddingTrailingIconStart = 8.dp,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_search),
-                    tint = MaterialTheme.colors.onSecondary,
-                    contentDescription = EMPTY
-                )
-            }
-        )
-        if (filteredList.isNotEmpty()) {
-            LazyColumn(
-                contentPadding = PaddingValues(vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                itemsIndexed(
-                    if (expandedList||searchText.isNotEmpty()||filteredList.size<=FIVE) filteredList else filteredList.subList(
-                        ZERO,
-                        FIVE
+        Column(
+            modifier = modifier.padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top,
+        ){
+            CustomTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(45.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colors.secondaryVariant,
+                        RoundedCornerShape(20.dp)
                     )
-                ) { index, item ->
-                    AppItems(app = item.first, info = item.second) {
-                        onBoardingViewModel.onEventUpdate(
-                            AppListOnBoardingScreenEvent.OnAppSelected(
-                                index,
-                                Pair(item.first, item.second.copy(distractionLevel = it.key))
-                            )
+                    .background(MaterialTheme.colors.background)
+                    .padding(vertical = 2.dp, horizontal = 10.dp),
+                text = searchText,
+                placeHolderText = stringResource(id = R.string.search_app),
+                onValueChange = {
+                    onBoardingViewModel.onEventUpdate(WorkAppListOnBoardingScreenEvent.SearchAppTextUpdated(it))
+                },
+                keyboardType = KeyboardType.Text,
+                paddingLeadingIconEnd = 8.dp,
+                paddingTrailingIconStart = 8.dp,
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_search),
+                        tint = MaterialTheme.colors.onSecondary,
+                        contentDescription = EMPTY
+                    )
+                }
+            )
+            if (filteredList.isNotEmpty()) {
+                LazyColumn(
+                    contentPadding = PaddingValues(vertical = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ){
+                    itemsIndexed(
+                        if (expandedList||searchText.isNotEmpty()||filteredList.size<=FIVE) filteredList else filteredList.subList(
+                            ZERO,
+                            FIVE
                         )
+                    ) {index, item ->
+                        AppItems(app = item.first, info = item.second){selected->
+                            onBoardingViewModel.onEventUpdate(
+                                WorkAppListOnBoardingScreenEvent.OnAppSelected(
+                                    index, Pair(item.first,item.second.copy(isChecked = selected))
+                                )
+                            )
+                        }
                     }
                 }
-            }
-            if (searchText.isEmpty()&&filteredList.size>FIVE){
-            Text(
-                text = if (expandedList) context.getString(R.string.show_less) else context.getString(R.string.show_more_apps, installedApps.size - FIVE),
-                style = MaterialTheme.typography.subtitle2,
-                color = MaterialTheme.colors.onSecondary,
-                maxLines = 1,
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 2.dp)
-                    .clickable {
-                        onBoardingViewModel.onEventUpdate(
-                            AppListOnBoardingScreenEvent.OnExpandAppList(
-                                !expandedList
-                            )
-                        )
-                    }
-            )
+                if (searchText.isEmpty()&&filteredList.size> FIVE){
+                    Text(
+                        text = if (expandedList) context.getString(R.string.show_less) else context.getString(R.string.show_more_apps, workAppsList.size - FIVE),
+                        style = MaterialTheme.typography.subtitle2,
+                        color = MaterialTheme.colors.onSecondary,
+                        maxLines = 1,
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp, vertical = 2.dp)
+                            .clickable {
+                                onBoardingViewModel.onEventUpdate(
+                                    WorkAppListOnBoardingScreenEvent.OnExpandAppList(
+                                        !expandedList
+                                    )
+                                )
+                            }
+                    )
+                }
             }
         }
-    }
     }
 }
 
 @Composable
-private fun AppItems(app: ApplicationInfo?, info: AppInfo, onClick: (AppDistractions) -> Unit) {
+private fun AppItems(app: ApplicationInfo?, info: AppInfo, onClick: (Boolean) -> Unit) {
     app?.let { appInfo ->
         val appIcon = LocalContext.current.getAppIconBitmap(appInfo.packageName)
-
-        var isContextMenuVisible by rememberSaveable {
-            mutableStateOf(false)
-        }
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -296,7 +276,10 @@ private fun AppItems(app: ApplicationInfo?, info: AppInfo, onClick: (AppDistract
                     color = MaterialTheme.colors.background,
                     shape = RoundedCornerShape(16.dp)
                 )
-        ) {
+                .clickable {
+                    onClick(!info.isChecked)
+                }
+        ){
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
@@ -341,80 +324,34 @@ private fun AppItems(app: ApplicationInfo?, info: AppInfo, onClick: (AppDistract
                     )
                 }
 
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .weight(1f)
-                ) {
-                    getAppDistractionFromKey(info.distractionLevel).apply{
-                        OptionSelectedItem(text=distraction,background=background, textColor = color)
-                    }
-                    Spacer(modifier = Modifier.width(2.dp))
+                if (info.isChecked){
                     Box(
                         modifier = Modifier
-                            .size(32.dp)
-                            .background(
-                                color = MaterialTheme.colors.primaryVariant,
-                                shape = RoundedCornerShape(20.dp)
-                            )
-                            .clickable {
-                                isContextMenuVisible = true
-                            },
-                        contentAlignment = Alignment.Center,
+                            .size(20.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colors.onBackground, shape = CircleShape), contentAlignment = Alignment.Center,
                     ) {
                         Icon(
-                            modifier = Modifier.size(20.dp),
-                            imageVector = if (info.distractionLevel == AppDistractions.NOT_DEFINED.key) Icons.Default.Add else Icons.Outlined.Edit,
-                            contentDescription = EMPTY,
-                            tint = MaterialTheme.colors.surface,
-                        )
-                        DistractionDropDownMenu(
-                            isContextMenuVisible,
-                            info.distractionLevel ?: AppDistractions.NOT_DEFINED.key,
-                            onClick = { visible, selectedItem ->
-                                isContextMenuVisible = visible
-                                onClick(selectedItem)
-                            },
-                            onDismiss = {
-                                isContextMenuVisible = it
-                            }
+                            modifier = Modifier.size(16.dp),
+                            imageVector = Icons.Default.Done,
+                            tint = MaterialTheme.colors.primary,
+                            contentDescription =EMPTY
                         )
                     }
+                }else{
+                    Box(modifier = Modifier
+                        .size(20.dp)
+                        .clip(CircleShape)
+                        .border(
+                            1.dp,
+                            color = MaterialTheme.colors.secondaryVariant,
+                            shape = CircleShape
+                        )
+                    )
                 }
 
             }
         }
-    }
-}
 
-@Composable
-private fun DistractionDropDownMenu(
-    isContextMenuVisible: Boolean,
-    selectedKey: String,
-    onClick: (Boolean, AppDistractions) -> Unit,
-    onDismiss: (Boolean) -> Unit
-) {
-    DropdownMenu(
-        expanded = isContextMenuVisible,
-        onDismissRequest = { onDismiss(false) },
-        modifier = Modifier
-            .background(
-                color = MaterialTheme.colors.background,
-            )
-    ) {
-        getAppDistractionList().forEach { distractionItem ->
-            DropDownSelectionItem(
-                key=distractionItem.key,
-                text=distractionItem.distraction,
-                background = distractionItem.color,
-                selectedKey=selectedKey,
-                onClick = { onClick(false,distractionItem) } )
-        }
     }
-}
-
-private fun navigateToBehaviorOnBoardingScreen(navController: NavController) {
-    navController.popBackStack()
-    navController.navigate(Screen.BehaviorOnboardingScreenRoute.route)
 }

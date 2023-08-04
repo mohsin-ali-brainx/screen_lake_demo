@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class BehaviorOnboardingScreenState(
@@ -21,13 +22,12 @@ data class BehaviorOnboardingScreenState(
 )
 
 sealed class BehaviorOnBoardingScreenEvent{
-    data class onBehaviorSelected(val index:Int,val behavior: Behavior): BehaviorOnBoardingScreenEvent()
+    data class OnBehaviorSelected(val index:Int, val behavior: Behavior): BehaviorOnBoardingScreenEvent()
     object OnNextClicked : BehaviorOnBoardingScreenEvent()
 }
 
 sealed class BehaviorOnBoardingScreenUiEvents{
-
-    object NavigateToBehaviorOnboardingScreen:BehaviorOnBoardingScreenUiEvents()
+    object NavigateToWorkAppsOnboardingScreen:BehaviorOnBoardingScreenUiEvents()
 }
 @HiltViewModel
 class BehaviorOnboardingViewModel @Inject constructor(
@@ -47,13 +47,18 @@ class BehaviorOnboardingViewModel @Inject constructor(
     fun onEventUpdate(event: BehaviorOnBoardingScreenEvent){
         event.apply {
             when(this){
-                is BehaviorOnBoardingScreenEvent.onBehaviorSelected->{
+                is BehaviorOnBoardingScreenEvent.OnBehaviorSelected->{
                    val newList = ArrayList<Behavior>().apply {
                        clear()
                        addAll(_state.value.appBehaviors)
                    }
                     newList[index]=behavior
                     _state.value=_state.value.copy(appBehaviors = newList, disableButton = false)
+                }
+                is BehaviorOnBoardingScreenEvent.OnNextClicked->{
+                    viewModelScope.launch {
+                        _eventFlow.emit(BehaviorOnBoardingScreenUiEvents.NavigateToWorkAppsOnboardingScreen)
+                    }
                 }
                 else->{}
             }

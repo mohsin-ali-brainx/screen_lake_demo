@@ -106,9 +106,7 @@ class AppListOnBoardingViewModel @Inject constructor(
                         _state.value = _state.value.copy(isLoading = false, installedApps = this, filteredList = this)
                     }
                 }
-                is Resource.Error->{
-
-                }
+                is Resource.Error->{}
                 else -> {
                     _state.value = _state.value.copy(isLoading = true)
                 }

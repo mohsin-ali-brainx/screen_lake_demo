@@ -18,4 +18,6 @@
     <string name="viewing_adult_content">Viewing adult content</string>
     <string name="texting_too_much">Texting too much</string>
     <string name="calling_too_much">Calling too much</string>
+    <string name="which_app_are_used_for_work">Which apps are used for work?</string>
+    <string name="select_work_apps">Select apps that you’re using for work.</string>
 </resources>
