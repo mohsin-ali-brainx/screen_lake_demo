@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -91,7 +90,6 @@ fun SelectableItem(
                                         color = MaterialTheme.colors.onPrimary,
                                         shape = CircleShape
                                     )
-                                    .border(1.dp, Color.DarkGray, CircleShape)
                             }else{
                                 Modifier
                                     .size(32.dp)
@@ -114,7 +112,6 @@ fun SelectableItem(
                                         shape = CircleShape
                                     )
                                     .clip(CircleShape)
-                                    .border(1.dp, Color.DarkGray, CircleShape)
                             } else {
                                 Modifier
                                     .size(32.dp)
