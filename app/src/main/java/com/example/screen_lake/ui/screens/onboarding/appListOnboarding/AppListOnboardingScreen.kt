@@ -117,7 +117,7 @@ fun AppListOnboardingScreen(
                 description = stringResource(id = R.string.onboarding_shift_distraction_description),
                 buttonText = stringResource(id = R.string.start_on_boarding),
                 addBottomText = false,
-                onAnswerQuestionClicked = {
+                onButtonClicked = {
                     scope.launch {
                         bottomSheetScaffoldState.bottomSheetState.collapse()
                     }

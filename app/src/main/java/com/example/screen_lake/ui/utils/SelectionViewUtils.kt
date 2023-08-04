@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.example.screenlake.utils.Constants
+import com.example.screenlake.utils.Constants.StringConstants.EMPTY
 
 @Composable
 fun SelectableItem(
@@ -35,6 +36,7 @@ fun SelectableItem(
     painter: Painter?=null,
     textTitle:String,
     isChecked:Boolean=false,
+    imageContentScale: ContentScale=ContentScale.Crop,
     onClick:()->Unit
 ){
     Box(
@@ -51,11 +53,12 @@ fun SelectableItem(
                 } else {
                     Modifier
                         .background(
-                            color = MaterialTheme.colors.background,
+                            color = MaterialTheme.colors.onPrimary,
+                            shape = RoundedCornerShape(16.dp)
                         )
                         .clip(RoundedCornerShape(16.dp))
                         .border(
-                            width=1.dp,
+                            width = 1.dp,
                             color = MaterialTheme.colors.onBackground,
                             shape = RoundedCornerShape(16.dp)
                         )
@@ -77,23 +80,47 @@ fun SelectableItem(
                 bitmap?.let {
                     Image(
                         bitmap = it,
-                        contentDescription = Constants.StringConstants.EMPTY,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clip(CircleShape)
-                            .border(0.dp, Color.DarkGray, CircleShape)
+                        contentDescription = EMPTY,
+                        contentScale = imageContentScale,
+                        modifier = Modifier.then(
+                            if (!isChecked){
+                                Modifier
+                                    .size(32.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                        color = MaterialTheme.colors.onPrimary,
+                                        shape = CircleShape
+                                    )
+                                    .border(1.dp, Color.DarkGray, CircleShape)
+                            }else{
+                                Modifier
+                                    .size(32.dp)
+                                    .clip(CircleShape)
+                            }
+                        )
                     )
                 }
                 painter?.let {
                     Image(
                         it,
-                        contentDescription = Constants.StringConstants.EMPTY,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clip(CircleShape)
-                            .border(0.dp, Color.DarkGray, CircleShape)
+                        contentDescription = EMPTY,
+                        contentScale = imageContentScale,
+                        modifier = Modifier.then(
+                            if (!isChecked) {
+                                Modifier
+                                    .size(32.dp)
+                                    .background(
+                                        color = MaterialTheme.colors.onPrimary,
+                                        shape = CircleShape
+                                    )
+                                    .clip(CircleShape)
+                                    .border(1.dp, Color.DarkGray, CircleShape)
+                            } else {
+                                Modifier
+                                    .size(32.dp)
+                                    .clip(CircleShape)
+                            }
+                        )
                     )
                 }
                 Text(

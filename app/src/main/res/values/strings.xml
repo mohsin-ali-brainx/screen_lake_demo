@@ -24,4 +24,11 @@
     <string name="you_can_answer_personalization_questions">You can answer some personalization questions, or skip that for now.</string>
     <string name="skip_for_now">Skip for now</string>
     <string name="answer_questions">Answer Questions</string>
+    <string name="ui_ux_designer">UI/UX Designer</string>
+    <string name="graphic_designer">Graphic Designer</string>
+    <string name="web_developer">Web Developer</string>
+    <string name="gamer">Gamer</string>
+    <string name="photographer">Photographer</string>
+    <string name="what_occupation">What\’s your occupation?</string>
+    <string name="select_the_scope">Select the scope that you’re working on.</string>
 </resources>

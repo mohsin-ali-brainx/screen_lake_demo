@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.screen_lake.ui.screens.onboarding.appListOnboarding.AppListOnboardingScreen
 import com.example.screen_lake.ui.screens.onboarding.behaviourOnboarding.BehaviorOnboardingScreen
+import com.example.screen_lake.ui.screens.onboarding.questions.occupation.OccupationQuestionnaireOnboardingScreen
 import com.example.screen_lake.ui.screens.onboarding.workAppsOnboarding.WorkAppListOnboardingScreen
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -24,6 +25,9 @@ fun ScreenLakeNavGraph(navController: NavHostController) {
         }
         composable(route=Screen.WorkAppsOnboardingScreenRoute.route){
             WorkAppListOnboardingScreen(navHostController = navController)
+        }
+        composable(route=Screen.OccupationScreenRoute.route){
+            OccupationQuestionnaireOnboardingScreen(navController)
         }
     }
 }

@@ -33,10 +33,12 @@ sealed class WorkAppListOnBoardingScreenEvent{
         WorkAppListOnBoardingScreenEvent()
     data class OnExpandAppList(val expand:Boolean) : WorkAppListOnBoardingScreenEvent()
     object OnNextClicked : WorkAppListOnBoardingScreenEvent()
+    object OnAnswerQuestionsButtonClicked : WorkAppListOnBoardingScreenEvent()
 }
 
 sealed class WorkAppAppListOnBoardingScreenUiEvents{
     object OpenQuestionsBottomSheet:WorkAppAppListOnBoardingScreenUiEvents()
+    object OpenOccupationQuestionnaireScreen:WorkAppAppListOnBoardingScreenUiEvents()
 }
 @HiltViewModel
 class WorkAppsOnboardingViewModel @Inject constructor(
@@ -89,6 +91,9 @@ class WorkAppsOnboardingViewModel @Inject constructor(
                 }
                 is WorkAppListOnBoardingScreenEvent.OnNextClicked->{
                     viewModelScope.launch { _eventFlow.emit(WorkAppAppListOnBoardingScreenUiEvents.OpenQuestionsBottomSheet) }
+                }
+                is WorkAppListOnBoardingScreenEvent.OnAnswerQuestionsButtonClicked->{
+                    viewModelScope.launch { _eventFlow.emit(WorkAppAppListOnBoardingScreenUiEvents.OpenOccupationQuestionnaireScreen) }
                 }
                 else->{}
             }

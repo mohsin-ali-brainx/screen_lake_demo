@@ -44,10 +44,12 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
 import com.example.screen_lake.extensions.getAppIconBitmap
 import com.example.screen_lake.models.AppInfo
+import com.example.screen_lake.navigation.Screen
 import com.example.screen_lake.ui.bottomsheets.OnBoardingBottomSheet
 import com.example.screen_lake.ui.utils.BottomButtonContent
 import com.example.screen_lake.ui.utils.CustomTextField
@@ -82,6 +84,9 @@ fun WorkAppListOnboardingScreen(
                 is WorkAppAppListOnBoardingScreenUiEvents.OpenQuestionsBottomSheet->{
                     bottomSheetScaffoldState.bottomSheetState.expand()
                 }
+                is WorkAppAppListOnBoardingScreenUiEvents.OpenOccupationQuestionnaireScreen->{
+                    navigateOccupationQuestionnaireScreen(navHostController)
+                }
                 else->{}
             }
         }
@@ -98,12 +103,13 @@ fun WorkAppListOnboardingScreen(
                 buttonText = stringResource(id = R.string.answer_questions),
                 addBottomText = true,
                 bottomText = stringResource(id = R.string.skip_for_now),
-                onAnswerQuestionClicked = {
+                onButtonClicked = {
                     scope.launch {
                         bottomSheetScaffoldState.bottomSheetState.collapse()
+                        onBoardingViewModel.onEventUpdate(WorkAppListOnBoardingScreenEvent.OnAnswerQuestionsButtonClicked)
                     }
                 },
-                onSkipClicked = {
+                onBottomTextClicked = {
                     scope.launch {
                         bottomSheetScaffoldState.bottomSheetState.collapse()
                     }
@@ -285,4 +291,9 @@ private fun AppItems(app: ApplicationInfo?, info: AppInfo, onClick: (Boolean) ->
             onClick(!info.isChecked)
         }
     }
+}
+
+private fun navigateOccupationQuestionnaireScreen(navController: NavController) {
+    navController.popBackStack()
+    navController.navigate(Screen.OccupationScreenRoute.route)
 }

@@ -33,8 +33,8 @@ fun OnBoardingBottomSheet(
     buttonText:String,
     addBottomText:Boolean=false,
     bottomText:String?=null,
-    onAnswerQuestionClicked: () -> Unit,
-    onSkipClicked: (() -> Unit)?=null
+    onButtonClicked: () -> Unit,
+    onBottomTextClicked: (() -> Unit)?=null
 ){
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -73,7 +73,7 @@ fun OnBoardingBottomSheet(
             buttonText = buttonText,
             buttonColor = MaterialTheme.colors.surface,
             textColor =  MaterialTheme.colors.primary,
-            onClickAction = onAnswerQuestionClicked
+            onClickAction = onButtonClicked
         )
         if (addBottomText){
             Spacer(modifier = Modifier.height(20.dp))
@@ -82,8 +82,8 @@ fun OnBoardingBottomSheet(
                 style = MaterialTheme.typography.button,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.clickable {
-                    if (onSkipClicked != null) {
-                        onSkipClicked()
+                    if (onBottomTextClicked != null) {
+                        onBottomTextClicked()
                     }
                 }
             )
