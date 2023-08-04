@@ -68,7 +68,7 @@ import com.example.screen_lake.enums.getAppDistractionList
 import com.example.screen_lake.extensions.getAppIconBitmap
 import com.example.screen_lake.models.AppInfo
 import com.example.screen_lake.navigation.Screen
-import com.example.screen_lake.ui.bottomsheets.StartOnBoardingBottomSheet
+import com.example.screen_lake.ui.bottomsheets.OnBoardingBottomSheet
 import com.example.screen_lake.ui.utils.BottomButtonContent
 import com.example.screen_lake.ui.utils.CustomTextField
 import com.example.screen_lake.ui.utils.DropDownSelectionItem
@@ -111,11 +111,17 @@ fun AppListOnboardingScreen(
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
         sheetContent = {
-            StartOnBoardingBottomSheet() {
-                scope.launch {
-                    bottomSheetScaffoldState.bottomSheetState.collapse()
-                }
-            }
+            OnBoardingBottomSheet(
+                image = painterResource(id = R.drawable.iv_rocket),
+                title = stringResource(id = R.string.shift_your_distraction),
+                description = stringResource(id = R.string.onboarding_shift_distraction_description),
+                buttonText = stringResource(id = R.string.start_on_boarding),
+                addBottomText = false,
+                onAnswerQuestionClicked = {
+                    scope.launch {
+                        bottomSheetScaffoldState.bottomSheetState.collapse()
+                    }
+                })
         },
         sheetElevation = 20.dp,
         sheetGesturesEnabled = false,

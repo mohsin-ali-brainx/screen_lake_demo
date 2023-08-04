@@ -20,4 +20,8 @@
     <string name="calling_too_much">Calling too much</string>
     <string name="which_app_are_used_for_work">Which apps are used for work?</string>
     <string name="select_work_apps">Select apps that you’re using for work.</string>
+    <string name="sift_ai_work_best_title">Sift.ai works best if we know you better.</string>
+    <string name="you_can_answer_personalization_questions">You can answer some personalization questions, or skip that for now.</string>
+    <string name="skip_for_now">Skip for now</string>
+    <string name="answer_questions">Answer Questions</string>
 </resources>

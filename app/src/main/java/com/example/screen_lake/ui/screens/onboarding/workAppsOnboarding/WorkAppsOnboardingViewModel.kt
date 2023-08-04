@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class WorkAppListOnboardingScreenState(
@@ -85,6 +86,9 @@ class WorkAppsOnboardingViewModel @Inject constructor(
                 }
                 is WorkAppListOnBoardingScreenEvent.OnExpandAppList ->{
                     _state.value = _state.value.copy(expandedList = expand)
+                }
+                is WorkAppListOnBoardingScreenEvent.OnNextClicked->{
+                    viewModelScope.launch { _eventFlow.emit(WorkAppAppListOnBoardingScreenUiEvents.OpenQuestionsBottomSheet) }
                 }
                 else->{}
             }
