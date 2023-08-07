@@ -67,6 +67,7 @@ import com.example.screen_lake.enums.getAppDistractionFromKey
 import com.example.screen_lake.enums.getAppDistractionList
 import com.example.screen_lake.extensions.getAppIconBitmap
 import com.example.screen_lake.models.AppInfo
+import com.example.screen_lake.models.OnboardingTracker
 import com.example.screen_lake.navigation.Screen
 import com.example.screen_lake.ui.bottomsheets.OnBoardingBottomSheet
 import com.example.screen_lake.ui.utils.BottomButtonContent
@@ -86,6 +87,7 @@ fun AppListOnboardingScreen(
     navHostController: NavHostController,
     onBoardingViewModel: AppListOnBoardingViewModel = hiltViewModel()
 ) {
+    val state by onBoardingViewModel.state.collectAsState()
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberBottomSheetState(
         initialValue = BottomSheetValue.Expanded,
@@ -95,7 +97,6 @@ fun AppListOnboardingScreen(
     val bottomSheetScaffoldState =
         rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
 
-    val state by onBoardingViewModel.state.collectAsState()
 
     LaunchedEffect(key1 = true){
         onBoardingViewModel.eventFlow.collectLatest {
@@ -103,7 +104,12 @@ fun AppListOnboardingScreen(
                 is AppListOnBoardingScreenUiEvents.NavigateToBehaviorOnboardingScreen->{
                     navigateToBehaviorOnBoardingScreen(navHostController)
                 }
-                else->{}
+                is AppListOnBoardingScreenUiEvents.DismissBottomSheet->{
+                    bottomSheetScaffoldState.bottomSheetState.collapse()
+                }
+                else->{
+                    bottomSheetScaffoldState.bottomSheetState.collapse()
+                }
             }
         }
     }
@@ -120,6 +126,9 @@ fun AppListOnboardingScreen(
                 onButtonClicked = {
                     scope.launch {
                         bottomSheetScaffoldState.bottomSheetState.collapse()
+                        onBoardingViewModel.onEventUpdate(AppListOnBoardingScreenEvent.UpdateOnBoardingTracker(
+                            OnboardingTracker(Screen.AppListOnboardingScreenRoute.route,started = true,)
+                        ))
                     }
                 })
         },

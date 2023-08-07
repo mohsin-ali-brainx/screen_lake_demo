@@ -2,6 +2,7 @@ package com.example.screenlake.utils
 
 object Constants {
     object IntegerConstants{
+        const val NEGATIVE_ONE=-1
         const val ZERO=0
         const val ONE=1
         const val TWO=2

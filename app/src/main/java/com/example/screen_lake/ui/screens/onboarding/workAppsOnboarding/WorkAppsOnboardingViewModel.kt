@@ -1,9 +1,9 @@
 package com.example.screen_lake.ui.screens.onboarding.workAppsOnboarding
 
 import android.content.pm.ApplicationInfo
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.screen_lake.appUtils.Resource
+import com.example.screen_lake.base.BaseViewModel
 import com.example.screen_lake.models.AppInfo
 import com.example.screen_lake.ui.screens.onboarding.workAppsOnboarding.useCase.WorkAppListUseCase
 import com.example.screenlake.utils.Constants
@@ -43,7 +43,7 @@ sealed class WorkAppAppListOnBoardingScreenUiEvents{
 @HiltViewModel
 class WorkAppsOnboardingViewModel @Inject constructor(
     private val getWorkAppListUseCase: WorkAppListUseCase
-):ViewModel() {
+): BaseViewModel() {
     // region properties
     private val _state = MutableStateFlow(WorkAppListOnboardingScreenState())
     val state = _state.asStateFlow()

@@ -1,14 +1,18 @@
 package com.example.screen_lake.ui.screens.onboarding.appListOnboarding
 
 import android.content.pm.ApplicationInfo
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.screen_lake.appUtils.Resource
+import com.example.screen_lake.base.BaseViewModel
 import com.example.screen_lake.models.AppInfo
+import com.example.screen_lake.models.OnboardingTracker
+import com.example.screen_lake.sharedPreference.SharedPreference
 import com.example.screen_lake.ui.screens.onboarding.appListOnboarding.useCase.InstalledAppInfoUseCase
+import com.example.screen_lake.ui.screens.useCases.GetOnboardingTrackerUseCase
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
 import com.example.screenlake.utils.Constants.StringConstants.EMPTY
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -24,7 +28,8 @@ data class AppListOnboardingScreenState(
     val searchText:String = EMPTY,
     val installedApps:List<Pair<ApplicationInfo,AppInfo>> = arrayListOf(),
     val filteredList:List<Pair<ApplicationInfo,AppInfo>> = arrayListOf(),
-    val expandedList:Boolean=false
+    val expandedList:Boolean=false,
+    val dismissBottomSheet:Boolean=false
 )
 
 sealed class AppListOnBoardingScreenEvent{
@@ -33,16 +38,22 @@ sealed class AppListOnBoardingScreenEvent{
         AppListOnBoardingScreenEvent()
     data class OnExpandAppList(val expand:Boolean) : AppListOnBoardingScreenEvent()
     object OnNextClicked : AppListOnBoardingScreenEvent()
+
+    data class UpdateOnBoardingTracker(val tracker: OnboardingTracker): AppListOnBoardingScreenEvent()
+
 }
 
 sealed class AppListOnBoardingScreenUiEvents{
     object NavigateToBehaviorOnboardingScreen:AppListOnBoardingScreenUiEvents()
+    object DismissBottomSheet:AppListOnBoardingScreenUiEvents()
 }
 
 @HiltViewModel
 class AppListOnBoardingViewModel @Inject constructor(
-    private val getInstalledAppInfoUseCase: InstalledAppInfoUseCase
-):ViewModel(){
+    private val sharedPreference: SharedPreference,
+    private val getInstalledAppInfoUseCase: InstalledAppInfoUseCase,
+    private val getOnboardingTrackerUseCase: GetOnboardingTrackerUseCase
+): BaseViewModel(){
     // region properties
     private val _state = MutableStateFlow(AppListOnboardingScreenState())
     val state = _state.asStateFlow()
@@ -51,7 +62,8 @@ class AppListOnBoardingViewModel @Inject constructor(
     val eventFlow = _eventFlow.asSharedFlow()
     // end region
     init {
-        getInstalledAppInfo()
+        viewModelScope.async { getOnBoardingData() }
+        viewModelScope.async { getInstalledAppInfo() }
     }
     // region public method
     fun onEventUpdate(event: AppListOnBoardingScreenEvent){
@@ -92,6 +104,9 @@ class AppListOnBoardingViewModel @Inject constructor(
                         _eventFlow.emit(AppListOnBoardingScreenUiEvents.NavigateToBehaviorOnboardingScreen)
                     }
                 }
+                is AppListOnBoardingScreenEvent.UpdateOnBoardingTracker->{
+                    deleteAndInsertOnboardingTracker(tracker)
+                }
                 else -> {}
             }
         }
@@ -114,6 +129,24 @@ class AppListOnBoardingViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    private fun getOnBoardingData(){
+        getOnboardingTrackerUseCase().onEach { resource->
+            when (resource){
+                is Resource.Success->{
+                    (resource.data?.firstOrNull())?.apply {
+                        if (started){
+                            viewModelScope.launch { _eventFlow.emit(AppListOnBoardingScreenUiEvents.DismissBottomSheet) }
+                        }
+                    }
+                }
+                is Resource.Error->{}
+                else -> {
+                    _state.value = _state.value.copy(isLoading = true)
+                }
+            }
+        }.launchIn(viewModelScope)
+
+    }
     // end region
 
 }

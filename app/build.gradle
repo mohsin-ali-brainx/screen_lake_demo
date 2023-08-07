@@ -98,4 +98,7 @@ dependencies {
 
     // Glide
     implementation "com.github.skydoves:landscapist-glide:1.5.2"
+
+    // GSON
+    api 'com.google.code.gson:gson:2.10'
 }
