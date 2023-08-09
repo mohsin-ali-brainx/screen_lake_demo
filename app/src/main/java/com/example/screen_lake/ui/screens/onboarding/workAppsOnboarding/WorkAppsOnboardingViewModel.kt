@@ -7,7 +7,9 @@ import com.example.screen_lake.base.BaseViewModel
 import com.example.screen_lake.models.AppInfo
 import com.example.screen_lake.ui.screens.onboarding.workAppsOnboarding.useCase.WorkAppListUseCase
 import com.example.screenlake.utils.Constants
+import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -24,7 +26,8 @@ data class WorkAppListOnboardingScreenState(
     val workAppsList:List<Pair<ApplicationInfo, AppInfo>> = arrayListOf(),
     val filteredList:List<Pair<ApplicationInfo, AppInfo>> = arrayListOf(),
     val expandedList:Boolean=false,
-    val checkedItems:Int=0
+    val checkedItems:Int=0,
+    val allAppInfoList : List<AppInfo> = arrayListOf()
 )
 
 sealed class WorkAppListOnBoardingScreenEvent{
@@ -59,6 +62,7 @@ class WorkAppsOnboardingViewModel @Inject constructor(
         event.apply {
             when(this){
                 is WorkAppListOnBoardingScreenEvent.OnAppSelected ->{
+                    insertWorkApp(app.second)
                     val newList =  ArrayList<Pair<ApplicationInfo,AppInfo>>().apply {
                         clear()
                         addAll(_state.value.workAppsList)
@@ -80,7 +84,7 @@ class WorkAppsOnboardingViewModel @Inject constructor(
                         newFilteredList[index]=app
                     }
                     val checkedItems = newList.filter { it.second.isChecked }.size
-                    _state.value= _state.value.copy(workAppsList = newList, filteredList = newFilteredList, disableButton = false, checkedItems = checkedItems)
+                    _state.value= _state.value.copy(workAppsList = newList, filteredList = newFilteredList, disableButton = checkedItems==ZERO, checkedItems = checkedItems)
                 }
                 is WorkAppListOnBoardingScreenEvent.SearchAppTextUpdated ->{
                     val filteredList = _state.value.workAppsList.filter { it.second.doesMatchSearchQuery(newText) }
@@ -117,6 +121,15 @@ class WorkAppsOnboardingViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun insertWorkApp(appInfo: AppInfo){
+        viewModelScope.launch(Dispatchers.IO) {
+            val existingAppInfo =  repository.getAppInfoFromPackageName(appInfo.apk)?.apply{
+                appPrimaryUse = appInfo.appPrimaryUse
+            }
+            repository.insertAppInfo(existingAppInfo?:appInfo)
+        }
     }
     // end region
 }

@@ -27,12 +27,20 @@ class OnboardingRepository @Inject constructor(
     private val behaviorRepository: BehaviorRepository
 ) {
 
-    suspend fun getInstalledAppList():ArrayList<Pair<ApplicationInfo,AppInfo>>{
-        return getInstalledApps(context).toAppInfoList(context,appInfoRepository.getAppInfoList())
+    suspend fun getInstalledAppListWithDistraction():ArrayList<Pair<ApplicationInfo,AppInfo>>{
+        return getInstalledApps(context).toAppInfoList(context,appInfoRepository.getAppInfoListWithDistractionItem())
     }
 
     suspend fun getWorkAppList():ArrayList<Pair<ApplicationInfo,AppInfo>>{
-        return getInstalledApps(context).toWorkAppInfoList(context)
+        return getInstalledApps(context).toWorkAppInfoList(context,appInfoRepository.getWorkAppInfoList())
+    }
+
+    suspend fun getAllAppInfoList():List<AppInfo>{
+        return appInfoRepository.getAppInfoList()
+    }
+
+    suspend fun getAppInfoFromPackageName(packageManager: String):AppInfo?{
+        return appInfoRepository.getAppInfoFromPackageName(packageManager)
     }
 
     suspend fun getAppBehaviourList():ArrayList<Behavior>{
@@ -59,7 +67,7 @@ class OnboardingRepository @Inject constructor(
     }
 
     suspend fun insertAppInfo(appInfo: AppInfo){
-        appInfoRepository.upsertAppInfo(appInfo)
+        appInfoRepository.insertAppInfo(appInfo)
     }
 
     suspend fun insertBehaviorInfo(behavior: Behavior){

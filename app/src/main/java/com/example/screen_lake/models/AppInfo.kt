@@ -11,6 +11,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.screen_lake.enums.AppDistractions
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
+import com.example.screenlake.utils.Constants.StringConstants.EMPTY
 
 @Entity("app_info")
 data class AppInfo(
@@ -18,9 +19,9 @@ data class AppInfo(
     var apk:String,
     var realAppName:String?=null,
     var distractionLevel:String?=null,
-    var appPrimaryUser:String?=null,
+    var appPrimaryUse:String?=EMPTY,
     var bitmapResource:String?=null,
-    var isChecked:Boolean=false
+    var isChecked:Boolean=false,
 ){
     fun doesMatchSearchQuery(query:String):Boolean{
        return realAppName?.contains(query,true)?:false
@@ -41,7 +42,7 @@ fun List<ApplicationInfo>.toAppInfoList(context:Context,savedApp:List<AppInfo>?=
     return newAppInfoList
 }
 
-fun List<ApplicationInfo>.toWorkAppInfoList(context:Context):ArrayList<Pair<ApplicationInfo,AppInfo>>{
+fun List<ApplicationInfo>.toWorkAppInfoList(context:Context,savedWorkApp:List<AppInfo>?=null):ArrayList<Pair<ApplicationInfo,AppInfo>>{
     val filteredList = ArrayList<Pair<ApplicationInfo,AppInfo>>().apply{
         clear()
         addAll(toAppInfoList(context).filter {
@@ -51,7 +52,14 @@ fun List<ApplicationInfo>.toWorkAppInfoList(context:Context):ArrayList<Pair<Appl
                     ||it.first.category== CATEGORY_IMAGE
                     ||it.first.category== CATEGORY_VIDEO})
     }
+    filteredList.forEach {
+        val appInfo = savedWorkApp?.firstOrNull {app-> app.appPrimaryUse!=null}
+        with(it.second){
+            appInfo?.apply {
+                this@with.appPrimaryUse = appPrimaryUse
+                this@with.isChecked = isChecked
+            }
+        }
+    }
     return filteredList
 }
-
-// CATEGORY_PRODUCTIVITY , CATEGORY_SOCIAL

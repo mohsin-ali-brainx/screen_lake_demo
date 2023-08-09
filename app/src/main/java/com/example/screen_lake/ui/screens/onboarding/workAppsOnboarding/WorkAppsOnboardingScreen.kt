@@ -47,6 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
+import com.example.screen_lake.enums.AppUse
 import com.example.screen_lake.enums.OnboardingTrackStep
 import com.example.screen_lake.extensions.getAppIconBitmap
 import com.example.screen_lake.models.AppInfo
@@ -249,7 +250,7 @@ private fun MainBodyContent(
                         AppItems(app = item.first, info = item.second){selected->
                             onBoardingViewModel.onEventUpdate(
                                 WorkAppListOnBoardingScreenEvent.OnAppSelected(
-                                    index, Pair(item.first,item.second.copy(isChecked = selected))
+                                    index, Pair(item.first,item.second.copy(isChecked = selected, appPrimaryUse = if (selected) AppUse.WORK.key else EMPTY))
                                 )
                             )
                         }

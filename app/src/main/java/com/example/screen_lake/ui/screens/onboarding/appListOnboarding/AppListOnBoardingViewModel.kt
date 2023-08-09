@@ -7,8 +7,7 @@ import com.example.screen_lake.base.BaseViewModel
 import com.example.screen_lake.enums.AppDistractions
 import com.example.screen_lake.models.AppInfo
 import com.example.screen_lake.sharedPreference.SharedPreference
-import com.example.screen_lake.ui.screens.onboarding.appListOnboarding.useCase.InstalledAppInfoUseCase
-import com.example.screen_lake.ui.screens.useCases.GetOnboardingTrackerUseCase
+import com.example.screen_lake.ui.screens.onboarding.appListOnboarding.useCase.InstalledAppInfoWithDistractionUseCase
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
 import com.example.screenlake.utils.Constants.StringConstants.EMPTY
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +28,8 @@ data class AppListOnboardingScreenState(
     val installedApps:List<Pair<ApplicationInfo,AppInfo>> = arrayListOf(),
     val filteredList:List<Pair<ApplicationInfo,AppInfo>> = arrayListOf(),
     val expandedList:Boolean=false,
-    val dismissBottomSheet:Boolean=false
+    val dismissBottomSheet:Boolean=false,
+    val allAppInfoList:List<AppInfo> = arrayListOf()
 )
 
 sealed class AppListOnBoardingScreenEvent{
@@ -48,8 +48,7 @@ sealed class AppListOnBoardingScreenUiEvents{
 @HiltViewModel
 class AppListOnBoardingViewModel @Inject constructor(
     private val sharedPreference: SharedPreference,
-    private val getInstalledAppInfoUseCase: InstalledAppInfoUseCase,
-    private val getOnboardingTrackerUseCase: GetOnboardingTrackerUseCase
+    private val getInstalledAppInfoWithDistractionUseCase: InstalledAppInfoWithDistractionUseCase,
 ): BaseViewModel(){
     // region properties
     private val _state = MutableStateFlow(AppListOnboardingScreenState())
@@ -66,9 +65,7 @@ class AppListOnBoardingViewModel @Inject constructor(
         event.apply {
             when(this){
                 is AppListOnBoardingScreenEvent.OnAppSelected ->{
-                    viewModelScope.launch(Dispatchers.IO) {
-                        repository.insertAppInfo(app.second)
-                    }
+                    insertAppInfo(app.second)
                     val newList =  ArrayList<Pair<ApplicationInfo,AppInfo>>().apply {
                         clear()
                         addAll(_state.value.installedApps)
@@ -114,7 +111,7 @@ class AppListOnBoardingViewModel @Inject constructor(
     // end region
     // region private methods
     private fun getInstalledAppInfo() {
-        getInstalledAppInfoUseCase().onEach {resource->
+        getInstalledAppInfoWithDistractionUseCase().onEach { resource->
             when (resource){
                 is Resource.Success->{
                     resource.data?.apply {
@@ -127,6 +124,15 @@ class AppListOnBoardingViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun insertAppInfo(appInfo: AppInfo){
+        viewModelScope.launch(Dispatchers.IO) {
+            val existingAppInfo =  repository.getAppInfoFromPackageName(appInfo.apk)?.apply {
+                distractionLevel = appInfo.distractionLevel
+            }
+            repository.insertAppInfo(existingAppInfo?:appInfo)
+        }
     }
     // end region
 

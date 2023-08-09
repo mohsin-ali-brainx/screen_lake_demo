@@ -7,10 +7,20 @@ import javax.inject.Singleton
 
 @Singleton
 class AppInfoRepository @Inject constructor(private val appInfoDao: AppInfoDao){
-    suspend fun upsertAppInfo(appInfo: AppInfo){
+    suspend fun insertAppInfo(appInfo: AppInfo){
         appInfoDao.insertInstalledAppInfo(appInfo)
     }
+    suspend fun getAppInfoListWithDistractionItem():List<AppInfo>{
+        return appInfoDao.getAppInfoListWithDistractionItems()
+    }
     suspend fun getAppInfoList():List<AppInfo>{
-        return appInfoDao.getAppInfoList()
+        return appInfoDao.getAllAppInfoList()
+    }
+    suspend fun getWorkAppInfoList():List<AppInfo>{
+        return appInfoDao.getWorkAppInfoList()
+    }
+
+    suspend fun getAppInfoFromPackageName(packageName:String):AppInfo?{
+        return appInfoDao.getAllAppInfoList(packageName)
     }
 }
