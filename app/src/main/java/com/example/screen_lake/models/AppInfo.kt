@@ -27,7 +27,7 @@ data class AppInfo(
     }
 }
 
-fun List<ApplicationInfo>.toAppInfoList(context:Context):ArrayList<Pair<ApplicationInfo,AppInfo>>{
+fun List<ApplicationInfo>.toAppInfoList(context:Context,savedApp:List<AppInfo>?=null):ArrayList<Pair<ApplicationInfo,AppInfo>>{
     val newAppInfoList = ArrayList<Pair<ApplicationInfo,AppInfo>>()
     val packageManager = context.packageManager
     forEach {
@@ -35,7 +35,8 @@ fun List<ApplicationInfo>.toAppInfoList(context:Context):ArrayList<Pair<Applicat
             packageManager.getResourcesForApplication(it).getString(it.labelRes)
         else
             it.loadLabel(packageManager).toString()
-        newAppInfoList.add(Pair(it, AppInfo(it.packageName,appName,AppDistractions.NOT_DEFINED.key)))
+        val appInfo = savedApp?.firstOrNull {app-> app.apk==it.packageName }
+        newAppInfoList.add(Pair(it, appInfo?:AppInfo(it.packageName,appName,AppDistractions.NOT_DEFINED.key)))
     }
     return newAppInfoList
 }

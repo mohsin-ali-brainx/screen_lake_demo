@@ -4,6 +4,7 @@ import android.content.pm.ApplicationInfo
 import androidx.lifecycle.viewModelScope
 import com.example.screen_lake.appUtils.Resource
 import com.example.screen_lake.base.BaseViewModel
+import com.example.screen_lake.enums.AppDistractions
 import com.example.screen_lake.models.AppInfo
 import com.example.screen_lake.models.OnboardingTracker
 import com.example.screen_lake.navigation.Screen
@@ -13,6 +14,7 @@ import com.example.screen_lake.ui.screens.useCases.GetOnboardingTrackerUseCase
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
 import com.example.screenlake.utils.Constants.StringConstants.EMPTY
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -66,6 +68,9 @@ class AppListOnBoardingViewModel @Inject constructor(
         event.apply {
             when(this){
                 is AppListOnBoardingScreenEvent.OnAppSelected ->{
+                    viewModelScope.launch(Dispatchers.IO) {
+                        repository.insertAppInfo(app.second)
+                    }
                     val newList =  ArrayList<Pair<ApplicationInfo,AppInfo>>().apply {
                         clear()
                         addAll(_state.value.installedApps)
@@ -115,7 +120,7 @@ class AppListOnBoardingViewModel @Inject constructor(
             when (resource){
                 is Resource.Success->{
                     resource.data?.apply {
-                        _state.value = _state.value.copy(isLoading = false, installedApps = this, filteredList = this)
+                        _state.value = _state.value.copy(isLoading = false, installedApps = this, filteredList = this, disableButton = filter { it.second.distractionLevel!=AppDistractions.NOT_DEFINED.key }.isEmpty())
                     }
                 }
                 is Resource.Error->{}

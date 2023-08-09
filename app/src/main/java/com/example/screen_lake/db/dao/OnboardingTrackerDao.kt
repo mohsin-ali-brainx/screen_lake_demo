@@ -12,7 +12,6 @@ interface OnboardingTrackerDao {
     suspend fun insertOnboardingTracker(tracker: OnboardingTracker)
     @Query("DELETE FROM onboarding")
     suspend fun deleteAll()
-
     @Query("SELECT * FROM onboarding")
     fun getOnboardingTracker(): List<OnboardingTracker>
 

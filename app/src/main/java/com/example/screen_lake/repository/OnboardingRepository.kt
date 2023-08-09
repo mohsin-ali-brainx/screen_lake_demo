@@ -2,6 +2,7 @@ package com.example.screen_lake.repository
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
+import com.example.screen_lake.db.repository.AppInfoRepository
 import com.example.screen_lake.db.repository.OnboardingTrackerRepository
 import com.example.screen_lake.extensions.getInstalledApps
 import com.example.screen_lake.models.AppInfo
@@ -13,20 +14,18 @@ import com.example.screen_lake.models.getOccupationList
 import com.example.screen_lake.models.toAppInfoList
 import com.example.screen_lake.models.toWorkAppInfoList
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class OnboardingRepository @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val onboardingTrackerRepository: OnboardingTrackerRepository
+    private val onboardingTrackerRepository: OnboardingTrackerRepository,
+    private val appInfoRepository: AppInfoRepository
 ) {
 
     suspend fun getInstalledAppList():ArrayList<Pair<ApplicationInfo,AppInfo>>{
-        return getInstalledApps(context).toAppInfoList(context)
+        return getInstalledApps(context).toAppInfoList(context,appInfoRepository.getAppInfoList())
     }
 
     suspend fun getWorkAppList():ArrayList<Pair<ApplicationInfo,AppInfo>>{
@@ -56,10 +55,8 @@ class OnboardingRepository @Inject constructor(
         return onboardingTrackerRepository.getOnboardingTracker()
     }
 
-     fun getOnboardingTracker2(response: (List<OnboardingTracker>)->Unit) {
-       CoroutineScope(Dispatchers.IO + Job()).launch{
-           response(onboardingTrackerRepository.getOnboardingTracker2())
-       }
+    suspend fun insertAppInfo(appInfo: AppInfo){
+        appInfoRepository.upsertAppInfo(appInfo)
     }
 
 }
