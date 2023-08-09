@@ -9,7 +9,7 @@ import com.example.screen_lake.navigation.Screen
 data class OnboardingTracker(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo("screen_id")
-    var id: String= Screen.AppListOnboardingScreenRoute.route,
+    var id: String= Screen.Splash.route,
     var started:Boolean=false,
     var step:Int=0,
     var finished:Boolean=false

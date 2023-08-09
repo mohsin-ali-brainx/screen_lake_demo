@@ -12,7 +12,6 @@ import com.example.screen_lake.ui.screens.useCases.GetOnboardingTrackerUseCase
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
 import com.example.screenlake.utils.Constants.StringConstants.EMPTY
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -62,8 +61,7 @@ class AppListOnBoardingViewModel @Inject constructor(
     val eventFlow = _eventFlow.asSharedFlow()
     // end region
     init {
-        viewModelScope.async { getOnBoardingData() }
-        viewModelScope.async { getInstalledAppInfo() }
+        getInstalledAppInfo()
     }
     // region public method
     fun onEventUpdate(event: AppListOnBoardingScreenEvent){
@@ -127,25 +125,6 @@ class AppListOnBoardingViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
-    }
-
-    private fun getOnBoardingData(){
-        getOnboardingTrackerUseCase().onEach { resource->
-            when (resource){
-                is Resource.Success->{
-                    (resource.data?.firstOrNull())?.apply {
-                        if (started){
-                            viewModelScope.launch { _eventFlow.emit(AppListOnBoardingScreenUiEvents.DismissBottomSheet) }
-                        }
-                    }
-                }
-                is Resource.Error->{}
-                else -> {
-                    _state.value = _state.value.copy(isLoading = true)
-                }
-            }
-        }.launchIn(viewModelScope)
-
     }
     // end region
 

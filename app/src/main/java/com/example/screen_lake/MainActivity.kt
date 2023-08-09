@@ -7,10 +7,10 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.compose.rememberNavController
+import com.example.screen_lake.models.OnboardingTracker
 import com.example.screen_lake.navigation.Screen
 import com.example.screen_lake.navigation.ScreenLakeNavGraph
 import com.example.screen_lake.repository.OnboardingRepository
@@ -28,18 +28,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val scope = rememberCoroutineScope()
-            var screenState by rememberSaveable() {
-                mutableStateOf(Screen.Splash.route)
+            var onboardingTracker by remember {
+                mutableStateOf(OnboardingTracker())
             }
             ScreenLakeTheme {
                 val navController = rememberNavController()
                 LaunchedEffect(key1 = true){
                     withContext(Dispatchers.IO){
-                        screenState = repository.getOnboardingTracker().firstOrNull()?.id?:Screen.Splash.route
+                        onboardingTracker =  repository.getOnboardingTracker().firstOrNull()?: OnboardingTracker(id = Screen.AppListOnboardingScreenRoute.route)
                     }
                 }
-                ScreenLakeNavGraph(navController = navController,screenState)
+                ScreenLakeNavGraph(navController = navController,onboardingTracker)
             }
         }
     }

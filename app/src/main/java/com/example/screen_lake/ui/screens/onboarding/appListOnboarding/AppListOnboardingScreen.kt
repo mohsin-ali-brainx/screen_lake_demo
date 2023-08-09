@@ -85,12 +85,13 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 fun AppListOnboardingScreen(
     navHostController: NavHostController,
+    onboardingTracker: OnboardingTracker,
     onBoardingViewModel: AppListOnBoardingViewModel = hiltViewModel()
 ) {
     val state by onBoardingViewModel.state.collectAsState()
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberBottomSheetState(
-        initialValue = BottomSheetValue.Expanded,
+        initialValue = if (onboardingTracker.started) BottomSheetValue.Collapsed else BottomSheetValue.Expanded,
         animationSpec = spring(Spring.DampingRatioNoBouncy),
         confirmStateChange = { false },
     )
@@ -104,12 +105,7 @@ fun AppListOnboardingScreen(
                 is AppListOnBoardingScreenUiEvents.NavigateToBehaviorOnboardingScreen->{
                     navigateToBehaviorOnBoardingScreen(navHostController)
                 }
-                is AppListOnBoardingScreenUiEvents.DismissBottomSheet->{
-                    bottomSheetScaffoldState.bottomSheetState.collapse()
-                }
-                else->{
-                    bottomSheetScaffoldState.bottomSheetState.collapse()
-                }
+                else->{}
             }
         }
     }
