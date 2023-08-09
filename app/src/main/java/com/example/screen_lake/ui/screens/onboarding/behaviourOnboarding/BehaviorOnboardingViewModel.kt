@@ -7,6 +7,7 @@ import com.example.screen_lake.enums.AppBehaviors
 import com.example.screen_lake.models.Behavior
 import com.example.screen_lake.ui.screens.onboarding.behaviourOnboarding.useCase.AppBehaviorUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -49,9 +50,7 @@ class BehaviorOnboardingViewModel @Inject constructor(
         event.apply {
             when(this){
                 is BehaviorOnBoardingScreenEvent.OnBehaviorSelected->{
-                    viewModelScope.launch {
-                        repository.insertBehaviorInfo(behavior)
-                    }
+                    insertBehavior(behavior)
                    val newList = ArrayList<Behavior>().apply {
                        clear()
                        addAll(_state.value.appBehaviors)
@@ -87,6 +86,15 @@ class BehaviorOnboardingViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun insertBehavior(behavior: Behavior){
+        viewModelScope.launch(Dispatchers.IO) {
+            val existingBehavior = repository.getAppBehaviorByName(behavior.name)?.apply {
+               importance = behavior.importance
+            }
+            repository.insertBehaviorInfo(existingBehavior?:behavior)
+        }
     }
     // end region
 }

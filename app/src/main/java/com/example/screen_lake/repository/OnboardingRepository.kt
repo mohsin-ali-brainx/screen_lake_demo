@@ -47,6 +47,10 @@ class OnboardingRepository @Inject constructor(
         return getAppBehaviorList(context).getUpdatedBehaviorList(behaviorRepository.getBehaviorList())
     }
 
+    suspend fun getAppBehaviorByName(name:String):Behavior?{
+        return behaviorRepository.getBehaviourByName(name)
+    }
+
     suspend fun getOccupation():ArrayList<GenericSelectionModel>{
         return getOccupationList(context)
     }

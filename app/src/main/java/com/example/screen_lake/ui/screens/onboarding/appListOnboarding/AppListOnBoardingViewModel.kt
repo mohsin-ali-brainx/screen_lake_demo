@@ -28,8 +28,7 @@ data class AppListOnboardingScreenState(
     val installedApps:List<Pair<ApplicationInfo,AppInfo>> = arrayListOf(),
     val filteredList:List<Pair<ApplicationInfo,AppInfo>> = arrayListOf(),
     val expandedList:Boolean=false,
-    val dismissBottomSheet:Boolean=false,
-    val allAppInfoList:List<AppInfo> = arrayListOf()
+    val dismissBottomSheet:Boolean=false
 )
 
 sealed class AppListOnBoardingScreenEvent{

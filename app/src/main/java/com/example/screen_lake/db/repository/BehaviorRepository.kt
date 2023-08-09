@@ -13,4 +13,7 @@ class BehaviorRepository @Inject constructor(private val behaviorDao: BehaviorDa
     suspend fun getBehaviorList():List<Behavior>{
         return behaviorDao.getBehaviorList()
     }
+    suspend fun getBehaviourByName(name:String):Behavior?{
+        return behaviorDao.getBehaviorByName(name)
+    }
 }
