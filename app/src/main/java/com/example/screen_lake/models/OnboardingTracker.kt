@@ -7,10 +7,10 @@ import com.example.screen_lake.navigation.Screen
 
 @Entity(tableName = "onboarding")
 data class OnboardingTracker(
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo("screen_id")
-    var id: String= Screen.Splash.route,
+    var id: Int= 0,
     var started:Boolean=false,
-    var step:Int=0,
+    var step:Int=Screen.Splash.step,
     var finished:Boolean=false
 )

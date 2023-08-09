@@ -5,8 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.screen_lake.appUtils.Resource
 import com.example.screen_lake.base.BaseViewModel
 import com.example.screen_lake.models.AppInfo
-import com.example.screen_lake.models.OnboardingTracker
-import com.example.screen_lake.navigation.Screen
 import com.example.screen_lake.ui.screens.onboarding.workAppsOnboarding.useCase.WorkAppListUseCase
 import com.example.screenlake.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -92,11 +90,11 @@ class WorkAppsOnboardingViewModel @Inject constructor(
                     _state.value = _state.value.copy(expandedList = expand)
                 }
                 is WorkAppListOnBoardingScreenEvent.OnNextClicked->{
-                    deleteAndInsertOnboardingTracker(OnboardingTracker(Screen.WorkAppsOnboardingScreenRoute.route,started = false, finished = true))
+                    insertOnboardingTracker()
                     viewModelScope.launch { _eventFlow.emit(WorkAppAppListOnBoardingScreenUiEvents.OpenQuestionsBottomSheet) }
                 }
                 is WorkAppListOnBoardingScreenEvent.OnAnswerQuestionsButtonClicked->{
-                    deleteAndInsertOnboardingTracker(OnboardingTracker(Screen.OccupationScreenRoute.route,started = true))
+                    insertOnboardingTracker()
                     viewModelScope.launch { _eventFlow.emit(WorkAppAppListOnBoardingScreenUiEvents.OpenOccupationQuestionnaireScreen) }
                 }
                 else->{}

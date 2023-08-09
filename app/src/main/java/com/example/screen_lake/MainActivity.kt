@@ -10,8 +10,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.compose.rememberNavController
+import com.example.screen_lake.enums.OnboardingTrackStep
 import com.example.screen_lake.models.OnboardingTracker
-import com.example.screen_lake.navigation.Screen
 import com.example.screen_lake.navigation.ScreenLakeNavGraph
 import com.example.screen_lake.repository.OnboardingRepository
 import com.example.screen_lake.ui.theme.ScreenLakeTheme
@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 LaunchedEffect(key1 = true){
                     withContext(Dispatchers.IO){
-                        onboardingTracker =  repository.getOnboardingTracker().firstOrNull()?: OnboardingTracker(id = Screen.AppListOnboardingScreenRoute.route)
+                        onboardingTracker =  repository.getOnboardingTracker().firstOrNull()?: OnboardingTracker(step = OnboardingTrackStep.APP_LIST_BOTTOMSHEET_SCREEN_STEP.step)
                     }
                 }
                 ScreenLakeNavGraph(navController = navController,onboardingTracker)

@@ -2,6 +2,7 @@ package com.example.screen_lake.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.screen_lake.enums.OnboardingTrackStep
 import com.example.screen_lake.models.OnboardingTracker
 import com.example.screen_lake.repository.OnboardingRepository
 import kotlinx.coroutines.Dispatchers
@@ -12,11 +13,16 @@ open class BaseViewModel : ViewModel() {
     @Inject
     lateinit var repository:OnboardingRepository
 
-    fun deleteAndInsertOnboardingTracker(tracker: OnboardingTracker){
+    fun insertOnboardingTracker(){
         viewModelScope.launch(Dispatchers.IO){
             repository.apply {
-                deleteAllOnboardingTracker()
-                insertOnboardingTracker(tracker)
+                getOnboardingTracker().firstOrNull().let {
+                    if (it==null){
+                        insertOnboardingTracker(OnboardingTracker(step = OnboardingTrackStep.APP_LIST_SCREEN_STEP.step, started = true))
+                    }else{
+                        insertOnboardingTracker(it.apply { step++ })
+                    }
+                }
             }
         }
     }

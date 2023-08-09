@@ -56,6 +56,7 @@ class BehaviorOnboardingViewModel @Inject constructor(
                     _state.value=_state.value.copy(appBehaviors = newList, disableButton = false)
                 }
                 is BehaviorOnBoardingScreenEvent.OnNextClicked->{
+                    insertOnboardingTracker()
                     viewModelScope.launch {
                         _eventFlow.emit(BehaviorOnBoardingScreenUiEvents.NavigateToWorkAppsOnboardingScreen)
                     }

@@ -19,7 +19,4 @@ class OnboardingTrackerRepository @Inject constructor(private val onboardingTrac
     suspend fun getOnboardingTracker(): List<OnboardingTracker> {
       return onboardingTrackerDao.getOnboardingTracker()
     }
-    suspend fun getOnboardingTracker2():List<OnboardingTracker>{
-        return onboardingTrackerDao.getOnboardingTracker2()
-    }
 }

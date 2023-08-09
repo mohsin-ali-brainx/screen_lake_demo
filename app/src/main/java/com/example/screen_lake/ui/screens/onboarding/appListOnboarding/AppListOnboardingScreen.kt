@@ -63,6 +63,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
 import com.example.screen_lake.enums.AppDistractions
+import com.example.screen_lake.enums.OnboardingTrackStep
 import com.example.screen_lake.enums.getAppDistractionFromKey
 import com.example.screen_lake.enums.getAppDistractionList
 import com.example.screen_lake.extensions.getAppIconBitmap
@@ -91,7 +92,7 @@ fun AppListOnboardingScreen(
     val state by onBoardingViewModel.state.collectAsState()
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberBottomSheetState(
-        initialValue = if (onboardingTracker.started) BottomSheetValue.Collapsed else BottomSheetValue.Expanded,
+        initialValue = if (onboardingTracker.step==OnboardingTrackStep.APP_LIST_BOTTOMSHEET_SCREEN_STEP.step) BottomSheetValue.Expanded else BottomSheetValue.Collapsed,
         animationSpec = spring(Spring.DampingRatioNoBouncy),
         confirmStateChange = { false },
     )
@@ -122,9 +123,7 @@ fun AppListOnboardingScreen(
                 onButtonClicked = {
                     scope.launch {
                         bottomSheetScaffoldState.bottomSheetState.collapse()
-                        onBoardingViewModel.onEventUpdate(AppListOnBoardingScreenEvent.UpdateOnBoardingTracker(
-                            OnboardingTracker(Screen.AppListOnboardingScreenRoute.route,started = true,)
-                        ))
+                        onBoardingViewModel.onEventUpdate(AppListOnBoardingScreenEvent.UpdateOnBoardingTracker)
                     }
                 })
         },

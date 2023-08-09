@@ -47,6 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
+import com.example.screen_lake.enums.OnboardingTrackStep
 import com.example.screen_lake.extensions.getAppIconBitmap
 import com.example.screen_lake.models.AppInfo
 import com.example.screen_lake.models.OnboardingTracker
@@ -71,7 +72,7 @@ fun WorkAppListOnboardingScreen(
 ) {
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberBottomSheetState(
-        initialValue = if (onboardingTracker.id == Screen.WorkAppsOnboardingScreenRoute.route && onboardingTracker.finished)
+        initialValue = if (onboardingTracker.step == OnboardingTrackStep.WORK_APP_BOTTOMSHEET_SCREEN_STEP.step)
             BottomSheetValue.Expanded else BottomSheetValue.Collapsed,
         animationSpec = spring(Spring.DampingRatioNoBouncy),
         confirmStateChange = { false },
@@ -113,9 +114,7 @@ fun WorkAppListOnboardingScreen(
                     }
                 },
                 onBottomTextClicked = {
-                    scope.launch {
-                        bottomSheetScaffoldState.bottomSheetState.collapse()
-                    }
+
                 })
         },
         sheetElevation = 20.dp,

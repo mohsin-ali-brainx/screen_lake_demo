@@ -17,7 +17,7 @@ import com.example.screen_lake.ui.screens.onboarding.workAppsOnboarding.WorkAppL
 fun ScreenLakeNavGraph(navController: NavHostController,onboardingTracker:OnboardingTracker) {
     NavHost(
         navController = navController,
-        startDestination = onboardingTracker.id
+        startDestination = getScreenFromStep(onboardingTracker.step).route
     ) {
         composable(route = Screen.Splash.route) { backStackEntry ->
             SplashScreen(navController)
