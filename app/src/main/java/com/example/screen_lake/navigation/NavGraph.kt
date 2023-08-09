@@ -29,7 +29,7 @@ fun ScreenLakeNavGraph(navController: NavHostController,onboardingTracker:Onboar
             BehaviorOnboardingScreen(navHostController = navController)
         }
         composable(route=Screen.WorkAppsOnboardingScreenRoute.route){
-            WorkAppListOnboardingScreen(navHostController = navController)
+            WorkAppListOnboardingScreen(navHostController = navController,onboardingTracker)
         }
         composable(route=Screen.OccupationScreenRoute.route){
             OccupationQuestionnaireOnboardingScreen(navController)

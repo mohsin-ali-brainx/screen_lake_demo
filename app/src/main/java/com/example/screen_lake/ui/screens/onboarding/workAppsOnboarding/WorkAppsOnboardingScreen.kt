@@ -49,6 +49,7 @@ import androidx.navigation.NavHostController
 import com.example.screen_lake.R
 import com.example.screen_lake.extensions.getAppIconBitmap
 import com.example.screen_lake.models.AppInfo
+import com.example.screen_lake.models.OnboardingTracker
 import com.example.screen_lake.navigation.Screen
 import com.example.screen_lake.ui.bottomsheets.OnBoardingBottomSheet
 import com.example.screen_lake.ui.utils.BottomButtonContent
@@ -65,11 +66,13 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 fun WorkAppListOnboardingScreen(
     navHostController: NavHostController,
+    onboardingTracker: OnboardingTracker,
     onBoardingViewModel: WorkAppsOnboardingViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberBottomSheetState(
-        initialValue = BottomSheetValue.Collapsed,
+        initialValue = if (onboardingTracker.id == Screen.WorkAppsOnboardingScreenRoute.route && onboardingTracker.finished)
+            BottomSheetValue.Expanded else BottomSheetValue.Collapsed,
         animationSpec = spring(Spring.DampingRatioNoBouncy),
         confirmStateChange = { false },
     )
@@ -280,7 +283,7 @@ private fun AppItems(app: ApplicationInfo?, info: AppInfo, onClick: (Boolean) ->
     app?.let { appInfo ->
         val appIcon = LocalContext.current.getAppIconBitmap(appInfo.packageName)
         SelectableItem(
-            modifier=Modifier
+            modifier= Modifier
                 .fillMaxWidth()
                 .wrapContentSize(),
             bitmap = appIcon,

@@ -6,6 +6,7 @@ import com.example.screen_lake.appUtils.Resource
 import com.example.screen_lake.base.BaseViewModel
 import com.example.screen_lake.models.AppInfo
 import com.example.screen_lake.models.OnboardingTracker
+import com.example.screen_lake.navigation.Screen
 import com.example.screen_lake.sharedPreference.SharedPreference
 import com.example.screen_lake.ui.screens.onboarding.appListOnboarding.useCase.InstalledAppInfoUseCase
 import com.example.screen_lake.ui.screens.useCases.GetOnboardingTrackerUseCase
@@ -33,18 +34,15 @@ data class AppListOnboardingScreenState(
 
 sealed class AppListOnBoardingScreenEvent{
     data class SearchAppTextUpdated(val newText: String) : AppListOnBoardingScreenEvent()
-    data class OnAppSelected(val index:Int,val app:Pair<ApplicationInfo,AppInfo>):
-        AppListOnBoardingScreenEvent()
+    data class OnAppSelected(val index:Int,val app:Pair<ApplicationInfo,AppInfo>): AppListOnBoardingScreenEvent()
     data class OnExpandAppList(val expand:Boolean) : AppListOnBoardingScreenEvent()
     object OnNextClicked : AppListOnBoardingScreenEvent()
-
     data class UpdateOnBoardingTracker(val tracker: OnboardingTracker): AppListOnBoardingScreenEvent()
 
 }
 
 sealed class AppListOnBoardingScreenUiEvents{
     object NavigateToBehaviorOnboardingScreen:AppListOnBoardingScreenUiEvents()
-    object DismissBottomSheet:AppListOnBoardingScreenUiEvents()
 }
 
 @HiltViewModel
@@ -98,6 +96,7 @@ class AppListOnBoardingViewModel @Inject constructor(
                     _state.value = _state.value.copy(expandedList = expand)
                 }
                 is AppListOnBoardingScreenEvent.OnNextClicked ->{
+                    deleteAndInsertOnboardingTracker(OnboardingTracker(Screen.BehaviorOnboardingScreenRoute.route,started = true,))
                     viewModelScope.launch {
                         _eventFlow.emit(AppListOnBoardingScreenUiEvents.NavigateToBehaviorOnboardingScreen)
                     }
