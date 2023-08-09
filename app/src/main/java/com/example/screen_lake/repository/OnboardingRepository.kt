@@ -3,6 +3,7 @@ package com.example.screen_lake.repository
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import com.example.screen_lake.db.repository.AppInfoRepository
+import com.example.screen_lake.db.repository.BehaviorRepository
 import com.example.screen_lake.db.repository.OnboardingTrackerRepository
 import com.example.screen_lake.extensions.getInstalledApps
 import com.example.screen_lake.models.AppInfo
@@ -11,6 +12,7 @@ import com.example.screen_lake.models.GenericSelectionModel
 import com.example.screen_lake.models.OnboardingTracker
 import com.example.screen_lake.models.getAppBehaviorList
 import com.example.screen_lake.models.getOccupationList
+import com.example.screen_lake.models.getUpdatedBehaviorList
 import com.example.screen_lake.models.toAppInfoList
 import com.example.screen_lake.models.toWorkAppInfoList
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -21,7 +23,8 @@ import javax.inject.Inject
 class OnboardingRepository @Inject constructor(
     @ApplicationContext private val context: Context,
     private val onboardingTrackerRepository: OnboardingTrackerRepository,
-    private val appInfoRepository: AppInfoRepository
+    private val appInfoRepository: AppInfoRepository,
+    private val behaviorRepository: BehaviorRepository
 ) {
 
     suspend fun getInstalledAppList():ArrayList<Pair<ApplicationInfo,AppInfo>>{
@@ -33,7 +36,7 @@ class OnboardingRepository @Inject constructor(
     }
 
     suspend fun getAppBehaviourList():ArrayList<Behavior>{
-        return getAppBehaviorList(context)
+        return getAppBehaviorList(context).getUpdatedBehaviorList(behaviorRepository.getBehaviorList())
     }
 
     suspend fun getOccupation():ArrayList<GenericSelectionModel>{
@@ -57,6 +60,10 @@ class OnboardingRepository @Inject constructor(
 
     suspend fun insertAppInfo(appInfo: AppInfo){
         appInfoRepository.upsertAppInfo(appInfo)
+    }
+
+    suspend fun insertBehaviorInfo(behavior: Behavior){
+        behaviorRepository.upsertBehavior(behavior)
     }
 
 }

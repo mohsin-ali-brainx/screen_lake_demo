@@ -27,3 +27,12 @@ fun getAppBehaviorList(context: Context):ArrayList<Behavior>{
         }
     }
 }
+
+fun List<Behavior>.getUpdatedBehaviorList(savedList:List<Behavior>):ArrayList<Behavior>{
+    return ArrayList<Behavior>().apply {
+        this@getUpdatedBehaviorList.forEach { behavior->
+            val savedBehavior = savedList.firstOrNull { it.name== behavior.name}
+            add(savedBehavior?:behavior)
+        }
+    }
+}

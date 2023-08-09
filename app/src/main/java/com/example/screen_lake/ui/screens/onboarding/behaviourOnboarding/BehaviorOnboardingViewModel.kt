@@ -3,6 +3,7 @@ package com.example.screen_lake.ui.screens.onboarding.behaviourOnboarding
 import androidx.lifecycle.viewModelScope
 import com.example.screen_lake.appUtils.Resource
 import com.example.screen_lake.base.BaseViewModel
+import com.example.screen_lake.enums.AppBehaviors
 import com.example.screen_lake.models.Behavior
 import com.example.screen_lake.ui.screens.onboarding.behaviourOnboarding.useCase.AppBehaviorUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,6 +49,9 @@ class BehaviorOnboardingViewModel @Inject constructor(
         event.apply {
             when(this){
                 is BehaviorOnBoardingScreenEvent.OnBehaviorSelected->{
+                    viewModelScope.launch {
+                        repository.insertBehaviorInfo(behavior)
+                    }
                    val newList = ArrayList<Behavior>().apply {
                        clear()
                        addAll(_state.value.appBehaviors)
@@ -72,7 +76,7 @@ class BehaviorOnboardingViewModel @Inject constructor(
             when (resource){
                 is Resource.Success->{
                     resource.data?.apply {
-                        _state.value = _state.value.copy(isLoading = false, appBehaviors = this)
+                        _state.value = _state.value.copy(isLoading = false, appBehaviors = this, disableButton = filter { it.importance!=AppBehaviors.NOT_DEFINED.importance }.isEmpty())
                     }
                 }
                 is Resource.Error->{
