@@ -1,6 +1,5 @@
 package com.example.screen_lake.ui.screens.onboarding.appListOnboarding
 
-import android.content.pm.ApplicationInfo
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
@@ -257,11 +256,11 @@ private fun MainBodyContent(
                         FIVE
                     )
                 ) { index, item ->
-                    AppItems(app = item.first, info = item.second) {
+                    AppItems(info = item) {
                         onBoardingViewModel.onEventUpdate(
                             AppListOnBoardingScreenEvent.OnAppSelected(
                                 index,
-                                Pair(item.first, item.second.copy(distractionLevel = it.key))
+                                item.copy(distractionLevel = it.key)
                             )
                         )
                     }
@@ -290,8 +289,7 @@ private fun MainBodyContent(
 }
 
 @Composable
-private fun AppItems(app: ApplicationInfo?, info: AppInfo, onClick: (AppDistractions) -> Unit) {
-    app?.let { appInfo ->
+private fun AppItems(info: AppInfo, onClick: (AppDistractions) -> Unit) {
         val appIcon = info.bitmapResource?.asImageBitmap()
 
         var isContextMenuVisible by rememberSaveable {
@@ -395,7 +393,6 @@ private fun AppItems(app: ApplicationInfo?, info: AppInfo, onClick: (AppDistract
 
             }
         }
-    }
 }
 
 @Composable

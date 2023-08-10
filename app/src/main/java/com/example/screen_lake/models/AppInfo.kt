@@ -48,6 +48,46 @@ class BitmapConverter{
     }
 }
 
+fun List<ApplicationInfo>.toAppList(context: Context,savedApp:List<AppInfo>?=null):ArrayList<AppInfo>{
+    val newAppInfoList = ArrayList<AppInfo>()
+    val packageManager = context.packageManager
+    forEach {
+        val appName = if (it.labelRes != ZERO)
+            packageManager.getResourcesForApplication(it).getString(it.labelRes)
+        else
+            it.loadLabel(packageManager).toString()
+        val appInfo = savedApp?.firstOrNull {app-> app.apk==it.packageName }
+        val iconBitmap = ScreenLakeApp.getContext().getAppIconBitmap(it.packageName)
+        newAppInfoList.add(appInfo?:AppInfo(it.packageName,appName,AppDistractions.NOT_DEFINED.key, bitmapResource = iconBitmap))
+    }
+    return newAppInfoList
+}
+
+fun List<ApplicationInfo>.toWorkAppList(context:Context,savedWorkApp:List<AppInfo>?=null):ArrayList<AppInfo>{
+    val filteredList = ArrayList<AppInfo>().apply{
+        clear()
+        toAppInfoList(context).filter {
+            it.first.category == CATEGORY_PRODUCTIVITY
+                    ||it.first.category==CATEGORY_SOCIAL
+                    ||it.first.category== CATEGORY_NEWS
+                    ||it.first.category== CATEGORY_IMAGE
+                    ||it.first.category== CATEGORY_VIDEO
+        }.forEach {
+            add(it.second)
+        }
+    }
+    filteredList.forEach {
+        val appInfo = savedWorkApp?.firstOrNull {app-> app.appPrimaryUse!=null}
+        with(it){
+            appInfo?.apply {
+                this@with.appPrimaryUse = appPrimaryUse
+                this@with.isChecked = isChecked
+            }
+        }
+    }
+    return filteredList
+}
+
 fun List<ApplicationInfo>.toAppInfoList(context:Context,savedApp:List<AppInfo>?=null):ArrayList<Pair<ApplicationInfo,AppInfo>>{
     val newAppInfoList = ArrayList<Pair<ApplicationInfo,AppInfo>>()
     val packageManager = context.packageManager

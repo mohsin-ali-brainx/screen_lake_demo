@@ -1,6 +1,5 @@
 package com.example.screen_lake.ui.screens.onboarding.workAppsOnboarding
 
-import android.content.pm.ApplicationInfo
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
@@ -36,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,7 +49,6 @@ import androidx.navigation.NavHostController
 import com.example.screen_lake.R
 import com.example.screen_lake.enums.AppUse
 import com.example.screen_lake.enums.OnboardingTrackStep
-import com.example.screen_lake.extensions.getAppIconImageBitmap
 import com.example.screen_lake.models.AppInfo
 import com.example.screen_lake.models.OnboardingTracker
 import com.example.screen_lake.navigation.Screen
@@ -247,10 +246,13 @@ private fun MainBodyContent(
                             FIVE
                         )
                     ) {index, item ->
-                        AppItems(app = item.first, info = item.second){selected->
+                        AppItems(
+                            info = item
+                        ) {selected->
                             onBoardingViewModel.onEventUpdate(
                                 WorkAppListOnBoardingScreenEvent.OnAppSelected(
-                                    index, Pair(item.first,item.second.copy(isChecked = selected, appPrimaryUse = if (selected) AppUse.WORK.key else EMPTY))
+                                    index,
+                                    item.copy(isChecked = selected, appPrimaryUse = if (selected) AppUse.WORK.key else EMPTY)
                                 )
                             )
                         }
@@ -279,9 +281,8 @@ private fun MainBodyContent(
 }
 
 @Composable
-private fun AppItems(app: ApplicationInfo?, info: AppInfo, onClick: (Boolean) -> Unit) {
-    app?.let { appInfo ->
-        val appIcon = LocalContext.current.getAppIconImageBitmap(appInfo.packageName)
+private fun AppItems( info: AppInfo, onClick: (Boolean) -> Unit) {
+        val appIcon = info.bitmapResource?.asImageBitmap()
         SelectableItem(
             modifier= Modifier
                 .fillMaxWidth()
@@ -293,7 +294,6 @@ private fun AppItems(app: ApplicationInfo?, info: AppInfo, onClick: (Boolean) ->
         ) {
             onClick(!info.isChecked)
         }
-    }
 }
 
 private fun navigateOccupationQuestionnaireScreen(navController: NavController) {

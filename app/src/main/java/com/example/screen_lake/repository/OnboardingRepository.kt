@@ -1,7 +1,6 @@
 package com.example.screen_lake.repository
 
 import android.content.Context
-import android.content.pm.ApplicationInfo
 import com.example.screen_lake.db.repository.AppInfoRepository
 import com.example.screen_lake.db.repository.BehaviorRepository
 import com.example.screen_lake.db.repository.OnboardingTrackerRepository
@@ -13,8 +12,8 @@ import com.example.screen_lake.models.OnboardingTracker
 import com.example.screen_lake.models.getAppBehaviorList
 import com.example.screen_lake.models.getOccupationList
 import com.example.screen_lake.models.getUpdatedBehaviorList
-import com.example.screen_lake.models.toAppInfoList
-import com.example.screen_lake.models.toWorkAppInfoList
+import com.example.screen_lake.models.toAppList
+import com.example.screen_lake.models.toWorkAppList
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -27,12 +26,12 @@ class OnboardingRepository @Inject constructor(
     private val behaviorRepository: BehaviorRepository
 ) {
 
-    suspend fun getInstalledAppListWithDistraction():ArrayList<Pair<ApplicationInfo,AppInfo>>{
-        return getInstalledApps(context).toAppInfoList(context,appInfoRepository.getAppInfoListWithDistractionItem())
+    suspend fun getInstalledAppListWithDistraction():ArrayList<AppInfo>{
+        return getInstalledApps(context).toAppList(context,appInfoRepository.getAppInfoListWithDistractionItem())
     }
 
-    suspend fun getWorkAppList():ArrayList<Pair<ApplicationInfo,AppInfo>>{
-        return getInstalledApps(context).toWorkAppInfoList(context,appInfoRepository.getWorkAppInfoList())
+    suspend fun getWorkAppList():ArrayList<AppInfo>{
+        return getInstalledApps(context).toWorkAppList(context,appInfoRepository.getWorkAppInfoList())
     }
 
     suspend fun getAllAppInfoList():List<AppInfo>{

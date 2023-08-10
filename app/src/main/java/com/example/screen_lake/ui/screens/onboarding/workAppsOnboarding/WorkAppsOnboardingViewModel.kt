@@ -1,6 +1,5 @@
 package com.example.screen_lake.ui.screens.onboarding.workAppsOnboarding
 
-import android.content.pm.ApplicationInfo
 import androidx.lifecycle.viewModelScope
 import com.example.screen_lake.appUtils.Resource
 import com.example.screen_lake.base.BaseViewModel
@@ -23,8 +22,8 @@ data class WorkAppListOnboardingScreenState(
     val isLoading: Boolean = false,
     val disableButton:Boolean=true,
     val searchText:String = Constants.StringConstants.EMPTY,
-    val workAppsList:List<Pair<ApplicationInfo, AppInfo>> = arrayListOf(),
-    val filteredList:List<Pair<ApplicationInfo, AppInfo>> = arrayListOf(),
+    val workAppsList:List< AppInfo> = arrayListOf(),
+    val filteredList:List<AppInfo> = arrayListOf(),
     val expandedList:Boolean=false,
     val checkedItems:Int=0,
     val allAppInfoList : List<AppInfo> = arrayListOf()
@@ -32,7 +31,7 @@ data class WorkAppListOnboardingScreenState(
 
 sealed class WorkAppListOnBoardingScreenEvent{
     data class SearchAppTextUpdated(val newText: String) : WorkAppListOnBoardingScreenEvent()
-    data class OnAppSelected(val index:Int,val app:Pair<ApplicationInfo,AppInfo>):
+    data class OnAppSelected(val index:Int,val app:AppInfo):
         WorkAppListOnBoardingScreenEvent()
     data class OnExpandAppList(val expand:Boolean) : WorkAppListOnBoardingScreenEvent()
     object OnNextClicked : WorkAppListOnBoardingScreenEvent()
@@ -62,12 +61,12 @@ class WorkAppsOnboardingViewModel @Inject constructor(
         event.apply {
             when(this){
                 is WorkAppListOnBoardingScreenEvent.OnAppSelected ->{
-                    insertWorkApp(app.second)
-                    val newList =  ArrayList<Pair<ApplicationInfo,AppInfo>>().apply {
+                    insertWorkApp(app)
+                    val newList =  ArrayList<AppInfo>().apply {
                         clear()
                         addAll(_state.value.workAppsList)
                     }
-                    val newFilteredList = ArrayList<Pair<ApplicationInfo,AppInfo>>().apply {
+                    val newFilteredList = ArrayList<AppInfo>().apply {
                         clear()
                         addAll(_state.value.filteredList)
                     }
@@ -76,18 +75,18 @@ class WorkAppsOnboardingViewModel @Inject constructor(
                         newFilteredList[index]=app
                     }else{
                         var position= Constants.IntegerConstants.ZERO
-                        newList.filterIndexed { index, pair ->
+                        newList.filterIndexed { index, item ->
                             position = index
-                            pair.second.apk == app.second.apk
+                            item.apk == app.apk
                         }
                         newList[position]=app
                         newFilteredList[index]=app
                     }
-                    val checkedItems = newList.filter { it.second.isChecked }.size
+                    val checkedItems = newList.filter { it.isChecked }.size
                     _state.value= _state.value.copy(workAppsList = newList, filteredList = newFilteredList, disableButton = checkedItems==ZERO, checkedItems = checkedItems)
                 }
                 is WorkAppListOnBoardingScreenEvent.SearchAppTextUpdated ->{
-                    val filteredList = _state.value.workAppsList.filter { it.second.doesMatchSearchQuery(newText) }
+                    val filteredList = _state.value.workAppsList.filter { it.doesMatchSearchQuery(newText) }
                     _state.value = _state.value.copy(searchText = newText, filteredList = filteredList)
                 }
                 is WorkAppListOnBoardingScreenEvent.OnExpandAppList ->{

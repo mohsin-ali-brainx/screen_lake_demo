@@ -1,6 +1,5 @@
 package com.example.screen_lake.ui.screens.onboarding.appListOnboarding
 
-import android.content.pm.ApplicationInfo
 import androidx.lifecycle.viewModelScope
 import com.example.screen_lake.appUtils.Resource
 import com.example.screen_lake.base.BaseViewModel
@@ -25,15 +24,15 @@ data class AppListOnboardingScreenState(
     val isLoading: Boolean = false,
     val disableButton:Boolean=true,
     val searchText:String = EMPTY,
-    val installedApps:List<Pair<ApplicationInfo,AppInfo>> = arrayListOf(),
-    val filteredList:List<Pair<ApplicationInfo,AppInfo>> = arrayListOf(),
+    val installedApps:List<AppInfo> = arrayListOf(),
+    val filteredList:List<AppInfo> = arrayListOf(),
     val expandedList:Boolean=false,
     val dismissBottomSheet:Boolean=false
 )
 
 sealed class AppListOnBoardingScreenEvent{
     data class SearchAppTextUpdated(val newText: String) : AppListOnBoardingScreenEvent()
-    data class OnAppSelected(val index:Int,val app:Pair<ApplicationInfo,AppInfo>): AppListOnBoardingScreenEvent()
+    data class OnAppSelected(val index:Int,val app:AppInfo): AppListOnBoardingScreenEvent()
     data class OnExpandAppList(val expand:Boolean) : AppListOnBoardingScreenEvent()
     object OnNextClicked : AppListOnBoardingScreenEvent()
     object UpdateOnBoardingTracker: AppListOnBoardingScreenEvent()
@@ -64,12 +63,12 @@ class AppListOnBoardingViewModel @Inject constructor(
         event.apply {
             when(this){
                 is AppListOnBoardingScreenEvent.OnAppSelected ->{
-                    insertAppInfo(app.second)
-                    val newList =  ArrayList<Pair<ApplicationInfo,AppInfo>>().apply {
+                    insertAppInfo(app)
+                    val newList =  ArrayList<AppInfo>().apply {
                         clear()
                         addAll(_state.value.installedApps)
                     }
-                    val newFilteredList = ArrayList<Pair<ApplicationInfo,AppInfo>>().apply {
+                    val newFilteredList = ArrayList<AppInfo>().apply {
                         clear()
                         addAll(_state.value.filteredList)
                     }
@@ -78,9 +77,9 @@ class AppListOnBoardingViewModel @Inject constructor(
                         newFilteredList[index]=app
                     }else{
                         var position=ZERO
-                         newList.filterIndexed { index, pair ->
+                         newList.filterIndexed { index, item ->
                              position = index
-                             pair.second.apk == app.second.apk
+                             item.apk == app.apk
                         }
                         newList[position]=app
                         newFilteredList[index]=app
@@ -88,7 +87,7 @@ class AppListOnBoardingViewModel @Inject constructor(
                     _state.value= _state.value.copy(installedApps = newList, filteredList = newFilteredList, disableButton = false)
                 }
                 is AppListOnBoardingScreenEvent.SearchAppTextUpdated ->{
-                    val filteredList = _state.value.installedApps.filter { it.second.doesMatchSearchQuery(newText) }
+                    val filteredList = _state.value.installedApps.filter { it.doesMatchSearchQuery(newText) }
                     _state.value = _state.value.copy(searchText = newText, filteredList = filteredList)
                 }
                 is AppListOnBoardingScreenEvent.OnExpandAppList ->{
@@ -114,7 +113,7 @@ class AppListOnBoardingViewModel @Inject constructor(
             when (resource){
                 is Resource.Success->{
                     resource.data?.apply {
-                        _state.value = _state.value.copy(isLoading = false, installedApps = this, filteredList = this, disableButton = filter { it.second.distractionLevel!=AppDistractions.NOT_DEFINED.key }.isEmpty())
+                        _state.value = _state.value.copy(isLoading = false, installedApps = this, filteredList = this, disableButton = filter { it.distractionLevel!=AppDistractions.NOT_DEFINED.key }.isEmpty())
                     }
                 }
                 is Resource.Error->{}
