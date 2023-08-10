@@ -1,5 +1,7 @@
 package com.example.screen_lake.ui.screens.onboarding.appListOnboarding
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
@@ -187,7 +189,7 @@ private fun MainScreenContent(
                         height = Dimension.fillToConstraints
                     },
             ){
-
+                onEvent(it)
             }
             BottomButtonContent(
                 stateDisabled = state.disableButton,
@@ -251,10 +253,16 @@ private fun MainBodyContent(
                 )
             }
         )
-        if (filteredList.isNotEmpty()) {
+        if(filteredList.isNotEmpty()) {
             LazyColumn(
                 contentPadding = PaddingValues(vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioLowBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                )
             ) {
                 itemsIndexed(
                     if (expandedList||searchText.isNotEmpty()||filteredList.size<=FIVE) filteredList else filteredList.subList(
@@ -272,7 +280,7 @@ private fun MainBodyContent(
                     }
                 }
             }
-            if (searchText.isEmpty()&&filteredList.size>FIVE){
+            AnimatedVisibility(visible = searchText.isEmpty()&&filteredList.size>FIVE) {
             Text(
                 text = if (expandedList) context.getString(R.string.show_less) else context.getString(R.string.show_more_apps, installedApps.size - FIVE),
                 style = MaterialTheme.typography.subtitle2,
@@ -323,7 +331,6 @@ private fun AppItems(info: AppInfo, onClick: (AppDistractions) -> Unit) {
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.weight(1f)
                 ) {
-
                     if (appIcon != null) {
                         Image(
                             bitmap = appIcon,

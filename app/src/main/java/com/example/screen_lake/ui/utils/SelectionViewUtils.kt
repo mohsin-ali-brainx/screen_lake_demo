@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import com.example.screenlake.utils.Constants
 import com.example.screenlake.utils.Constants.StringConstants.EMPTY
 
 @Composable
@@ -128,32 +127,34 @@ fun SelectableItem(
                     maxLines = 1,
                 )
             }
-            if (isChecked){
-                Box(
-                    modifier = Modifier
+            Box(modifier = Modifier.then(
+                if (isChecked){
+                    Modifier
                         .size(20.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colors.onBackground, shape = CircleShape), contentAlignment = Alignment.Center,
-                ) {
+                        .background(MaterialTheme.colors.onBackground, shape = CircleShape)
+                }else{
+                    Modifier
+                        .size(20.dp)
+                        .clip(CircleShape)
+                        .border(
+                            1.dp,
+                            color = MaterialTheme.colors.secondaryVariant,
+                            shape = CircleShape
+                        )
+                }
+            ),
+                contentAlignment = Alignment.Center,
+            ){
+                if(isChecked) {
                     Icon(
                         modifier = Modifier.size(16.dp),
                         imageVector = Icons.Default.Done,
                         tint = MaterialTheme.colors.primary,
-                        contentDescription = Constants.StringConstants.EMPTY
+                        contentDescription = EMPTY
                     )
                 }
-            }else{
-                Box(modifier = Modifier
-                    .size(20.dp)
-                    .clip(CircleShape)
-                    .border(
-                        1.dp,
-                        color = MaterialTheme.colors.secondaryVariant,
-                        shape = CircleShape
-                    )
-                )
             }
-
         }
 
     }
