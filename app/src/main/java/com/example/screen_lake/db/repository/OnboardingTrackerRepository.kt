@@ -12,10 +12,6 @@ class OnboardingTrackerRepository @Inject constructor(private val onboardingTrac
         onboardingTrackerDao.insertOnboardingTracker(onboardingTracker)
     }
 
-    suspend fun deleteAllOnboardingTracker(){
-        onboardingTrackerDao.deleteAll()
-    }
-
     suspend fun getOnboardingTracker(): List<OnboardingTracker> {
       return onboardingTrackerDao.getOnboardingTracker()
     }

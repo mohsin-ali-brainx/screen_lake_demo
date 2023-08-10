@@ -9,8 +9,7 @@ import com.example.screen_lake.models.OnboardingTracker
 interface OnboardingTrackerDao {
     @Upsert
     suspend fun insertOnboardingTracker(tracker: OnboardingTracker)
-    @Query("DELETE FROM onboarding")
-    suspend fun deleteAll()
+
     @Query("SELECT * FROM onboarding")
     fun getOnboardingTracker(): List<OnboardingTracker>
 }

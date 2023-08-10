@@ -20,7 +20,10 @@ open class BaseViewModel : ViewModel() {
                     if (it==null){
                         insertOnboardingTracker(OnboardingTracker(step = OnboardingTrackStep.APP_LIST_SCREEN_STEP.step, started = true))
                     }else{
-                        insertOnboardingTracker(it.apply { step++ })
+                        val isFinished = it.step==OnboardingTrackStep.WORK_APP_BOTTOMSHEET_SCREEN_STEP.step
+                        insertOnboardingTracker(it.apply { step++
+                            started = !isFinished
+                            finished = isFinished})
                     }
                 }
             }

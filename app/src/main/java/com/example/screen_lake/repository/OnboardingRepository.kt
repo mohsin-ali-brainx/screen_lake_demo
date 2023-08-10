@@ -59,11 +59,6 @@ class OnboardingRepository @Inject constructor(
             onboardingTrackerRepository.insertOnboardingTracker(onboardingTracker)
         }
     }
-    suspend fun deleteAllOnboardingTracker(){
-        withContext(Dispatchers.IO){
-            onboardingTrackerRepository.deleteAllOnboardingTracker()
-        }
-    }
 
     suspend fun getOnboardingTracker(): List<OnboardingTracker> {
         return onboardingTrackerRepository.getOnboardingTracker()
