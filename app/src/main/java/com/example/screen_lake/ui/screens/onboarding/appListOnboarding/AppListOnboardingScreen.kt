@@ -50,6 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -66,7 +67,6 @@ import com.example.screen_lake.enums.AppDistractions
 import com.example.screen_lake.enums.OnboardingTrackStep
 import com.example.screen_lake.enums.getAppDistractionFromKey
 import com.example.screen_lake.enums.getAppDistractionList
-import com.example.screen_lake.extensions.getAppIconBitmap
 import com.example.screen_lake.models.AppInfo
 import com.example.screen_lake.models.OnboardingTracker
 import com.example.screen_lake.navigation.Screen
@@ -292,7 +292,7 @@ private fun MainBodyContent(
 @Composable
 private fun AppItems(app: ApplicationInfo?, info: AppInfo, onClick: (AppDistractions) -> Unit) {
     app?.let { appInfo ->
-        val appIcon = LocalContext.current.getAppIconBitmap(appInfo.packageName)
+        val appIcon = info.bitmapResource?.asImageBitmap()
 
         var isContextMenuVisible by rememberSaveable {
             mutableStateOf(false)

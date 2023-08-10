@@ -7,11 +7,17 @@ import android.content.pm.ApplicationInfo.CATEGORY_NEWS
 import android.content.pm.ApplicationInfo.CATEGORY_PRODUCTIVITY
 import android.content.pm.ApplicationInfo.CATEGORY_SOCIAL
 import android.content.pm.ApplicationInfo.CATEGORY_VIDEO
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
+import com.example.screen_lake.ScreenLakeApp
 import com.example.screen_lake.enums.AppDistractions
+import com.example.screen_lake.extensions.getAppIconBitmap
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
 import com.example.screenlake.utils.Constants.StringConstants.EMPTY
+import java.io.ByteArrayOutputStream
 
 @Entity("app_info")
 data class AppInfo(
@@ -20,11 +26,25 @@ data class AppInfo(
     var realAppName:String?=null,
     var distractionLevel:String?=null,
     var appPrimaryUse:String?=EMPTY,
-    var bitmapResource:String?=null,
+    var bitmapResource: Bitmap?=null,
     var isChecked:Boolean=false,
 ){
     fun doesMatchSearchQuery(query:String):Boolean{
        return realAppName?.contains(query,true)?:false
+    }
+}
+
+class BitmapConverter{
+    @TypeConverter
+    fun fromBitmap(bitmap: Bitmap):ByteArray{
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG,100,outputStream)
+        return outputStream.toByteArray()
+    }
+
+    @TypeConverter
+    fun toBitmap(byteArray: ByteArray):Bitmap{
+       return BitmapFactory.decodeByteArray(byteArray,0,byteArray.size)
     }
 }
 
@@ -37,7 +57,8 @@ fun List<ApplicationInfo>.toAppInfoList(context:Context,savedApp:List<AppInfo>?=
         else
             it.loadLabel(packageManager).toString()
         val appInfo = savedApp?.firstOrNull {app-> app.apk==it.packageName }
-        newAppInfoList.add(Pair(it, appInfo?:AppInfo(it.packageName,appName,AppDistractions.NOT_DEFINED.key)))
+        val iconBitmap = ScreenLakeApp.getContext().getAppIconBitmap(it.packageName)
+        newAppInfoList.add(Pair(it, appInfo?:AppInfo(it.packageName,appName,AppDistractions.NOT_DEFINED.key, bitmapResource = iconBitmap)))
     }
     return newAppInfoList
 }

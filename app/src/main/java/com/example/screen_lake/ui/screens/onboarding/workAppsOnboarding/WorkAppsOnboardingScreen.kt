@@ -49,7 +49,7 @@ import androidx.navigation.NavHostController
 import com.example.screen_lake.R
 import com.example.screen_lake.enums.AppUse
 import com.example.screen_lake.enums.OnboardingTrackStep
-import com.example.screen_lake.extensions.getAppIconBitmap
+import com.example.screen_lake.extensions.getAppIconImageBitmap
 import com.example.screen_lake.models.AppInfo
 import com.example.screen_lake.models.OnboardingTracker
 import com.example.screen_lake.navigation.Screen
@@ -281,7 +281,7 @@ private fun MainBodyContent(
 @Composable
 private fun AppItems(app: ApplicationInfo?, info: AppInfo, onClick: (Boolean) -> Unit) {
     app?.let { appInfo ->
-        val appIcon = LocalContext.current.getAppIconBitmap(appInfo.packageName)
+        val appIcon = LocalContext.current.getAppIconImageBitmap(appInfo.packageName)
         SelectableItem(
             modifier= Modifier
                 .fillMaxWidth()
