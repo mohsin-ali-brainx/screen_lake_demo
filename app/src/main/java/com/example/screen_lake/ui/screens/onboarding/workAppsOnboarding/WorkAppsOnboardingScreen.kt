@@ -43,7 +43,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
@@ -60,6 +59,8 @@ import com.example.screen_lake.ui.utils.TopBodyContent
 import com.example.screenlake.utils.Constants.IntegerConstants.FIVE
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
 import com.example.screenlake.utils.Constants.StringConstants.EMPTY
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -68,7 +69,9 @@ import kotlinx.coroutines.launch
 fun WorkAppListOnboardingScreen(
     navHostController: NavHostController,
     onboardingTracker: OnboardingTracker,
-    onBoardingViewModel: WorkAppsOnboardingViewModel = hiltViewModel()
+    dataState:StateFlow<WorkAppListOnboardingScreenState>,
+    uiEvents: SharedFlow<WorkAppAppListOnBoardingScreenUiEvents>,
+    onEvent:(WorkAppListOnBoardingScreenEvent)->Unit
 ) {
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberBottomSheetState(
@@ -80,10 +83,10 @@ fun WorkAppListOnboardingScreen(
     val bottomSheetScaffoldState =
         rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
 
-    val state by onBoardingViewModel.state.collectAsState()
+    val state by dataState.collectAsState()
 
     LaunchedEffect(key1 = true){
-        onBoardingViewModel.eventFlow.collectLatest {
+        uiEvents.collectLatest {
             when(it){
                 is WorkAppAppListOnBoardingScreenUiEvents.OpenQuestionsBottomSheet->{
                     bottomSheetScaffoldState.bottomSheetState.expand()
@@ -110,7 +113,7 @@ fun WorkAppListOnboardingScreen(
                 onButtonClicked = {
                     scope.launch {
                         bottomSheetScaffoldState.bottomSheetState.collapse()
-                        onBoardingViewModel.onEventUpdate(WorkAppListOnBoardingScreenEvent.OnAnswerQuestionsButtonClicked)
+                        onEvent(WorkAppListOnBoardingScreenEvent.OnAnswerQuestionsButtonClicked)
                     }
                 },
                 onBottomTextClicked = {
@@ -123,16 +126,18 @@ fun WorkAppListOnboardingScreen(
         sheetPeekHeight = 0.dp,
         sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
     ) {
-        MainScreenContent(onBoardingViewModel, bottomSheetScaffoldState, state)
+        MainScreenContent(bottomSheetScaffoldState, state){
+            onEvent(it)
+        }
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MainScreenContent(
-    onBoardingViewModel: WorkAppsOnboardingViewModel,
     bottomSheetScaffoldState: BottomSheetScaffoldState,
-    state: WorkAppListOnboardingScreenState
+    state: WorkAppListOnboardingScreenState,
+    onEvent:(WorkAppListOnBoardingScreenEvent)->Unit
 ) {
     Box(
         modifier = Modifier
@@ -162,7 +167,7 @@ private fun MainScreenContent(
                     }
             )
             MainBodyContent(
-                onBoardingViewModel, state,
+                state,
                 modifier = Modifier
                     .constrainAs(body) {
                         top.linkTo(topBody.bottom)
@@ -172,7 +177,9 @@ private fun MainScreenContent(
                         width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
                     },
-            )
+            ){
+                onEvent(it)
+            }
 
             BottomButtonContent(
                 buttonText=if (state.checkedItems== ZERO) null else "${stringResource(id = R.string.next)} (${state.checkedItems})",
@@ -187,7 +194,7 @@ private fun MainScreenContent(
                     }
             ) {
                 if (!state.disableButton){
-                    onBoardingViewModel.onEventUpdate(WorkAppListOnBoardingScreenEvent.OnNextClicked)
+                    onEvent(WorkAppListOnBoardingScreenEvent.OnNextClicked)
                 }
             }
         }
@@ -196,9 +203,9 @@ private fun MainScreenContent(
 
 @Composable
 private fun MainBodyContent(
-    onBoardingViewModel: WorkAppsOnboardingViewModel,
     state: WorkAppListOnboardingScreenState,
     modifier: Modifier,
+    onEvent:(WorkAppListOnBoardingScreenEvent)->Unit
 ) {
     val context = LocalContext.current
     state.apply {
@@ -222,7 +229,7 @@ private fun MainBodyContent(
                 text = searchText,
                 placeHolderText = stringResource(id = R.string.search_app),
                 onValueChange = {
-                    onBoardingViewModel.onEventUpdate(WorkAppListOnBoardingScreenEvent.SearchAppTextUpdated(it))
+                    onEvent(WorkAppListOnBoardingScreenEvent.SearchAppTextUpdated(it))
                 },
                 keyboardType = KeyboardType.Text,
                 paddingLeadingIconEnd = 8.dp,
@@ -249,7 +256,7 @@ private fun MainBodyContent(
                         AppItems(
                             info = item
                         ) {selected->
-                            onBoardingViewModel.onEventUpdate(
+                            onEvent(
                                 WorkAppListOnBoardingScreenEvent.OnAppSelected(
                                     index,
                                     item.copy(isChecked = selected, appPrimaryUse = if (selected) AppUse.WORK.key else EMPTY)
@@ -267,7 +274,7 @@ private fun MainBodyContent(
                         modifier = Modifier
                             .padding(horizontal = 8.dp, vertical = 2.dp)
                             .clickable {
-                                onBoardingViewModel.onEventUpdate(
+                                onEvent(
                                     WorkAppListOnBoardingScreenEvent.OnExpandAppList(
                                         !expandedList
                                     )

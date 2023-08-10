@@ -43,7 +43,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
@@ -51,26 +50,32 @@ import com.example.screen_lake.enums.AppBehaviors
 import com.example.screen_lake.enums.getAppBehaviorFromImportance
 import com.example.screen_lake.enums.getAppBehaviorList
 import com.example.screen_lake.models.Behavior
+import com.example.screen_lake.models.OnboardingTracker
 import com.example.screen_lake.navigation.Screen
 import com.example.screen_lake.ui.utils.BottomButtonContent
 import com.example.screen_lake.ui.utils.DropDownSelectionItem
 import com.example.screen_lake.ui.utils.OptionSelectedItem
 import com.example.screen_lake.ui.utils.TopBodyContent
 import com.example.screenlake.utils.Constants
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 @ExperimentalMaterialApi
 fun BehaviorOnboardingScreen(
     navHostController: NavHostController,
-    onBoardingViewModel: BehaviorOnboardingViewModel = hiltViewModel()
+    onboardingTracker: OnboardingTracker,
+    dataState:StateFlow<BehaviorOnboardingScreenState>,
+    uiEvents:SharedFlow<BehaviorOnBoardingScreenUiEvents>,
+    onEvent:(BehaviorOnBoardingScreenEvent)->Unit
 ) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
-    val state by onBoardingViewModel.state.collectAsState()
+    val state by dataState.collectAsState()
 
     LaunchedEffect(key1 = true){
-        onBoardingViewModel.eventFlow.collectLatest {
+        uiEvents.collectLatest {
             when(it){
                 is BehaviorOnBoardingScreenUiEvents.NavigateToWorkAppsOnboardingScreen->{
                     navigateToWorkAppsOnBoardingScreen(navHostController)
@@ -83,15 +88,17 @@ fun BehaviorOnboardingScreen(
     Scaffold(
         scaffoldState=scaffoldState
     ){
-        MainScreenContent(paddingValues = it,onBoardingViewModel,state)
+        MainScreenContent(paddingValues = it,state){
+            onEvent(it)
+        }
     }
 }
 
 @Composable
 private fun MainScreenContent(
     paddingValues: PaddingValues,
-    onBoardingViewModel: BehaviorOnboardingViewModel,
-    state: BehaviorOnboardingScreenState
+    state: BehaviorOnboardingScreenState,
+    onEvent : (BehaviorOnBoardingScreenEvent)->Unit
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -115,7 +122,7 @@ private fun MainScreenContent(
         )
 
         MainBodyContent(
-            onBoardingViewModel, state,
+            state,
             modifier = Modifier
                 .constrainAs(body) {
                     top.linkTo(topBody.bottom)
@@ -125,7 +132,9 @@ private fun MainScreenContent(
                     width = Dimension.fillToConstraints
                     height = Dimension.fillToConstraints
                 },
-        )
+        ){
+            onEvent(it)
+        }
 
         BottomButtonContent(
             stateDisabled = state.disableButton,
@@ -139,7 +148,7 @@ private fun MainScreenContent(
                 }
         ) {
             if (!state.disableButton){
-                onBoardingViewModel.onEventUpdate(BehaviorOnBoardingScreenEvent.OnNextClicked)
+                onEvent(BehaviorOnBoardingScreenEvent.OnNextClicked)
             }
         }
 
@@ -148,9 +157,9 @@ private fun MainScreenContent(
 
 @Composable
 private fun MainBodyContent(
-    onBoardingViewModel: BehaviorOnboardingViewModel,
     state: BehaviorOnboardingScreenState,
     modifier: Modifier,
+    onEvent : (BehaviorOnBoardingScreenEvent)->Unit
 ) {
     LazyColumn(
         modifier= modifier,
@@ -160,7 +169,7 @@ private fun MainBodyContent(
         itemsIndexed(state.appBehaviors){index, item ->
             BehaviorItems(item){
                 item.importance = it.importance
-                onBoardingViewModel.onEventUpdate(BehaviorOnBoardingScreenEvent.OnBehaviorSelected(index,item))
+                onEvent(BehaviorOnBoardingScreenEvent.OnBehaviorSelected(index,item))
             }
         }
     }

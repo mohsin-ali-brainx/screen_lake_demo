@@ -58,7 +58,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
@@ -78,6 +77,8 @@ import com.example.screen_lake.ui.utils.TopBodyContent
 import com.example.screenlake.utils.Constants.IntegerConstants.FIVE
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
 import com.example.screenlake.utils.Constants.StringConstants.EMPTY
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -86,9 +87,11 @@ import kotlinx.coroutines.launch
 fun AppListOnboardingScreen(
     navHostController: NavHostController,
     onboardingTracker: OnboardingTracker,
-    onBoardingViewModel: AppListOnBoardingViewModel = hiltViewModel()
+    dataState: StateFlow<AppListOnboardingScreenState>,
+    uiEvents : SharedFlow<AppListOnBoardingScreenUiEvents>,
+    onEvent : (AppListOnBoardingScreenEvent)->Unit
 ) {
-    val state by onBoardingViewModel.state.collectAsState()
+    val state by dataState.collectAsState()
     val scope = rememberCoroutineScope()
     val bottomSheetState = rememberBottomSheetState(
         initialValue = if (onboardingTracker.step==OnboardingTrackStep.APP_LIST_BOTTOMSHEET_SCREEN_STEP.step) BottomSheetValue.Expanded else BottomSheetValue.Collapsed,
@@ -100,7 +103,7 @@ fun AppListOnboardingScreen(
 
 
     LaunchedEffect(key1 = true){
-        onBoardingViewModel.eventFlow.collectLatest {
+        uiEvents.collectLatest {
             when(it){
                 is AppListOnBoardingScreenUiEvents.NavigateToBehaviorOnboardingScreen->{
                     navigateToBehaviorOnBoardingScreen(navHostController)
@@ -122,7 +125,7 @@ fun AppListOnboardingScreen(
                 onButtonClicked = {
                     scope.launch {
                         bottomSheetScaffoldState.bottomSheetState.collapse()
-                        onBoardingViewModel.onEventUpdate(AppListOnBoardingScreenEvent.UpdateOnBoardingTracker)
+                        onEvent(AppListOnBoardingScreenEvent.UpdateOnBoardingTracker)
                     }
                 })
         },
@@ -132,16 +135,18 @@ fun AppListOnboardingScreen(
         sheetPeekHeight = 0.dp,
         sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
     ) {
-        MainScreenContent(onBoardingViewModel, bottomSheetScaffoldState, state)
+        MainScreenContent(bottomSheetScaffoldState, state){
+            onEvent(it)
+        }
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MainScreenContent(
-    onBoardingViewModel: AppListOnBoardingViewModel,
     bottomSheetScaffoldState: BottomSheetScaffoldState,
-    state: AppListOnboardingScreenState
+    state: AppListOnboardingScreenState,
+    onEvent : (AppListOnBoardingScreenEvent)->Unit
 ) {
     Box(
         modifier = Modifier
@@ -171,7 +176,6 @@ private fun MainScreenContent(
                     }
             )
             MainBodyContent(
-                onBoardingViewModel = onBoardingViewModel,
                 state=state,
                 modifier = Modifier
                     .constrainAs(body) {
@@ -182,7 +186,9 @@ private fun MainScreenContent(
                         width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
                     },
-            )
+            ){
+
+            }
             BottomButtonContent(
                 stateDisabled = state.disableButton,
                 modifier = Modifier
@@ -195,7 +201,7 @@ private fun MainScreenContent(
                     }
             ) {
                 if (!state.disableButton){
-                    onBoardingViewModel.onEventUpdate(AppListOnBoardingScreenEvent.OnNextClicked)
+                    onEvent(AppListOnBoardingScreenEvent.OnNextClicked)
                 }
             }
         }
@@ -206,9 +212,9 @@ private fun MainScreenContent(
 
 @Composable
 private fun MainBodyContent(
-    onBoardingViewModel: AppListOnBoardingViewModel,
     state: AppListOnboardingScreenState,
     modifier: Modifier,
+    onEvent : (AppListOnBoardingScreenEvent)->Unit,
 ) {
     val context = LocalContext.current
     state.apply {
@@ -232,7 +238,7 @@ private fun MainBodyContent(
             text = searchText,
             placeHolderText = stringResource(id = R.string.search_app),
             onValueChange = {
-                onBoardingViewModel.onEventUpdate(AppListOnBoardingScreenEvent.SearchAppTextUpdated(it))
+                onEvent(AppListOnBoardingScreenEvent.SearchAppTextUpdated(it))
             },
             keyboardType = KeyboardType.Text,
             paddingLeadingIconEnd = 8.dp,
@@ -257,7 +263,7 @@ private fun MainBodyContent(
                     )
                 ) { index, item ->
                     AppItems(info = item) {
-                        onBoardingViewModel.onEventUpdate(
+                        onEvent(
                             AppListOnBoardingScreenEvent.OnAppSelected(
                                 index,
                                 item.copy(distractionLevel = it.key)
@@ -275,7 +281,7 @@ private fun MainBodyContent(
                 modifier = Modifier
                     .padding(horizontal = 8.dp, vertical = 2.dp)
                     .clickable {
-                        onBoardingViewModel.onEventUpdate(
+                        onEvent(
                             AppListOnBoardingScreenEvent.OnExpandAppList(
                                 !expandedList
                             )

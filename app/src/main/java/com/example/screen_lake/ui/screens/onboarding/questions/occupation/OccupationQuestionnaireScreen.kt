@@ -25,26 +25,29 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
 import com.example.screen_lake.ui.utils.BottomButtonContent
 import com.example.screen_lake.ui.utils.SelectableItem
 import com.example.screen_lake.ui.utils.TopBodyContent
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 @ExperimentalMaterialApi
 fun OccupationQuestionnaireOnboardingScreen(
     navHostController: NavHostController,
-    onBoardingViewModel: OccupationQuestionnaireViewModel = hiltViewModel()
+    dataState:StateFlow<OccupationQuestionnaireScreenState>,
+    uiEvents:SharedFlow<OccupationQuestionnaireScreenUiEvents>,
+    onEvent:(OccupationQuestionnaireScreenEvent)->Unit
 ) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
-    val state by onBoardingViewModel.state.collectAsState()
+    val state by dataState.collectAsState()
 
     LaunchedEffect(key1 = true){
-        onBoardingViewModel.eventFlow.collectLatest {
+        uiEvents.collectLatest {
             when(it){
                 is OccupationQuestionnaireScreenUiEvents.OpenAgeQuestionnaireScreen->{
 
@@ -57,15 +60,17 @@ fun OccupationQuestionnaireOnboardingScreen(
     Scaffold(
         scaffoldState=scaffoldState
     ){
-        MainScreenContent(paddingValues = it,onBoardingViewModel,state)
+        MainScreenContent(paddingValues = it,state){
+            onEvent(it)
+        }
     }
 }
 
 @Composable
 private fun MainScreenContent(
     paddingValues: PaddingValues,
-    onBoardingViewModel: OccupationQuestionnaireViewModel,
-    state: OccupationQuestionnaireScreenState
+    state: OccupationQuestionnaireScreenState,
+    onEvent:(OccupationQuestionnaireScreenEvent)->Unit
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -87,7 +92,7 @@ private fun MainScreenContent(
                 }
         )
         MainBodyContent(
-            onBoardingViewModel, state,
+            state,
             modifier = Modifier
                 .constrainAs(body) {
                     top.linkTo(topBody.bottom)
@@ -97,7 +102,9 @@ private fun MainScreenContent(
                     width = Dimension.fillToConstraints
                     height = Dimension.fillToConstraints
                 },
-        )
+        ){
+            onEvent(it)
+        }
         BottomButtonContent(
             stateDisabled = state.disableButton,
             modifier = Modifier
@@ -118,9 +125,9 @@ private fun MainScreenContent(
 
 @Composable
 private fun MainBodyContent(
-    onBoardingViewModel: OccupationQuestionnaireViewModel,
     state: OccupationQuestionnaireScreenState,
     modifier: Modifier,
+    onEvent:(OccupationQuestionnaireScreenEvent)->Unit
 ) {
     LazyColumn(
         modifier= modifier,
@@ -138,7 +145,7 @@ private fun MainBodyContent(
                 isChecked = item.isChecked,
                 imageContentScale = ContentScale.None
             ) {
-                onBoardingViewModel.onEventUpdate(OccupationQuestionnaireScreenEvent.OnOccupationSelected(index,item.copy(isChecked = !item.isChecked)))
+                onEvent(OccupationQuestionnaireScreenEvent.OnOccupationSelected(index,item.copy(isChecked = !item.isChecked)))
             }
         }
     }
