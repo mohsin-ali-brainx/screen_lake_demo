@@ -53,4 +53,15 @@ class OnboardingTrackerDaoTest {
         val onboardingTrackerResult = onboardingTrackerDao.getOnboardingTracker()
         assertThat(onboardingTrackerResult.size).isEqualTo(1)
     }
+
+    @Test
+    fun onboarding_tracker_steps_increment_correctly_for_same_id() = runTest {
+        val onboardingTracker = OnboardingTracker(id=1,step = OnboardingTrackStep.SPLASH_SCREEN_STEP.step)
+        onboardingTrackerDao.insertOnboardingTracker(onboardingTracker)
+        onboardingTrackerDao.insertOnboardingTracker(onboardingTracker.apply { step++ })
+        onboardingTrackerDao.insertOnboardingTracker(onboardingTracker.apply { step++ })
+        onboardingTrackerDao.insertOnboardingTracker(onboardingTracker.apply { step++ })
+        val onboardingTrackerResult = onboardingTrackerDao.getOnboardingTracker().first()
+        assertThat(onboardingTrackerResult.step).isEqualTo(OnboardingTrackStep.BEHAVIOUR_SCREEN_STEP.step)
+    }
 }
