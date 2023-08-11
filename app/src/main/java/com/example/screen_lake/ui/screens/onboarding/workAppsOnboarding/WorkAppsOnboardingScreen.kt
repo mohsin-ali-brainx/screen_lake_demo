@@ -25,6 +25,7 @@ import androidx.compose.material.BottomSheetValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.SwipeableDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberBottomSheetState
@@ -79,7 +80,7 @@ fun WorkAppListOnboardingScreen(
     val bottomSheetState = rememberBottomSheetState(
         initialValue = if (onboardingTracker.step == OnboardingTrackStep.WORK_APP_BOTTOMSHEET_SCREEN_STEP.step)
             BottomSheetValue.Expanded else BottomSheetValue.Collapsed,
-        animationSpec = spring(Spring.DampingRatioNoBouncy),
+        animationSpec = SwipeableDefaults.AnimationSpec,
         confirmStateChange = { false },
     )
     val bottomSheetScaffoldState =
