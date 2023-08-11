@@ -1,6 +1,7 @@
 package com.example.screen_lake.db.repository
 
 import com.example.screen_lake.db.dao.AppInfoDao
+import com.example.screen_lake.enums.AppDistractions
 import com.example.screen_lake.models.AppInfo
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -11,7 +12,11 @@ class AppInfoRepository @Inject constructor(private val appInfoDao: AppInfoDao){
         appInfoDao.insertInstalledAppInfo(appInfo)
     }
     suspend fun getAppInfoListWithDistractionItem():List<AppInfo>{
-        return appInfoDao.getAppInfoListWithDistractionItems()
+        return appInfoDao.getAppInfoListWithDistractionItems(listOf(
+            AppDistractions.DISTRACTING.key,
+            AppDistractions.VERY_DISTRACTING.key,
+            AppDistractions.NOT_A_PROBLEM.key
+        ))
     }
     suspend fun getAppInfoList():List<AppInfo>{
         return appInfoDao.getAllAppInfoList()
@@ -21,6 +26,6 @@ class AppInfoRepository @Inject constructor(private val appInfoDao: AppInfoDao){
     }
 
     suspend fun getAppInfoFromPackageName(packageName:String):AppInfo?{
-        return appInfoDao.getAllAppInfoList(packageName)
+        return appInfoDao.getAllAppInfoByPackageName(packageName)
     }
 }
