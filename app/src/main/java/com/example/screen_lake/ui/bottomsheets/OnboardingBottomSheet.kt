@@ -20,10 +20,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.screen_lake.ui.utils.RoundedCorneredButton
 import com.example.screenlake.utils.Constants
+import com.example.screenlake.utils.Constants.TestTags.BOTTOMSHEET_BUTTON_TEST_TAG
+import com.example.screenlake.utils.Constants.TestTags.ONBOARDING_BOTTOM_SHEET_TEST_TAG
+
 @Composable
 @ExperimentalMaterialApi
 fun OnBoardingBottomSheet(
@@ -37,6 +41,7 @@ fun OnBoardingBottomSheet(
     onBottomTextClicked: (() -> Unit)?=null
 ){
     Column(modifier = Modifier
+        .testTag(ONBOARDING_BOTTOM_SHEET_TEST_TAG)
         .fillMaxWidth()
         .wrapContentHeight()
         .padding(vertical = 24.dp, horizontal = 16.dp),
@@ -73,6 +78,7 @@ fun OnBoardingBottomSheet(
             buttonText = buttonText,
             buttonColor = MaterialTheme.colors.surface,
             textColor =  MaterialTheme.colors.primary,
+            modifier = Modifier.testTag(BOTTOMSHEET_BUTTON_TEST_TAG),
             onClickAction = onButtonClicked
         )
         if (addBottomText){

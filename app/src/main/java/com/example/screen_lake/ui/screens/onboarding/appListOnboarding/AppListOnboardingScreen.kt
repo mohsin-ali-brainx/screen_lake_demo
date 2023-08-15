@@ -55,6 +55,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -80,6 +81,9 @@ import com.example.screen_lake.ui.utils.TopBodyContent
 import com.example.screenlake.utils.Constants.IntegerConstants.FIVE
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
 import com.example.screenlake.utils.Constants.StringConstants.EMPTY
+import com.example.screenlake.utils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
+import com.example.screenlake.utils.Constants.TestTags.SHOW_MORE_OR_LESS_TEST_TAG
+import com.example.screenlake.utils.Constants.TestTags.TOP_BODY_CONTENT_TEST_TAG
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -171,6 +175,7 @@ private fun MainScreenContent(
                 title=stringResource(id = R.string.onboarding_distracting_apps_title),
                 description=stringResource(id = R.string.onboarding_distracting_apps_description),
                 modifier = Modifier
+                    .testTag(TOP_BODY_CONTENT_TEST_TAG)
                     .constrainAs(topBody) {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
@@ -178,7 +183,7 @@ private fun MainScreenContent(
                         width = Dimension.fillToConstraints
                     }
             )
-            MainBodyContent(
+            AppListMainBodyContent(
                 state=state,
                 modifier = Modifier
                     .constrainAs(body) {
@@ -214,7 +219,7 @@ private fun MainScreenContent(
 
 
 @Composable
-private fun MainBodyContent(
+fun AppListMainBodyContent(
     state: AppListOnboardingScreenState,
     modifier: Modifier,
     onEvent : (AppListOnBoardingScreenEvent)->Unit,
@@ -254,49 +259,57 @@ private fun MainBodyContent(
                 )
             }
         )
-        if(filteredList.isNotEmpty()) {
-            LazyColumn(
-                contentPadding = PaddingValues(vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.animateContentSize(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioLowBouncy,
-                        stiffness = Spring.StiffnessLow
-                    )
-                )
+        AnimatedVisibility(visible = filteredList.isNotEmpty()) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top,
             ) {
-                itemsIndexed(
-                    if (expandedList||searchText.isNotEmpty()||filteredList.size<=FIVE) filteredList else filteredList.subList(
-                        ZERO,
-                        FIVE
-                    )
-                ) { index, item ->
-                    AppItems(info = item) {
-                        onEvent(
-                            AppListOnBoardingScreenEvent.OnAppSelected(
-                                index,
-                                item.copy(distractionLevel = it.key)
+                LazyColumn(
+                    modifier = Modifier
+                        .testTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG)
+                        .animateContentSize(
+                            animationSpec = spring(
+                                dampingRatio = Spring.DampingRatioLowBouncy,
+                                stiffness = Spring.StiffnessLow
                             )
+                        ),
+                    contentPadding = PaddingValues(vertical = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    itemsIndexed(
+                        if (expandedList||searchText.isNotEmpty()||filteredList.size<=FIVE) filteredList else filteredList.subList(
+                            ZERO,
+                            FIVE
                         )
+                    ) { index, item ->
+                        InstalledAppItems(info = item) {
+                            onEvent(
+                                AppListOnBoardingScreenEvent.OnAppSelected(
+                                    index,
+                                    item.copy(distractionLevel = it.key)
+                                )
+                            )
+                        }
                     }
                 }
-            }
-            AnimatedVisibility(visible = searchText.isEmpty()&&filteredList.size>FIVE) {
-            Text(
-                text = if (expandedList) context.getString(R.string.show_less) else context.getString(R.string.show_more_apps, installedApps.size - FIVE),
-                style = MaterialTheme.typography.subtitle2,
-                color = MaterialTheme.colors.onSecondary,
-                maxLines = 1,
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 2.dp)
-                    .clickable {
-                        onEvent(
-                            AppListOnBoardingScreenEvent.OnExpandAppList(
-                                !expandedList
-                            )
-                        )
-                    }
-            )
+                AnimatedVisibility(visible = searchText.isEmpty()&&filteredList.size>FIVE) {
+                    Text(
+                        text = if (expandedList) context.getString(R.string.show_less) else context.getString(R.string.show_more_apps, installedApps.size - FIVE),
+                        style = MaterialTheme.typography.subtitle2,
+                        color = MaterialTheme.colors.onSecondary,
+                        maxLines = 1,
+                        modifier = Modifier
+                            .testTag(SHOW_MORE_OR_LESS_TEST_TAG)
+                            .padding(horizontal = 8.dp, vertical = 2.dp)
+                            .clickable {
+                                onEvent(
+                                    AppListOnBoardingScreenEvent.OnExpandAppList(
+                                        !expandedList
+                                    )
+                                )
+                            }
+                    )
+                }
             }
         }
     }
@@ -304,7 +317,7 @@ private fun MainBodyContent(
 }
 
 @Composable
-private fun AppItems(info: AppInfo, onClick: (AppDistractions) -> Unit) {
+private fun InstalledAppItems(info: AppInfo, onClick: (AppDistractions) -> Unit) {
         val appIcon = info.bitmapResource?.asImageBitmap()
 
         var isContextMenuVisible by rememberSaveable {
@@ -391,7 +404,7 @@ private fun AppItems(info: AppInfo, onClick: (AppDistractions) -> Unit) {
                             contentDescription = EMPTY,
                             tint = MaterialTheme.colors.surface,
                         )
-                        DistractionDropDownMenu(
+                        AppDistractionDropDownMenu(
                             isContextMenuVisible,
                             info.distractionLevel ?: AppDistractions.NOT_DEFINED.key,
                             onClick = { visible, selectedItem ->
@@ -410,7 +423,7 @@ private fun AppItems(info: AppInfo, onClick: (AppDistractions) -> Unit) {
 }
 
 @Composable
-private fun DistractionDropDownMenu(
+private fun AppDistractionDropDownMenu(
     isContextMenuVisible: Boolean,
     selectedKey: String,
     onClick: (Boolean, AppDistractions) -> Unit,

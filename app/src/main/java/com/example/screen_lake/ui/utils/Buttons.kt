@@ -19,13 +19,14 @@ fun RoundedCorneredButton(
     buttonColor:Color,
     textColor:Color,
     isClickable:Boolean=true,
+    modifier: Modifier,
     onClickAction: ()->Unit
 ){
     Button(
-        onClick = { onClickAction() },
+        onClick = { if (isClickable) onClickAction() else null},
         elevation = ButtonDefaults.elevation(defaultElevation = 0.dp),
         enabled = isClickable,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(56.dp),
         shape = RoundedCornerShape(16.dp),

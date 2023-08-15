@@ -26,12 +26,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.screen_lake.R
 import com.example.screenlake.utils.Constants
+import com.example.screenlake.utils.Constants.TestTags.ONBOARDING_NEXT_BUTTON_TEST_TAG
 
 @Composable
 fun TopBodyContent(
@@ -84,6 +86,7 @@ fun BottomButtonContent(
         RoundedCorneredButton(buttonText = buttonText?:stringResource(id = R.string.next),
             buttonColor = if (stateDisabled) MaterialTheme.colors.onPrimary else MaterialTheme.colors.surface,
             textColor = if (stateDisabled) MaterialTheme.colors.onError else MaterialTheme.colors.primary,
+            modifier = Modifier.testTag(ONBOARDING_NEXT_BUTTON_TEST_TAG),
             onClickAction = {
                 onClick()
             })

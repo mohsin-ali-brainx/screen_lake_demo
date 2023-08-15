@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -25,6 +26,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.screen_lake.ui.theme.appFonts
+import com.example.screenlake.utils.Constants
+import com.example.screenlake.utils.Constants.TestTags.TEXT_FIELD_PLACE_HOLDER_TEST_TAG
 
 @Composable
 fun CustomTextField(
@@ -47,7 +50,9 @@ fun CustomTextField(
                 .padding(start = paddingLeadingIconEnd, end = paddingTrailingIconStart)
         ) {
             BasicTextField(
-                modifier=Modifier.fillMaxWidth(),
+                modifier=Modifier
+                    .testTag(Constants.TestTags.CUSTOM_EDIT_TEXT_TEST_TAG)
+                    .fillMaxWidth(),
                 value = text,
                 cursorBrush = SolidColor(MaterialTheme.colors.onSecondary),
                 onValueChange = {
@@ -71,7 +76,9 @@ fun CustomTextField(
                         if (text.isEmpty()) {
                             placeHolderText?.let {
                                 Text(
-                                    modifier = Modifier.padding(0.dp),
+                                    modifier = Modifier
+                                        .testTag(TEXT_FIELD_PLACE_HOLDER_TEST_TAG)
+                                        .padding(0.dp),
                                     text = it,
                                     textAlign = TextAlign.Start,
                                     style = MaterialTheme.typography.body1,
