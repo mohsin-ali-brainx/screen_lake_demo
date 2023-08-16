@@ -61,7 +61,7 @@ class AppInfoDaoTest {
          appInfoDao.insertInstalledAppInfo(it)
         }
         val result = appInfoDao.getAllAppInfoList()
-        assertThat(result.size).isEqualTo(appInfoList.size)
+        assertThat(result).isEqualTo(appInfoList)
     }
 
     @Test
@@ -91,7 +91,9 @@ class AppInfoDaoTest {
             appInfoDao.insertInstalledAppInfo(it)
         }
         val result = appInfoDao.getAppInfoListWithDistractionItems(distractions)
-        assertThat(result.size).isEqualTo(3)
+        result.forEach {
+            assertThat(it.distractionLevel).isEqualTo(AppDistractions.DISTRACTING.key)
+        }
     }
 
     @Test

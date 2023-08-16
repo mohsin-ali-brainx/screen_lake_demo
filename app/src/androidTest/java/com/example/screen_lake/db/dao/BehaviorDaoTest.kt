@@ -73,7 +73,7 @@ class BehaviorDaoTest {
             behaviorDao.insertBehaviorInfo(it)
         }
         val result = behaviorDao.getBehaviorList()
-        Truth.assertThat(result.size).isEqualTo(list.size)
+        Truth.assertThat(result).isEqualTo(list)
     }
 
     @Test
