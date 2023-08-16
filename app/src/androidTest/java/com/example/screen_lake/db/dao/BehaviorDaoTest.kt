@@ -1,31 +1,46 @@
 package com.example.screen_lake.db.dao
 
 import android.content.Context
-import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.filters.SmallTest
 import com.example.screen_lake.R
 import com.example.screen_lake.db.ScreenLakeDatabase
 import com.example.screen_lake.enums.AppBehaviors
 import com.example.screen_lake.models.Behavior
 import com.google.common.truth.Truth
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import javax.inject.Inject
+import javax.inject.Named
 
+@ExperimentalCoroutinesApi
+@HiltAndroidTest
+@SmallTest
 class BehaviorDaoTest {
+
+    @get:Rule
+    var hiltRule = HiltAndroidRule(this)
+
+
     private lateinit var context: Context
     private lateinit var behaviorDao: BehaviorDao
-    private lateinit var db: ScreenLakeDatabase
+
+    @Inject
+    @Named("test_database")
+    lateinit var db:ScreenLakeDatabase
 
     private val behaviorList:ArrayList<Behavior> = arrayListOf()
 
     @Before
     fun createDb(){
         context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(
-            context,
-            ScreenLakeDatabase::class.java
-        ).build()
+        hiltRule.inject()
         behaviorDao = db.behaviorDao()
         behaviorList.apply {
             clear()
@@ -41,6 +56,11 @@ class BehaviorDaoTest {
         }
     }
 
+    @After
+    fun closeDb(){
+        db.close()
+    }
+
     @Test
     fun checkEmptyTableWhenNoDataInserted()= runTest {
         val result =behaviorDao.getBehaviorList()
@@ -52,8 +72,8 @@ class BehaviorDaoTest {
         list.forEach {
             behaviorDao.insertBehaviorInfo(it)
         }
-        val result = behaviorDao.getBehaviorList().size
-        Truth.assertThat(result).isEqualTo(list.size)
+        val result = behaviorDao.getBehaviorList()
+        Truth.assertThat(result.size).isEqualTo(list.size)
     }
 
     @Test
