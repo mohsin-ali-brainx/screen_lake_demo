@@ -1,4 +1,4 @@
-package com.example.screen_lake.db.ui.screens.onboarding.appListOnboarding
+package com.example.screen_lake.ui.screens.onboarding.appListOnboarding
 
 import android.content.Context
 import androidx.compose.material.ExperimentalMaterialApi
@@ -19,10 +19,6 @@ import com.example.screen_lake.enums.OnboardingTrackStep
 import com.example.screen_lake.enums.getAppDistractionFromKey
 import com.example.screen_lake.models.AppInfo
 import com.example.screen_lake.models.OnboardingTracker
-import com.example.screen_lake.ui.screens.onboarding.appListOnboarding.AppListMainBodyContent
-import com.example.screen_lake.ui.screens.onboarding.appListOnboarding.AppListOnBoardingScreenUiEvents
-import com.example.screen_lake.ui.screens.onboarding.appListOnboarding.AppListOnboardingScreen
-import com.example.screen_lake.ui.screens.onboarding.appListOnboarding.AppListOnboardingScreenState
 import com.example.screen_lake.ui.theme.ScreenLakeTheme
 import com.example.screenlake.utils.Constants.StringConstants.EMPTY
 import com.example.screenlake.utils.Constants.TestTags.CUSTOM_EDIT_TEXT_TEST_TAG

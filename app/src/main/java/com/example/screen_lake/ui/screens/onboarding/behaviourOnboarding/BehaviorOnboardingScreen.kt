@@ -37,6 +37,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -57,6 +58,7 @@ import com.example.screen_lake.ui.utils.DropDownSelectionItem
 import com.example.screen_lake.ui.utils.OptionSelectedItem
 import com.example.screen_lake.ui.utils.TopBodyContent
 import com.example.screenlake.utils.Constants
+import com.example.screenlake.utils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -88,15 +90,15 @@ fun BehaviorOnboardingScreen(
     Scaffold(
         scaffoldState=scaffoldState
     ){
-        MainScreenContent(paddingValues = it,state){
+        BehaviorMainScreenContent(paddingValues = it,state){
             onEvent(it)
         }
     }
 }
 
 @Composable
-private fun MainScreenContent(
-    paddingValues: PaddingValues,
+fun BehaviorMainScreenContent(
+    paddingValues: PaddingValues?,
     state: BehaviorOnboardingScreenState,
     onEvent : (BehaviorOnBoardingScreenEvent)->Unit
 ) {
@@ -121,7 +123,7 @@ private fun MainScreenContent(
                 }
         )
 
-        MainBodyContent(
+        BehaviorMainBodyContent(
             state,
             modifier = Modifier
                 .constrainAs(body) {
@@ -156,13 +158,13 @@ private fun MainScreenContent(
 }
 
 @Composable
-private fun MainBodyContent(
+fun BehaviorMainBodyContent(
     state: BehaviorOnboardingScreenState,
     modifier: Modifier,
     onEvent : (BehaviorOnBoardingScreenEvent)->Unit
 ) {
     LazyColumn(
-        modifier= modifier,
+        modifier= modifier.testTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG),
         contentPadding = PaddingValues(vertical = 16.dp, horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ){
