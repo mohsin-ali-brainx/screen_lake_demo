@@ -13,7 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.screen_lake.enums.OnboardingTrackStep
 import com.example.screen_lake.models.OnboardingTracker
 import com.example.screen_lake.navigation.ScreenLakeNavGraph
-import com.example.screen_lake.repository.OnboardingRepository
+import com.example.screen_lake.repository.OnboardingRepositoryImp
 import com.example.screen_lake.ui.theme.ScreenLakeTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +24,7 @@ import javax.inject.Inject
 @ExperimentalMaterialApi
 class MainActivity : ComponentActivity() {
     @Inject
-    lateinit var repository: OnboardingRepository
+    lateinit var repository: OnboardingRepositoryImp
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

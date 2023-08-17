@@ -4,14 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.screen_lake.enums.OnboardingTrackStep
 import com.example.screen_lake.models.OnboardingTracker
-import com.example.screen_lake.repository.OnboardingRepository
+import com.example.screen_lake.repository.OnboardingRepositoryImp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 open class BaseViewModel : ViewModel() {
     @Inject
-    lateinit var repository:OnboardingRepository
+    lateinit var repository:OnboardingRepositoryImp
 
     fun insertOnboardingTracker(){
         viewModelScope.launch(Dispatchers.IO){

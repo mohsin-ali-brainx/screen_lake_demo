@@ -1,5 +1,6 @@
 package com.example.screen_lake.db.dao
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
 import com.example.screen_lake.db.ScreenLakeDatabase
 import com.example.screen_lake.enums.AppDistractions
@@ -20,6 +21,9 @@ import javax.inject.Named
 @ExperimentalCoroutinesApi
 @SmallTest
 class AppInfoDaoTest {
+
+    @get:Rule
+    var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
