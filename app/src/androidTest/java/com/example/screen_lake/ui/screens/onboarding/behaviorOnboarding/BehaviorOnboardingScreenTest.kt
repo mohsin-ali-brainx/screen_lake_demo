@@ -18,6 +18,9 @@ import com.example.screen_lake.models.Behavior
 import com.example.screen_lake.ui.screens.onboarding.behaviourOnboarding.BehaviorMainBodyContent
 import com.example.screen_lake.ui.screens.onboarding.behaviourOnboarding.BehaviorOnboardingScreenState
 import com.example.screen_lake.ui.theme.ScreenLakeTheme
+import com.example.screenlake.utils.Constants.IntegerConstants.FOUR
+import com.example.screenlake.utils.Constants.IntegerConstants.ONE
+import com.example.screenlake.utils.Constants.IntegerConstants.TWO
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
 import com.example.screenlake.utils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
 import com.google.common.truth.Truth
@@ -98,12 +101,12 @@ class BehaviorOnboardingScreenTest {
         }
         composeTestRule.onAllNodesWithText(AppBehaviors.WANT_LESS.behaviorName).assertAll(
             hasText(AppBehaviors.WANT_LESS.behaviorName)
-        ).assertCountEquals(4)
+        ).assertCountEquals(FOUR)
         composeTestRule.onAllNodesWithText(AppBehaviors.STOP_THIS.behaviorName).assertAll(
             hasText(AppBehaviors.STOP_THIS.behaviorName)
-        ).assertCountEquals(2)
+        ).assertCountEquals(TWO)
         composeTestRule.onAllNodesWithText(AppBehaviors.NOT_A_PROBLEM.behaviorName).assertAll(
             hasText(AppBehaviors.NOT_A_PROBLEM.behaviorName)
-        ).assertCountEquals(1)
+        ).assertCountEquals(ONE)
     }
 }

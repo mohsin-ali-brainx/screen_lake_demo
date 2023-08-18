@@ -5,6 +5,7 @@ import androidx.test.filters.SmallTest
 import com.example.screen_lake.db.ScreenLakeDatabase
 import com.example.screen_lake.enums.AppDistractions
 import com.example.screen_lake.models.AppInfo
+import com.example.screenlake.utils.Constants.IntegerConstants.ONE
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -105,9 +106,9 @@ class AppInfoDaoTest {
         appInfoList.forEach {
             appInfoDao.insertInstalledAppInfo(it)
         }
-        appInfoDao.insertInstalledAppInfo(appInfoList.get(1).copy(distractionLevel = AppDistractions.NOT_A_PROBLEM.key))
+        appInfoDao.insertInstalledAppInfo(appInfoList[ONE].copy(distractionLevel = AppDistractions.NOT_A_PROBLEM.key))
         val listSize = appInfoDao.getAllAppInfoList().size
-        val appInfo = appInfoDao.getAllAppInfoByPackageName(appInfoList.get(1).apk)
+        val appInfo = appInfoDao.getAllAppInfoByPackageName(appInfoList[ONE].apk)
         val result = ((listSize==appInfoList.size) &&(appInfo?.distractionLevel==AppDistractions.NOT_A_PROBLEM.key))
         assertThat(result).isTrue()
     }

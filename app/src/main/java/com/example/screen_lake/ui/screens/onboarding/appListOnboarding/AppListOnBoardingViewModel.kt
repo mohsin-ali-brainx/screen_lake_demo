@@ -5,7 +5,6 @@ import com.example.screen_lake.appUtils.Resource
 import com.example.screen_lake.base.BaseViewModel
 import com.example.screen_lake.enums.AppDistractions
 import com.example.screen_lake.models.AppInfo
-import com.example.screen_lake.sharedPreference.SharedPreference
 import com.example.screen_lake.ui.screens.onboarding.appListOnboarding.useCase.InstalledAppInfoWithDistractionUseCase
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
 import com.example.screenlake.utils.Constants.StringConstants.EMPTY
@@ -45,7 +44,6 @@ sealed class AppListOnBoardingScreenUiEvents{
 
 @HiltViewModel
 class AppListOnBoardingViewModel @Inject constructor(
-    private val sharedPreference: SharedPreference,
     private val getInstalledAppInfoWithDistractionUseCase: InstalledAppInfoWithDistractionUseCase,
 ): BaseViewModel(){
     // region properties

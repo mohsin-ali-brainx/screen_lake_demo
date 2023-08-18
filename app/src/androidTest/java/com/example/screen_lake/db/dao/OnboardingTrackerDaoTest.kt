@@ -5,6 +5,7 @@ import androidx.test.filters.SmallTest
 import com.example.screen_lake.db.ScreenLakeDatabase
 import com.example.screen_lake.enums.OnboardingTrackStep
 import com.example.screen_lake.models.OnboardingTracker
+import com.example.screenlake.utils.Constants.IntegerConstants.ONE
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -68,15 +69,15 @@ class OnboardingTrackerDaoTest {
 
     @Test
     fun two_rows_should_not_created_with_same_ids()= runTest{
-        onboardingTrackerDao.insertOnboardingTracker(OnboardingTracker(id=1,step = OnboardingTrackStep.SPLASH_SCREEN_STEP.step))
-        onboardingTrackerDao.insertOnboardingTracker(OnboardingTracker(id=1,step = OnboardingTrackStep.APP_LIST_BOTTOMSHEET_SCREEN_STEP.step))
+        onboardingTrackerDao.insertOnboardingTracker(OnboardingTracker(id=ONE,step = OnboardingTrackStep.SPLASH_SCREEN_STEP.step))
+        onboardingTrackerDao.insertOnboardingTracker(OnboardingTracker(id=ONE,step = OnboardingTrackStep.APP_LIST_BOTTOMSHEET_SCREEN_STEP.step))
         val onboardingTrackerResult = onboardingTrackerDao.getOnboardingTracker()
-        assertThat(onboardingTrackerResult.size).isEqualTo(1)
+        assertThat(onboardingTrackerResult.size).isEqualTo(ONE)
     }
 
     @Test
     fun onboarding_tracker_steps_increment_correctly_for_same_id() = runTest {
-        val onboardingTracker = OnboardingTracker(id=1,step = OnboardingTrackStep.SPLASH_SCREEN_STEP.step)
+        val onboardingTracker = OnboardingTracker(id=ONE,step = OnboardingTrackStep.SPLASH_SCREEN_STEP.step)
         onboardingTrackerDao.insertOnboardingTracker(onboardingTracker)
         onboardingTrackerDao.insertOnboardingTracker(onboardingTracker.apply { step++ })
         onboardingTrackerDao.insertOnboardingTracker(onboardingTracker.apply { step++ })

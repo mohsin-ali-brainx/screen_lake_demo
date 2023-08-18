@@ -8,6 +8,7 @@ import com.example.screen_lake.R
 import com.example.screen_lake.db.ScreenLakeDatabase
 import com.example.screen_lake.enums.AppBehaviors
 import com.example.screen_lake.models.Behavior
+import com.example.screenlake.utils.Constants.IntegerConstants.ONE
 import com.google.common.truth.Truth
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -105,8 +106,8 @@ class BehaviorDaoTest {
         behaviorList.forEach {
             behaviorDao.insertBehaviorInfo(it)
         }
-        behaviorDao.insertBehaviorInfo(behaviorList.get(1).copy(importance = AppBehaviors.NOT_A_PROBLEM.importance))
-        val behavior = behaviorDao.getBehaviorByName(behaviorList.get(1).name)
+        behaviorDao.insertBehaviorInfo(behaviorList[ONE].copy(importance = AppBehaviors.NOT_A_PROBLEM.importance))
+        val behavior = behaviorDao.getBehaviorByName(behaviorList[ONE].name)
         Truth.assertThat(behavior?.importance).isEqualTo(AppBehaviors.NOT_A_PROBLEM.importance)
     }
 

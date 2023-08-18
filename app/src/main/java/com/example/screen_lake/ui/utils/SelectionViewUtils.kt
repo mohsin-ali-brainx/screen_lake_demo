@@ -160,16 +160,6 @@ fun SelectableItem(
                         contentDescription = EMPTY
                     )
                 }
-//                if(isChecked) {
-//                    Icon(
-//                        modifier = Modifier
-//                            .testTag(CHECKED_ICON_TEST_TAG)
-//                            .size(16.dp),
-//                        imageVector = Icons.Default.Done,
-//                        tint = MaterialTheme.colors.primary,
-//                        contentDescription = EMPTY
-//                    )
-//                }
             }
         }
 

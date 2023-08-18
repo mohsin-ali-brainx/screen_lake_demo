@@ -19,6 +19,9 @@ import com.example.screen_lake.enums.OnboardingTrackStep
 import com.example.screen_lake.models.AppInfo
 import com.example.screen_lake.models.OnboardingTracker
 import com.example.screen_lake.ui.theme.ScreenLakeTheme
+import com.example.screenlake.utils.Constants.IntegerConstants.FIVE
+import com.example.screenlake.utils.Constants.IntegerConstants.ONE
+import com.example.screenlake.utils.Constants.IntegerConstants.TWO
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
 import com.example.screenlake.utils.Constants.TestTags.CUSTOM_EDIT_TEXT_TEST_TAG
 import com.example.screenlake.utils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
@@ -103,19 +106,19 @@ class WorkAppsOnboardingScreenTest {
     @OptIn(ExperimentalMaterialApi::class)
     @Test
     fun CheckSearchTextIsNotEmpty(){
-        val CHROME ="chrome"
+        val chrome ="chrome"
         composeTestRule.setContent {
             ScreenLakeTheme {
                 WorkAppListOnboardingScreen(
                     navHostController = rememberNavController(),
                     onboardingTracker = OnboardingTracker(1,started = false, OnboardingTrackStep.WORK_APP_SCREEN_STEP.step),
-                    dataState = MutableStateFlow(WorkAppListOnboardingScreenState().copy(searchText = CHROME)).asStateFlow(),
+                    dataState = MutableStateFlow(WorkAppListOnboardingScreenState().copy(searchText = chrome)).asStateFlow(),
                     uiEvents = MutableSharedFlow<WorkAppAppListOnBoardingScreenUiEvents>().asSharedFlow(),
                     onEvent = {}
                 )
             }
         }
-        composeTestRule.onNodeWithTag(CUSTOM_EDIT_TEXT_TEST_TAG).assertTextEquals(CHROME)
+        composeTestRule.onNodeWithTag(CUSTOM_EDIT_TEXT_TEST_TAG).assertTextEquals(chrome)
     }
 
     @OptIn(ExperimentalMaterialApi::class)
@@ -157,22 +160,22 @@ class WorkAppsOnboardingScreenTest {
     @OptIn(ExperimentalMaterialApi::class)
     @Test
     fun CheckSearchTextIsNotEmptyAndFilterItemIsCorrect(){
-        val CHROME ="Chrome"
+        val chrome ="Chrome"
         val filteredList = workApps.filter {
-            it.realAppName.equals(CHROME, ignoreCase = true)
+            it.realAppName.equals(chrome, ignoreCase = true)
         }
         composeTestRule.setContent {
             ScreenLakeTheme {
                 WorkAppListOnboardingScreen(
                     navHostController = rememberNavController(),
                     onboardingTracker = OnboardingTracker(
-                        1,
+                        ONE,
                         started = true,
                         OnboardingTrackStep.WORK_APP_SCREEN_STEP.step
                     ),
                     dataState = MutableStateFlow(
                         WorkAppListOnboardingScreenState(
-                            searchText = CHROME, filteredList = filteredList, workAppsList = workApps
+                            searchText = chrome, filteredList = filteredList, workAppsList = workApps
                         )
                     ).asStateFlow(),
                     uiEvents = MutableSharedFlow<WorkAppAppListOnBoardingScreenUiEvents>().asSharedFlow(),
@@ -180,28 +183,28 @@ class WorkAppsOnboardingScreenTest {
                 )
             }
         }
-        composeTestRule.onAllNodesWithText(CHROME).assertCountEquals(2)
+        composeTestRule.onAllNodesWithText(chrome).assertCountEquals(2)
     }
 
     @OptIn(ExperimentalMaterialApi::class)
     @Test
     fun CheckSearchTextIsNotEmptyAndFilterItemIsIncorrect(){
-        val CHROME ="Chromewe"
+        val chrome ="Chromewe"
         val filteredList = workApps.filter {
-            it.realAppName.equals(CHROME, ignoreCase = true)
+            it.realAppName.equals(chrome, ignoreCase = true)
         }
         composeTestRule.setContent {
             ScreenLakeTheme {
                 WorkAppListOnboardingScreen(
                     navHostController = rememberNavController(),
                     onboardingTracker = OnboardingTracker(
-                        1,
+                        ONE,
                         started = true,
                         OnboardingTrackStep.WORK_APP_SCREEN_STEP.step
                     ),
                     dataState = MutableStateFlow(
                         WorkAppListOnboardingScreenState(
-                            searchText = CHROME, filteredList = filteredList, workAppsList = workApps
+                            searchText = chrome, filteredList = filteredList, workAppsList = workApps
                         )
                     ).asStateFlow(),
                     uiEvents = MutableSharedFlow<WorkAppAppListOnBoardingScreenUiEvents>().asSharedFlow(),
@@ -209,7 +212,7 @@ class WorkAppsOnboardingScreenTest {
                 )
             }
         }
-        composeTestRule.onAllNodesWithText(CHROME).assertCountEquals(1)
+        composeTestRule.onAllNodesWithText(chrome).assertCountEquals(1)
     }
 
     @OptIn(ExperimentalMaterialApi::class)
@@ -219,7 +222,7 @@ class WorkAppsOnboardingScreenTest {
             ScreenLakeTheme {
                 WorkAppListOnboardingScreen(
                     navHostController = rememberNavController(),
-                    onboardingTracker = OnboardingTracker(1,started = true, OnboardingTrackStep.WORK_APP_SCREEN_STEP.step),
+                    onboardingTracker = OnboardingTracker(ONE,started = true, OnboardingTrackStep.WORK_APP_SCREEN_STEP.step),
                     dataState = MutableStateFlow(WorkAppListOnboardingScreenState().copy(filteredList = workApps, workAppsList = workApps, expandedList = false)).asStateFlow() ,
                     uiEvents = MutableSharedFlow<WorkAppAppListOnBoardingScreenUiEvents>().asSharedFlow(),
                     onEvent = {}
@@ -227,7 +230,7 @@ class WorkAppsOnboardingScreenTest {
             }
         }
         composeTestRule.onNodeWithTag(SHOW_MORE_OR_LESS_TEST_TAG).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(SHOW_MORE_OR_LESS_TEST_TAG).assertTextEquals("Show more apps (${workApps.size-5})")
+        composeTestRule.onNodeWithTag(SHOW_MORE_OR_LESS_TEST_TAG).assertTextEquals("Show more apps (${workApps.size-FIVE})")
     }
 
     @OptIn(ExperimentalMaterialApi::class)
@@ -237,7 +240,7 @@ class WorkAppsOnboardingScreenTest {
             ScreenLakeTheme {
                 WorkAppListOnboardingScreen(
                     navHostController = rememberNavController(),
-                    onboardingTracker = OnboardingTracker(1,started = true, OnboardingTrackStep.WORK_APP_SCREEN_STEP.step),
+                    onboardingTracker = OnboardingTracker(ONE,started = true, OnboardingTrackStep.WORK_APP_SCREEN_STEP.step),
                     dataState = MutableStateFlow(WorkAppListOnboardingScreenState().copy(searchText = "Chrome")).asStateFlow() ,
                     uiEvents = MutableSharedFlow<WorkAppAppListOnBoardingScreenUiEvents>().asSharedFlow(),
                     onEvent = {}
@@ -254,8 +257,8 @@ class WorkAppsOnboardingScreenTest {
             ScreenLakeTheme {
                 WorkAppListOnboardingScreen(
                     navHostController = rememberNavController(),
-                    onboardingTracker = OnboardingTracker(1,started = true, OnboardingTrackStep.WORK_APP_SCREEN_STEP.step),
-                    dataState = MutableStateFlow(WorkAppListOnboardingScreenState().copy(workAppsList = workApps.subList(0,2))).asStateFlow() ,
+                    onboardingTracker = OnboardingTracker(ONE,started = true, OnboardingTrackStep.WORK_APP_SCREEN_STEP.step),
+                    dataState = MutableStateFlow(WorkAppListOnboardingScreenState().copy(workAppsList = workApps.subList(ZERO,TWO))).asStateFlow() ,
                     uiEvents = MutableSharedFlow<WorkAppAppListOnBoardingScreenUiEvents>().asSharedFlow(),
                     onEvent = {}
                 )
@@ -272,7 +275,7 @@ class WorkAppsOnboardingScreenTest {
             ScreenLakeTheme {
                 WorkAppListOnboardingScreen(
                     navHostController = rememberNavController(),
-                    onboardingTracker = OnboardingTracker(1,started = true, OnboardingTrackStep.WORK_APP_SCREEN_STEP.step),
+                    onboardingTracker = OnboardingTracker(ONE,started = true, OnboardingTrackStep.WORK_APP_SCREEN_STEP.step),
                     dataState = MutableStateFlow(WorkAppListOnboardingScreenState().copy(checkedItems = checkedList.size)).asStateFlow() ,
                     uiEvents = MutableSharedFlow<WorkAppAppListOnBoardingScreenUiEvents>().asSharedFlow(),
                     onEvent = {}

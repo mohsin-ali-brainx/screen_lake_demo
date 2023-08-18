@@ -8,15 +8,6 @@ import android.graphics.drawable.Drawable
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 
-fun Context.getAppIconImageBitmap(appPackageName:String): ImageBitmap? {
-    return try {
-        packageManager.getApplicationIcon(appPackageName).drawableToBitmap()?.asImageBitmap()
-    } catch (e: Exception) {
-        // Handle any exceptions that might occur during drawable retrieval
-        null
-    }
-}
-
 fun Context.getAppIconBitmap(appPackageName: String):Bitmap?{
     return try {
         packageManager.getApplicationIcon(appPackageName).drawableToBitmap()
