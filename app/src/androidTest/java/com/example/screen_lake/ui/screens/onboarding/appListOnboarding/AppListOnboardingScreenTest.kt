@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertAny
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.navigation.compose.rememberNavController
@@ -175,44 +177,63 @@ class AppListOnboardingScreenTest {
         )
     }
 
-//    @OptIn(ExperimentalMaterialApi::class)
-//    @Test
-//    fun CheckSearchTextIsNotEmptyAndFilterItemIsCorrect(){
-//        val CHROME ="Chrome"
-//        val filteredList = appInfoList.filter {
-//            it.realAppName.equals(CHROME, ignoreCase = true)
-//        }
-//        composeTestRule.setContent {
-//            ScreenLakeTheme {
-//                AppListOnboardingScreen(
-//                    navHostController = rememberNavController(),
-//                    onboardingTracker = OnboardingTracker(
-//                        1,
-//                        started = true,
-//                        OnboardingTrackStep.APP_LIST_SCREEN_STEP.step
-//                    ),
-//                    dataState = MutableStateFlow(
-//                        AppListOnboardingScreenState(
-//                            searchText = CHROME, filteredList = filteredList, installedApps = appInfoList
-//                        )
-//                    ).asStateFlow(),
-//                    uiEvents = MutableSharedFlow<AppListOnBoardingScreenUiEvents>().asSharedFlow(),
-//                    onEvent = {}
-//                )
-//            }
-//        }
-//        composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).onChildren().assertAll(
-//            hasText(CHROME)
-//        ).assertCountEquals(filteredList.size)
-////        composeTestRule.onNodeWithTag(CUSTOM_EDIT_TEXT_TEST_TAG).assertTextEquals(CHROME)
-////        composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).assertExists()
-////        composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).assert(hasAnyChild(hasText(CHROME)))
-////        Truth.assertThat(composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).onChildren()).isNotEqualTo(ZERO)
-////        composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).onChildren().assertAny(
-////            hasAnyChild(hasText(CHROME, ignoreCase = true))
-//////            hasText(CHROME, ignoreCase = true)
-////        )
-//    }
+    @OptIn(ExperimentalMaterialApi::class)
+    @Test
+    fun CheckSearchTextIsNotEmptyAndFilterItemIsCorrect(){
+        val CHROME ="Chrome"
+        val filteredList = appInfoList.filter {
+            it.realAppName.equals(CHROME, ignoreCase = true)
+        }
+        composeTestRule.setContent {
+            ScreenLakeTheme {
+                AppListOnboardingScreen(
+                    navHostController = rememberNavController(),
+                    onboardingTracker = OnboardingTracker(
+                        1,
+                        started = true,
+                        OnboardingTrackStep.APP_LIST_SCREEN_STEP.step
+                    ),
+                    dataState = MutableStateFlow(
+                        AppListOnboardingScreenState(
+                            searchText = CHROME, filteredList = filteredList, installedApps = appInfoList
+                        )
+                    ).asStateFlow(),
+                    uiEvents = MutableSharedFlow<AppListOnBoardingScreenUiEvents>().asSharedFlow(),
+                    onEvent = {}
+                )
+            }
+        }
+        composeTestRule.onAllNodesWithText(CHROME).assertCountEquals(2)
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Test
+    fun CheckSearchTextIsNotEmptyAndFilterItemIsIncorrect(){
+        val CHROME ="Chrome"
+        val filteredList = appInfoList.filter {
+            it.realAppName.equals(CHROME, ignoreCase = true)
+        }
+        composeTestRule.setContent {
+            ScreenLakeTheme {
+                AppListOnboardingScreen(
+                    navHostController = rememberNavController(),
+                    onboardingTracker = OnboardingTracker(
+                        1,
+                        started = true,
+                        OnboardingTrackStep.APP_LIST_SCREEN_STEP.step
+                    ),
+                    dataState = MutableStateFlow(
+                        AppListOnboardingScreenState(
+                            searchText = CHROME, filteredList = filteredList, installedApps = appInfoList
+                        )
+                    ).asStateFlow(),
+                    uiEvents = MutableSharedFlow<AppListOnBoardingScreenUiEvents>().asSharedFlow(),
+                    onEvent = {}
+                )
+            }
+        }
+        composeTestRule.onAllNodesWithText(CHROME).assertCountEquals(1)
+    }
 
     @OptIn(ExperimentalMaterialApi::class)
     @Test

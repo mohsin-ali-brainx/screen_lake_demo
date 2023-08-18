@@ -111,7 +111,8 @@ class WorkAppsOnboardingViewModel @Inject constructor(
             when (resource){
                 is Resource.Success->{
                     resource.data?.apply {
-                        _state.value = _state.value.copy(isLoading = false, workAppsList = this, filteredList = this)
+                        val checkedItems = this.filter { it.isChecked }.size
+                        _state.value = _state.value.copy(isLoading = false, workAppsList = this, filteredList = this, checkedItems = checkedItems, disableButton =checkedItems== ZERO )
                     }
                 }
                 is Resource.Error->{}
@@ -126,6 +127,7 @@ class WorkAppsOnboardingViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val existingAppInfo =  repository.getAppInfoFromPackageName(appInfo.apk)?.apply{
                 appPrimaryUse = appInfo.appPrimaryUse
+                isChecked = appInfo.isChecked
             }
             repository.insertAppInfo(existingAppInfo?:appInfo)
         }

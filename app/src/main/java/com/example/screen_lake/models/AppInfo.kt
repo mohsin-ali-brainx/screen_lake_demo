@@ -77,7 +77,7 @@ fun List<ApplicationInfo>.toWorkAppList(context:Context,savedWorkApp:List<AppInf
         }
     }
     filteredList.forEach {
-        val appInfo = savedWorkApp?.firstOrNull {app-> app.appPrimaryUse!=null}
+        val appInfo = savedWorkApp?.firstOrNull {app-> app.appPrimaryUse!=null && app.apk==it.apk}
         with(it){
             appInfo?.apply {
                 this@with.appPrimaryUse = appPrimaryUse

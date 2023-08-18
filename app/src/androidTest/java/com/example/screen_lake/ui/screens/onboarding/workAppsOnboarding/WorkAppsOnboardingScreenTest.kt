@@ -3,10 +3,12 @@ package com.example.screen_lake.ui.screens.onboarding.workAppsOnboarding
 import android.content.Context
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.navigation.compose.rememberNavController
@@ -151,42 +153,64 @@ class WorkAppsOnboardingScreenTest {
         }
         Truth.assertThat(composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).onChildren()).isNotEqualTo(ZERO)
     }
-//    @OptIn(ExperimentalMaterialApi::class)
-//    @Test
-//    fun CheckLazyColumnIfCheckedAreCorrect(){
-//        composeTestRule.setContent {
-//            ScreenLakeTheme {
-//                WorkAppMainBodyContent(
-//                    state = WorkAppListOnboardingScreenState(
-//                        filteredList = workApps,
-//                        workAppsList = workApps,
-//                        expandedList = false
-//                    ), modifier = Modifier
-//                ) {
-//
-//                }
-//            }
-//        }
-//        composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).assertExists()
-//        composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).onChildren().assertCountEquals(workApps.size)
-////        composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).onChildren().assertAll(
-////            hasTestTag(CHECKED_ICON_TEST_TAG)
-////        )
-////        composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).fetchSemanticsNode().children.forEach {
-////            val has =  hasTestTag(CHECKED_ICON_TEST_TAG)
-////            print(has)
-////        }
-////        composeTestRule.onAllNodesWithTag(CHECKED_ICON_TEST_TAG).assertCountEquals(workApps.filter { it.isChecked }.size)
-////        Truth.assertThat()
-////        composeTestRule.onNodeWithTag(CHECKED_ICON_TEST_TAG).assertExists()
-////        composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).onChild().assert(
-////            hasTestTag(CHECKED_ICON_TEST_TAG)
-////        )
-//
-////            .onChildren().ass(
-////            hasTestTag(CHECKED_ICON_TEST_TAG)
-////        )
-//    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Test
+    fun CheckSearchTextIsNotEmptyAndFilterItemIsCorrect(){
+        val CHROME ="Chrome"
+        val filteredList = workApps.filter {
+            it.realAppName.equals(CHROME, ignoreCase = true)
+        }
+        composeTestRule.setContent {
+            ScreenLakeTheme {
+                WorkAppListOnboardingScreen(
+                    navHostController = rememberNavController(),
+                    onboardingTracker = OnboardingTracker(
+                        1,
+                        started = true,
+                        OnboardingTrackStep.WORK_APP_SCREEN_STEP.step
+                    ),
+                    dataState = MutableStateFlow(
+                        WorkAppListOnboardingScreenState(
+                            searchText = CHROME, filteredList = filteredList, workAppsList = workApps
+                        )
+                    ).asStateFlow(),
+                    uiEvents = MutableSharedFlow<WorkAppAppListOnBoardingScreenUiEvents>().asSharedFlow(),
+                    onEvent = {}
+                )
+            }
+        }
+        composeTestRule.onAllNodesWithText(CHROME).assertCountEquals(2)
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Test
+    fun CheckSearchTextIsNotEmptyAndFilterItemIsIncorrect(){
+        val CHROME ="Chromewe"
+        val filteredList = workApps.filter {
+            it.realAppName.equals(CHROME, ignoreCase = true)
+        }
+        composeTestRule.setContent {
+            ScreenLakeTheme {
+                WorkAppListOnboardingScreen(
+                    navHostController = rememberNavController(),
+                    onboardingTracker = OnboardingTracker(
+                        1,
+                        started = true,
+                        OnboardingTrackStep.WORK_APP_SCREEN_STEP.step
+                    ),
+                    dataState = MutableStateFlow(
+                        WorkAppListOnboardingScreenState(
+                            searchText = CHROME, filteredList = filteredList, workAppsList = workApps
+                        )
+                    ).asStateFlow(),
+                    uiEvents = MutableSharedFlow<WorkAppAppListOnBoardingScreenUiEvents>().asSharedFlow(),
+                    onEvent = {}
+                )
+            }
+        }
+        composeTestRule.onAllNodesWithText(CHROME).assertCountEquals(1)
+    }
 
     @OptIn(ExperimentalMaterialApi::class)
     @Test

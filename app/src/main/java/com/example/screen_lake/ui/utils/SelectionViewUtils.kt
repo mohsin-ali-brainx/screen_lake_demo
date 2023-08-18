@@ -1,5 +1,6 @@
 package com.example.screen_lake.ui.utils
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -129,7 +130,7 @@ fun SelectableItem(
                     maxLines = 1,
                 )
             }
-            Box(modifier = Modifier.then(
+            Row(modifier = Modifier.then(
                 if (isChecked){
                     Modifier
                         .size(20.dp)
@@ -146,16 +147,29 @@ fun SelectableItem(
                         )
                 }
             ),
-                contentAlignment = Alignment.Center,
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ){
-                if(isChecked) {
+                AnimatedVisibility(visible = isChecked) {
                     Icon(
-                        modifier = Modifier.testTag(CHECKED_ICON_TEST_TAG).size(16.dp),
+                        modifier = Modifier
+                            .testTag(CHECKED_ICON_TEST_TAG)
+                            .size(16.dp),
                         imageVector = Icons.Default.Done,
                         tint = MaterialTheme.colors.primary,
                         contentDescription = EMPTY
                     )
                 }
+//                if(isChecked) {
+//                    Icon(
+//                        modifier = Modifier
+//                            .testTag(CHECKED_ICON_TEST_TAG)
+//                            .size(16.dp),
+//                        imageVector = Icons.Default.Done,
+//                        tint = MaterialTheme.colors.primary,
+//                        contentDescription = EMPTY
+//                    )
+//                }
             }
         }
 
