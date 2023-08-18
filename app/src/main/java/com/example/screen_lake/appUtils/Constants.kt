@@ -28,6 +28,7 @@ object Constants {
         const val TEXT_FIELD_PLACE_HOLDER_TEST_TAG = "edit_text_place_holder_tag"
         const val MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG = "main_content_body_lazy_column_tag"
         const val SHOW_MORE_OR_LESS_TEST_TAG = "show_more_or_less_tag"
+        const val CHECKED_ICON_TEST_TAG = "checked_icon_test_tag"
 
     }
 }

@@ -102,25 +102,3 @@ fun List<ApplicationInfo>.toAppInfoList(context:Context,savedApp:List<AppInfo>?=
     }
     return newAppInfoList
 }
-
-fun List<ApplicationInfo>.toWorkAppInfoList(context:Context,savedWorkApp:List<AppInfo>?=null):ArrayList<Pair<ApplicationInfo,AppInfo>>{
-    val filteredList = ArrayList<Pair<ApplicationInfo,AppInfo>>().apply{
-        clear()
-        addAll(toAppInfoList(context).filter {
-            it.first.category == CATEGORY_PRODUCTIVITY
-                    ||it.first.category==CATEGORY_SOCIAL
-                    ||it.first.category== CATEGORY_NEWS
-                    ||it.first.category== CATEGORY_IMAGE
-                    ||it.first.category== CATEGORY_VIDEO})
-    }
-    filteredList.forEach {
-        val appInfo = savedWorkApp?.firstOrNull {app-> app.appPrimaryUse!=null}
-        with(it.second){
-            appInfo?.apply {
-                this@with.appPrimaryUse = appPrimaryUse
-                this@with.isChecked = isChecked
-            }
-        }
-    }
-    return filteredList
-}

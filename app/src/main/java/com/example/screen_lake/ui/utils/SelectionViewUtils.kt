@@ -24,8 +24,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.example.screenlake.utils.Constants.StringConstants.EMPTY
+import com.example.screenlake.utils.Constants.TestTags.CHECKED_ICON_TEST_TAG
 
 @Composable
 fun SelectableItem(
@@ -148,7 +150,7 @@ fun SelectableItem(
             ){
                 if(isChecked) {
                     Icon(
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.testTag(CHECKED_ICON_TEST_TAG).size(16.dp),
                         imageVector = Icons.Default.Done,
                         tint = MaterialTheme.colors.primary,
                         contentDescription = EMPTY
