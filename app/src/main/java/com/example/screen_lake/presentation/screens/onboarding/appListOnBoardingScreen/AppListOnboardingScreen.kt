@@ -71,16 +71,17 @@ import com.example.screen_lake.appUtils.enums.getAppDistractionFromKey
 import com.example.screen_lake.appUtils.enums.getAppDistractionList
 import com.example.screen_lake.domain.models.AppInfo
 import com.example.screen_lake.domain.models.OnboardingTracker
-import com.example.screen_lake.presentation.navigation.Screen
-import com.example.screen_lake.presentation.viewmodels.AppListOnBoardingScreenEvent
-import com.example.screen_lake.presentation.viewmodels.AppListOnBoardingScreenUiEvents
-import com.example.screen_lake.presentation.viewmodels.AppListOnboardingScreenState
 import com.example.screen_lake.presentation.bottomsheets.OnBoardingBottomSheet
+import com.example.screen_lake.presentation.navigation.Screen
 import com.example.screen_lake.presentation.utils.BottomButtonContent
 import com.example.screen_lake.presentation.utils.CustomTextField
 import com.example.screen_lake.presentation.utils.DropDownSelectionItem
+import com.example.screen_lake.presentation.utils.NoRippleInteractionSource
 import com.example.screen_lake.presentation.utils.OptionSelectedItem
 import com.example.screen_lake.presentation.utils.TopBodyContent
+import com.example.screen_lake.presentation.viewmodels.AppListOnBoardingScreenEvent
+import com.example.screen_lake.presentation.viewmodels.AppListOnBoardingScreenUiEvents
+import com.example.screen_lake.presentation.viewmodels.AppListOnboardingScreenState
 import com.example.screenlake.utils.Constants.IntegerConstants.FIVE
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
 import com.example.screenlake.utils.Constants.StringConstants.EMPTY
@@ -160,7 +161,9 @@ private fun MainScreenContent(
 ) {
     Box(
         modifier = Modifier
-            .clickable(!bottomSheetScaffoldState.bottomSheetState.isExpanded) {
+            .clickable(enabled = !bottomSheetScaffoldState.bottomSheetState.isExpanded,
+                interactionSource = NoRippleInteractionSource(),
+                indication = null){
 
             }
             .alpha(if (bottomSheetScaffoldState.bottomSheetState.isExpanded) 0.5f else 1f)
@@ -170,7 +173,7 @@ private fun MainScreenContent(
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxSize(1f)
-                .padding(bottom = 16.dp, top = 0.dp)
+                .padding(bottom = 16.dp, top = 0.dp),
         ) {
             val (nextButton, topBody, body) = createRefs()
             TopBodyContent(
@@ -436,6 +439,7 @@ private fun AppDistractionDropDownMenu(
         expanded = isContextMenuVisible,
         onDismissRequest = { onDismiss(false) },
         modifier = Modifier
+            .padding(0.dp)
             .background(
                 color = MaterialTheme.colors.background,
             )

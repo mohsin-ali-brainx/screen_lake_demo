@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -122,9 +123,11 @@ fun DropDownSelectionItem(
     onClick: () -> Unit
 ){
     DropdownMenuItem(
-        modifier = Modifier.widthIn(200.dp),
-        contentPadding = PaddingValues(horizontal = 8.dp),
-        onClick = { onClick() }) {
+        modifier = Modifier.heightIn(20.dp).widthIn(200.dp),
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+        onClick = { onClick() },
+        interactionSource = NoRippleInteractionSource()
+    ) {
         ConstraintLayout() {
             val (iconStart, title, checkedIcon) = createRefs()
             Box(
@@ -141,7 +144,7 @@ fun DropDownSelectionItem(
             }
             Text(
                 text = text,
-                style = MaterialTheme.typography.body2,
+                style = if (selectedKey==key) MaterialTheme.typography.subtitle2 else MaterialTheme.typography.body1 ,
                 color = if (selectedKey == key) MaterialTheme.colors.onBackground else MaterialTheme.colors.onError,
                 textAlign = TextAlign.Start,
                 modifier = Modifier

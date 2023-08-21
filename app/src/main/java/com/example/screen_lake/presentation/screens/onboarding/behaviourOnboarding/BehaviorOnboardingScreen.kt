@@ -53,13 +53,14 @@ import com.example.screen_lake.appUtils.enums.getAppBehaviorList
 import com.example.screen_lake.domain.models.Behavior
 import com.example.screen_lake.domain.models.OnboardingTracker
 import com.example.screen_lake.presentation.navigation.Screen
+import com.example.screen_lake.presentation.utils.BottomButtonContent
+import com.example.screen_lake.presentation.utils.DropDownSelectionItem
+import com.example.screen_lake.presentation.utils.Extensions.noRippleClickable
+import com.example.screen_lake.presentation.utils.OptionSelectedItem
+import com.example.screen_lake.presentation.utils.TopBodyContent
 import com.example.screen_lake.presentation.viewmodels.BehaviorOnBoardingScreenEvent
 import com.example.screen_lake.presentation.viewmodels.BehaviorOnBoardingScreenUiEvents
 import com.example.screen_lake.presentation.viewmodels.BehaviorOnboardingScreenState
-import com.example.screen_lake.presentation.utils.BottomButtonContent
-import com.example.screen_lake.presentation.utils.DropDownSelectionItem
-import com.example.screen_lake.presentation.utils.OptionSelectedItem
-import com.example.screen_lake.presentation.utils.TopBodyContent
 import com.example.screenlake.utils.Constants
 import com.example.screenlake.utils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
 import kotlinx.coroutines.flow.SharedFlow
@@ -107,6 +108,9 @@ fun BehaviorMainScreenContent(
 ) {
     ConstraintLayout(
         modifier = Modifier
+            .noRippleClickable(false) {
+
+            }
             .background(MaterialTheme.colors.primary)
             .fillMaxSize(1f)
             .padding(bottom = 16.dp, top = 0.dp)

@@ -54,15 +54,16 @@ import com.example.screen_lake.appUtils.enums.AppUse
 import com.example.screen_lake.appUtils.enums.OnboardingTrackStep
 import com.example.screen_lake.domain.models.AppInfo
 import com.example.screen_lake.domain.models.OnboardingTracker
+import com.example.screen_lake.presentation.bottomsheets.OnBoardingBottomSheet
 import com.example.screen_lake.presentation.navigation.Screen
+import com.example.screen_lake.presentation.utils.BottomButtonContent
+import com.example.screen_lake.presentation.utils.CustomTextField
+import com.example.screen_lake.presentation.utils.NoRippleInteractionSource
+import com.example.screen_lake.presentation.utils.SelectableItem
+import com.example.screen_lake.presentation.utils.TopBodyContent
 import com.example.screen_lake.presentation.viewmodels.WorkAppAppListOnBoardingScreenUiEvents
 import com.example.screen_lake.presentation.viewmodels.WorkAppListOnBoardingScreenEvent
 import com.example.screen_lake.presentation.viewmodels.WorkAppListOnboardingScreenState
-import com.example.screen_lake.presentation.bottomsheets.OnBoardingBottomSheet
-import com.example.screen_lake.presentation.utils.BottomButtonContent
-import com.example.screen_lake.presentation.utils.CustomTextField
-import com.example.screen_lake.presentation.utils.SelectableItem
-import com.example.screen_lake.presentation.utils.TopBodyContent
 import com.example.screenlake.utils.Constants.IntegerConstants.FIVE
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
 import com.example.screenlake.utils.Constants.StringConstants.EMPTY
@@ -150,7 +151,9 @@ private fun MainScreenContent(
 ) {
     Box(
         modifier = Modifier
-            .clickable(!bottomSheetScaffoldState.bottomSheetState.isExpanded) {
+            .clickable(enabled = !bottomSheetScaffoldState.bottomSheetState.isExpanded,
+                interactionSource = NoRippleInteractionSource(),
+                indication = null){
 
             }
             .alpha(if (bottomSheetScaffoldState.bottomSheetState.isExpanded) 0.5f else 1f)
