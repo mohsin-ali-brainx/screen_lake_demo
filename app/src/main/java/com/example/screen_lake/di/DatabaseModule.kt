@@ -2,11 +2,11 @@ package com.example.screen_lake.di
 
 import android.app.Application
 import androidx.room.Room
-import com.example.screen_lake.db.ScreenLakeDatabase
-import com.example.screen_lake.db.dao.AppInfoDao
-import com.example.screen_lake.db.dao.BehaviorDao
-import com.example.screen_lake.db.dao.OnboardingTrackerDao
-import com.example.screen_lake.db.dao.SocialMediaUserDao
+import com.example.screen_lake.dataSource.db.ScreenLakeDatabase
+import com.example.screen_lake.dataSource.db.dao.AppInfoDao
+import com.example.screen_lake.dataSource.db.dao.BehaviorDao
+import com.example.screen_lake.dataSource.db.dao.OnboardingTrackerDao
+import com.example.screen_lake.dataSource.db.dao.SocialMediaUserDao
 import com.example.screenlake.utils.Constants
 import dagger.Module
 import dagger.Provides

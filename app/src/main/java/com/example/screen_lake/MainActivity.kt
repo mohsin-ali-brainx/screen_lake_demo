@@ -10,11 +10,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.compose.rememberNavController
-import com.example.screen_lake.enums.OnboardingTrackStep
-import com.example.screen_lake.models.OnboardingTracker
-import com.example.screen_lake.navigation.ScreenLakeNavGraph
-import com.example.screen_lake.repository.OnboardingRepositoryImp
-import com.example.screen_lake.ui.theme.ScreenLakeTheme
+import com.example.screen_lake.appUtils.enums.OnboardingTrackStep
+import com.example.screen_lake.domain.models.OnboardingTracker
+import com.example.screen_lake.presentation.navigation.ScreenLakeNavGraph
+import com.example.screen_lake.dataSource.repositoryImp.OnboardingRepositoryImp
+import com.example.screen_lake.presentation.theme.ScreenLakeTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
