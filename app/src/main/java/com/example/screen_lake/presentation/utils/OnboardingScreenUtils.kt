@@ -1,5 +1,8 @@
 package com.example.screen_lake.presentation.utils
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +27,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,13 +46,16 @@ fun TopBodyContent(
     title:String,
     description: String,
     modifier: Modifier) {
+    val linearProgress by animateFloatAsState(targetValue = progress, label = Constants.StringConstants.EMPTY,
+        animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
+    )
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LinearProgressIndicator(
-            progress = progress,
+            progress = linearProgress,
             color = MaterialTheme.colors.surface,
             modifier = Modifier
                 .fillMaxWidth()

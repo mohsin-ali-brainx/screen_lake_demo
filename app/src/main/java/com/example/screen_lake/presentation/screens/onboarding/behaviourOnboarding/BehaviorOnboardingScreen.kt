@@ -118,7 +118,7 @@ fun BehaviorMainScreenContent(
         val (nextButton, topBody, body) = createRefs()
 
         TopBodyContent(
-            progress=0.75f,
+            progress=state.progress,
             title= stringResource(id = R.string.onboarding_distracting_behavior_title),
             description= stringResource(id = R.string.onboarding_distracting_behavior_description),
             modifier = Modifier

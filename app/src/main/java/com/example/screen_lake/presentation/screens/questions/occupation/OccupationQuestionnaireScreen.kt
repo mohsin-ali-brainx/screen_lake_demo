@@ -27,12 +27,12 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
-import com.example.screen_lake.presentation.viewmodels.OccupationQuestionnaireScreenEvent
-import com.example.screen_lake.presentation.viewmodels.OccupationQuestionnaireScreenState
-import com.example.screen_lake.presentation.viewmodels.OccupationQuestionnaireScreenUiEvents
 import com.example.screen_lake.presentation.utils.BottomButtonContent
 import com.example.screen_lake.presentation.utils.SelectableItem
 import com.example.screen_lake.presentation.utils.TopBodyContent
+import com.example.screen_lake.presentation.viewmodels.OccupationQuestionnaireScreenEvent
+import com.example.screen_lake.presentation.viewmodels.OccupationQuestionnaireScreenState
+import com.example.screen_lake.presentation.viewmodels.OccupationQuestionnaireScreenUiEvents
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -83,7 +83,7 @@ private fun MainScreenContent(
     ){
         val (nextButton, topBody, body) = createRefs()
         TopBodyContent(
-            progress=0.5f,
+            progress=state.progress,
             title= stringResource(id = R.string.what_occupation),
             description= stringResource(id = R.string.select_the_scope),
             modifier = Modifier

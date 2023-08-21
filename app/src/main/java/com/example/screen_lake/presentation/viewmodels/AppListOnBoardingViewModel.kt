@@ -2,8 +2,8 @@ package com.example.screen_lake.presentation.viewmodels
 
 import androidx.lifecycle.viewModelScope
 import com.example.screen_lake.appUtils.Resource
-import com.example.screen_lake.base.BaseViewModel
 import com.example.screen_lake.appUtils.enums.AppDistractions
+import com.example.screen_lake.base.BaseViewModel
 import com.example.screen_lake.domain.models.AppInfo
 import com.example.screen_lake.domain.useCases.InstalledAppInfoWithDistractionUseCase
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
@@ -26,7 +26,8 @@ data class AppListOnboardingScreenState(
     val installedApps:List<AppInfo> = arrayListOf(),
     val filteredList:List<AppInfo> = arrayListOf(),
     val expandedList:Boolean=false,
-    val dismissBottomSheet:Boolean=false
+    val dismissBottomSheet:Boolean=false,
+    val progress:Float = 0.0f
 )
 
 sealed class AppListOnBoardingScreenEvent{
@@ -82,7 +83,7 @@ class AppListOnBoardingViewModel @Inject constructor(
                         newList[position]=app
                         newFilteredList[index]=app
                     }
-                    _state.value= _state.value.copy(installedApps = newList, filteredList = newFilteredList, disableButton = false)
+                    _state.value= _state.value.copy(installedApps = newList, filteredList = newFilteredList, disableButton = false, progress = 0.5f)
                 }
                 is AppListOnBoardingScreenEvent.SearchAppTextUpdated ->{
                     val filteredList = _state.value.installedApps.filter { it.doesMatchSearchQuery(newText) }
@@ -111,7 +112,8 @@ class AppListOnBoardingViewModel @Inject constructor(
             when (resource){
                 is Resource.Success->{
                     resource.data?.apply {
-                        _state.value = _state.value.copy(isLoading = false, installedApps = this, filteredList = this, disableButton = filter { it.distractionLevel!= AppDistractions.NOT_DEFINED.key }.isEmpty())
+                        val disableButton =  filter { it.distractionLevel!= AppDistractions.NOT_DEFINED.key }.isEmpty()
+                        _state.value = _state.value.copy(isLoading = false, installedApps = this, filteredList = this, disableButton = disableButton, progress = if (disableButton) 0.0f else 0.5f)
                     }
                 }
                 is Resource.Error->{}

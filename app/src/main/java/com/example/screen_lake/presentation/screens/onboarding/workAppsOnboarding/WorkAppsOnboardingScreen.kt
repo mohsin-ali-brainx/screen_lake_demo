@@ -167,7 +167,7 @@ private fun MainScreenContent(
         ) {
             val (nextButton, topBody, body) = createRefs()
             TopBodyContent(
-                progress=1f,
+                progress=state.progress,
                 title= stringResource(id = R.string.which_app_are_used_for_work),
                 description= stringResource(id = R.string.select_work_apps),
                 modifier = Modifier

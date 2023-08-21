@@ -2,8 +2,8 @@ package com.example.screen_lake.presentation.viewmodels
 
 import androidx.lifecycle.viewModelScope
 import com.example.screen_lake.appUtils.Resource
-import com.example.screen_lake.base.BaseViewModel
 import com.example.screen_lake.appUtils.enums.AppBehaviors
+import com.example.screen_lake.base.BaseViewModel
 import com.example.screen_lake.domain.models.Behavior
 import com.example.screen_lake.domain.useCases.AppBehaviorUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +20,8 @@ import javax.inject.Inject
 data class BehaviorOnboardingScreenState(
     val isLoading: Boolean = false,
     val disableButton:Boolean=true,
-    val appBehaviors:List<Behavior> = arrayListOf()
+    val appBehaviors:List<Behavior> = arrayListOf(),
+    val progress:Float = 0.5f
 )
 
 sealed class BehaviorOnBoardingScreenEvent{
@@ -56,7 +57,7 @@ class BehaviorOnboardingViewModel @Inject constructor(
                        addAll(_state.value.appBehaviors)
                    }
                     newList[index]=behavior
-                    _state.value=_state.value.copy(appBehaviors = newList, disableButton = false)
+                    _state.value=_state.value.copy(appBehaviors = newList, disableButton = false, progress = 0.75f)
                 }
                 is BehaviorOnBoardingScreenEvent.OnNextClicked ->{
                     insertOnboardingTracker()
@@ -75,7 +76,8 @@ class BehaviorOnboardingViewModel @Inject constructor(
             when (resource){
                 is Resource.Success->{
                     resource.data?.apply {
-                        _state.value = _state.value.copy(isLoading = false, appBehaviors = this, disableButton = filter { it.importance!= AppBehaviors.NOT_DEFINED.importance }.isEmpty())
+                        val disableButton =  filter { it.importance!= AppBehaviors.NOT_DEFINED.importance }.isEmpty()
+                        _state.value = _state.value.copy(isLoading = false, appBehaviors = this, disableButton = disableButton, progress = if (disableButton) 0.5f else 0.75f)
                     }
                 }
                 is Resource.Error->{

@@ -26,7 +26,8 @@ data class WorkAppListOnboardingScreenState(
     val filteredList:List<AppInfo> = arrayListOf(),
     val expandedList:Boolean=false,
     val checkedItems:Int=0,
-    val allAppInfoList : List<AppInfo> = arrayListOf()
+    val allAppInfoList : List<AppInfo> = arrayListOf(),
+    val progress:Float = 0.75f
 )
 
 sealed class WorkAppListOnBoardingScreenEvent{
@@ -74,7 +75,7 @@ class WorkAppsOnboardingViewModel @Inject constructor(
                         newList[index]=app
                         newFilteredList[index]=app
                     }else{
-                        var position= Constants.IntegerConstants.ZERO
+                        var position= ZERO
                         newList.filterIndexed { index, item ->
                             position = index
                             item.apk == app.apk
@@ -83,7 +84,7 @@ class WorkAppsOnboardingViewModel @Inject constructor(
                         newFilteredList[index]=app
                     }
                     val checkedItems = newList.filter { it.isChecked }.size
-                    _state.value= _state.value.copy(workAppsList = newList, filteredList = newFilteredList, disableButton = checkedItems==ZERO, checkedItems = checkedItems)
+                    _state.value= _state.value.copy(workAppsList = newList, filteredList = newFilteredList, disableButton = checkedItems==ZERO, checkedItems = checkedItems, progress = if (checkedItems== ZERO) 0.75f else 1.0f)
                 }
                 is WorkAppListOnBoardingScreenEvent.SearchAppTextUpdated ->{
                     val filteredList = _state.value.workAppsList.filter { it.doesMatchSearchQuery(newText) }
@@ -112,7 +113,8 @@ class WorkAppsOnboardingViewModel @Inject constructor(
                 is Resource.Success->{
                     resource.data?.apply {
                         val checkedItems = this.filter { it.isChecked }.size
-                        _state.value = _state.value.copy(isLoading = false, workAppsList = this, filteredList = this, checkedItems = checkedItems, disableButton =checkedItems== ZERO )
+                        _state.value = _state.value.copy(isLoading = false, workAppsList = this, filteredList = this, checkedItems = checkedItems, disableButton =checkedItems== ZERO,
+                           progress =  if (checkedItems == ZERO) 0.75f else 1.0f )
                     }
                 }
                 is Resource.Error->{}

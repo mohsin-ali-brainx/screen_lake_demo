@@ -18,6 +18,7 @@ data class OccupationQuestionnaireScreenState(
     val isLoading: Boolean = false,
     val disableButton:Boolean=true,
     val occupation:List<GenericSelectionModel> = arrayListOf(),
+    val progress : Float = 0f
 )
 
 sealed class OccupationQuestionnaireScreenEvent{
@@ -54,7 +55,7 @@ class OccupationQuestionnaireViewModel @Inject constructor(
                         }
                     }
                     newList[index]=item
-                    _state.value = _state.value.copy(disableButton = !item.isChecked, occupation = newList)
+                    _state.value = _state.value.copy(disableButton = !item.isChecked, occupation = newList, progress = if (item.isChecked) 0.5f else 0.0f)
                 }
                 else->{}
             }

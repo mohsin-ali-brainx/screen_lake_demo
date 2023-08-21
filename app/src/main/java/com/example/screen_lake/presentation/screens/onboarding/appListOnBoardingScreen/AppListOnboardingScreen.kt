@@ -161,9 +161,11 @@ private fun MainScreenContent(
 ) {
     Box(
         modifier = Modifier
-            .clickable(enabled = !bottomSheetScaffoldState.bottomSheetState.isExpanded,
+            .clickable(
+                enabled = !bottomSheetScaffoldState.bottomSheetState.isExpanded,
                 interactionSource = NoRippleInteractionSource(),
-                indication = null){
+                indication = null
+            ) {
 
             }
             .alpha(if (bottomSheetScaffoldState.bottomSheetState.isExpanded) 0.5f else 1f)
@@ -177,7 +179,7 @@ private fun MainScreenContent(
         ) {
             val (nextButton, topBody, body) = createRefs()
             TopBodyContent(
-                progress=0.5f,
+                progress=state.progress,
                 title=stringResource(id = R.string.onboarding_distracting_apps_title),
                 description=stringResource(id = R.string.onboarding_distracting_apps_description),
                 modifier = Modifier
