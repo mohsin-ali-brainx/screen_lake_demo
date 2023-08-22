@@ -8,6 +8,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onNodeWithTag
@@ -18,13 +19,14 @@ import com.example.screen_lake.appUtils.enums.AppUse
 import com.example.screen_lake.appUtils.enums.OnboardingTrackStep
 import com.example.screen_lake.domain.models.AppInfo
 import com.example.screen_lake.domain.models.OnboardingTracker
+import com.example.screen_lake.presentation.theme.ScreenLakeTheme
 import com.example.screen_lake.presentation.viewmodels.WorkAppAppListOnBoardingScreenUiEvents
 import com.example.screen_lake.presentation.viewmodels.WorkAppListOnboardingScreenState
-import com.example.screen_lake.presentation.theme.ScreenLakeTheme
 import com.example.screenlake.utils.Constants.IntegerConstants.FIVE
 import com.example.screenlake.utils.Constants.IntegerConstants.ONE
 import com.example.screenlake.utils.Constants.IntegerConstants.TWO
 import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
+import com.example.screenlake.utils.Constants.TestTags.CHECKED_ICON_TEST_TAG
 import com.example.screenlake.utils.Constants.TestTags.CUSTOM_EDIT_TEXT_TEST_TAG
 import com.example.screenlake.utils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
 import com.example.screenlake.utils.Constants.TestTags.ONBOARDING_BOTTOM_SHEET_TEST_TAG
@@ -285,6 +287,47 @@ class WorkAppsOnboardingScreenTest {
             }
         }
         composeTestRule.onNodeWithTag(ONBOARDING_NEXT_BUTTON_TEST_TAG).assertTextEquals("Next (${checkedList.size})")
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Test
+    fun CheckLazyColumnIfCheckedAreCorrect(){
+        composeTestRule.setContent {
+            ScreenLakeTheme {
+                WorkAppMainBodyContent(
+                    state = WorkAppListOnboardingScreenState(
+                        filteredList = workApps,
+                        workAppsList = workApps,
+                        expandedList = false
+                    ), modifier = Modifier
+                ) {
+
+                }
+            }
+        }
+        val subList = workApps.subList(ZERO,FIVE)
+        composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).onChildren().assertCountEquals(subList.size)
+        composeTestRule.onAllNodesWithTag(CHECKED_ICON_TEST_TAG,useUnmergedTree = true).assertCountEquals(subList.filter { it.isChecked }.size)
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Test
+    fun CheckLazyColumnIfCheckedAreCorrectWithExpandedList(){
+        composeTestRule.setContent {
+            ScreenLakeTheme {
+                WorkAppMainBodyContent(
+                    state = WorkAppListOnboardingScreenState(
+                        filteredList = workApps,
+                        workAppsList = workApps,
+                        expandedList = true
+                    ), modifier = Modifier
+                ) {
+
+                }
+            }
+        }
+        composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).onChildren().assertCountEquals(workApps.size)
+        composeTestRule.onAllNodesWithTag(CHECKED_ICON_TEST_TAG,useUnmergedTree = true).assertCountEquals(workApps.filter { it.isChecked }.size)
     }
 
 }
