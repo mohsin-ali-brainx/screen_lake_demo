@@ -18,11 +18,11 @@ import com.example.screen_lake.domain.models.Behavior
 import com.example.screen_lake.presentation.screens.onboarding.behaviourOnboarding.BehaviorMainBodyContent
 import com.example.screen_lake.presentation.viewmodels.BehaviorOnboardingScreenState
 import com.example.screen_lake.presentation.theme.ScreenLakeTheme
-import com.example.screenlake.utils.Constants.IntegerConstants.FOUR
-import com.example.screenlake.utils.Constants.IntegerConstants.ONE
-import com.example.screenlake.utils.Constants.IntegerConstants.TWO
-import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
-import com.example.screenlake.utils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.FOUR
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.ONE
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.TWO
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.ZERO
+import com.example.screen_lake.appUtils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
 import com.google.common.truth.Truth
 import org.junit.Before
 import org.junit.Rule

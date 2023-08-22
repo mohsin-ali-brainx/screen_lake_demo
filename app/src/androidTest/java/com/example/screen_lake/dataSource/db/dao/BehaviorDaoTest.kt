@@ -7,9 +7,8 @@ import androidx.test.filters.SmallTest
 import com.example.screen_lake.R
 import com.example.screen_lake.dataSource.db.ScreenLakeDatabase
 import com.example.screen_lake.appUtils.enums.AppBehaviors
-import com.example.screen_lake.dataSource.db.dao.BehaviorDao
 import com.example.screen_lake.domain.models.Behavior
-import com.example.screenlake.utils.Constants.IntegerConstants.ONE
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.ONE
 import com.google.common.truth.Truth
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

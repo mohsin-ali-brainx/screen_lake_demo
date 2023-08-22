@@ -4,9 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
 import com.example.screen_lake.dataSource.db.ScreenLakeDatabase
 import com.example.screen_lake.appUtils.enums.OnboardingTrackStep
-import com.example.screen_lake.dataSource.db.dao.OnboardingTrackerDao
 import com.example.screen_lake.domain.models.OnboardingTracker
-import com.example.screenlake.utils.Constants.IntegerConstants.ONE
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.ONE
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

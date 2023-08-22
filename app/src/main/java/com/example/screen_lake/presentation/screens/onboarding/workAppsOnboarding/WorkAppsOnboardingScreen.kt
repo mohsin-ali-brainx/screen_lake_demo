@@ -64,11 +64,11 @@ import com.example.screen_lake.presentation.utils.TopBodyContent
 import com.example.screen_lake.presentation.viewmodels.WorkAppAppListOnBoardingScreenUiEvents
 import com.example.screen_lake.presentation.viewmodels.WorkAppListOnBoardingScreenEvent
 import com.example.screen_lake.presentation.viewmodels.WorkAppListOnboardingScreenState
-import com.example.screenlake.utils.Constants.IntegerConstants.FIVE
-import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
-import com.example.screenlake.utils.Constants.StringConstants.EMPTY
-import com.example.screenlake.utils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
-import com.example.screenlake.utils.Constants.TestTags.SHOW_MORE_OR_LESS_TEST_TAG
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.FIVE
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.ZERO
+import com.example.screen_lake.appUtils.Constants.StringConstants.EMPTY
+import com.example.screen_lake.appUtils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
+import com.example.screen_lake.appUtils.Constants.TestTags.SHOW_MORE_OR_LESS_TEST_TAG
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest

@@ -1,4 +1,4 @@
-package com.example.screenlake.utils
+package com.example.screen_lake.appUtils
 
 object Constants {
     object IntegerConstants{

@@ -12,11 +12,11 @@ import android.graphics.BitmapFactory
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
-import com.example.screen_lake.base.ScreenLakeApp
+import com.example.screen_lake.ScreenLakeApp
 import com.example.screen_lake.appUtils.enums.AppDistractions
 import com.example.screen_lake.appUtils.extensions.getAppIconBitmap
-import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
-import com.example.screenlake.utils.Constants.StringConstants.EMPTY
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.ZERO
+import com.example.screen_lake.appUtils.Constants.StringConstants.EMPTY
 import java.io.ByteArrayOutputStream
 
 @Entity("app_info")

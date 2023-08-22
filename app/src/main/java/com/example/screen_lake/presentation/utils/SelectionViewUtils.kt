@@ -27,8 +27,8 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import com.example.screenlake.utils.Constants.StringConstants.EMPTY
-import com.example.screenlake.utils.Constants.TestTags.CHECKED_ICON_TEST_TAG
+import com.example.screen_lake.appUtils.Constants.StringConstants.EMPTY
+import com.example.screen_lake.appUtils.Constants.TestTags.CHECKED_ICON_TEST_TAG
 
 @Composable
 fun SelectableItem(

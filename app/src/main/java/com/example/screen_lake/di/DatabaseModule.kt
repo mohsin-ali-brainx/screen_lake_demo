@@ -7,7 +7,7 @@ import com.example.screen_lake.dataSource.db.dao.AppInfoDao
 import com.example.screen_lake.dataSource.db.dao.BehaviorDao
 import com.example.screen_lake.dataSource.db.dao.OnboardingTrackerDao
 import com.example.screen_lake.dataSource.db.dao.SocialMediaUserDao
-import com.example.screenlake.utils.Constants
+import com.example.screen_lake.appUtils.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,7 +20,7 @@ class DatabaseModule {
     @Singleton
     @Provides
     fun provideDatabase(app: Application): ScreenLakeDatabase {
-        return Room.databaseBuilder(app, ScreenLakeDatabase::class.java,Constants.DBConstants.SCREEN_LAKE_DB)
+        return Room.databaseBuilder(app, ScreenLakeDatabase::class.java, Constants.DBConstants.SCREEN_LAKE_DB)
             .build()
     }
 

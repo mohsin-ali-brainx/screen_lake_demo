@@ -61,8 +61,8 @@ import com.example.screen_lake.presentation.utils.TopBodyContent
 import com.example.screen_lake.presentation.viewmodels.BehaviorOnBoardingScreenEvent
 import com.example.screen_lake.presentation.viewmodels.BehaviorOnBoardingScreenUiEvents
 import com.example.screen_lake.presentation.viewmodels.BehaviorOnboardingScreenState
-import com.example.screenlake.utils.Constants
-import com.example.screenlake.utils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
+import com.example.screen_lake.appUtils.Constants
+import com.example.screen_lake.appUtils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest

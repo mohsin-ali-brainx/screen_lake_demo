@@ -16,7 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
-import com.example.screenlake.utils.Constants
+import com.example.screen_lake.appUtils.Constants
 
 @Composable
 fun SplashScreen(

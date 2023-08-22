@@ -3,13 +3,13 @@ package com.example.screen_lake.base
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.screen_lake.appUtils.enums.OnboardingTrackStep
-import com.example.screen_lake.domain.models.OnboardingTracker
 import com.example.screen_lake.dataSource.repositoryImp.OnboardingRepositoryImp
+import com.example.screen_lake.domain.models.OnboardingTracker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-open class BaseViewModel : ViewModel() {
+open class OnboardingBaseViewModel : ViewModel() {
     @Inject
     lateinit var repository: OnboardingRepositoryImp
 

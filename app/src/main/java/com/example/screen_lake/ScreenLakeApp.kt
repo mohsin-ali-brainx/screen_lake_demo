@@ -1,4 +1,4 @@
-package com.example.screen_lake.base
+package com.example.screen_lake
 
 import android.app.Application
 import android.content.Context

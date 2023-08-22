@@ -2,7 +2,7 @@ package com.example.screen_lake.presentation.viewmodels
 
 import androidx.lifecycle.viewModelScope
 import com.example.screen_lake.appUtils.Resource
-import com.example.screen_lake.base.BaseViewModel
+import com.example.screen_lake.base.OnboardingBaseViewModel
 import com.example.screen_lake.domain.models.GenericSelectionModel
 import com.example.screen_lake.domain.useCases.GetOccupationList
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +32,7 @@ sealed class OccupationQuestionnaireScreenUiEvents{
 @HiltViewModel
 class OccupationQuestionnaireViewModel @Inject constructor(
     private val getOccupationList: GetOccupationList
-): BaseViewModel() {
+): OnboardingBaseViewModel() {
     // region properties
     private val _state = MutableStateFlow(OccupationQuestionnaireScreenState())
     val state = _state.asStateFlow()

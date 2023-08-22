@@ -2,11 +2,11 @@ package com.example.screen_lake.presentation.viewmodels
 
 import androidx.lifecycle.viewModelScope
 import com.example.screen_lake.appUtils.Resource
-import com.example.screen_lake.base.BaseViewModel
+import com.example.screen_lake.base.OnboardingBaseViewModel
 import com.example.screen_lake.domain.models.AppInfo
 import com.example.screen_lake.domain.useCases.WorkAppListUseCase
-import com.example.screenlake.utils.Constants
-import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
+import com.example.screen_lake.appUtils.Constants
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.ZERO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -46,7 +46,7 @@ sealed class WorkAppAppListOnBoardingScreenUiEvents{
 @HiltViewModel
 class WorkAppsOnboardingViewModel @Inject constructor(
     private val getWorkAppListUseCase: WorkAppListUseCase
-): BaseViewModel() {
+): OnboardingBaseViewModel() {
     // region properties
     private val _state = MutableStateFlow(WorkAppListOnboardingScreenState())
     val state = _state.asStateFlow()

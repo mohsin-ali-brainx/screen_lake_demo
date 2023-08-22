@@ -3,7 +3,7 @@ package com.example.screen_lake.presentation.viewmodels
 import androidx.lifecycle.viewModelScope
 import com.example.screen_lake.appUtils.Resource
 import com.example.screen_lake.appUtils.enums.AppBehaviors
-import com.example.screen_lake.base.BaseViewModel
+import com.example.screen_lake.base.OnboardingBaseViewModel
 import com.example.screen_lake.domain.models.Behavior
 import com.example.screen_lake.domain.useCases.AppBehaviorUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,7 +35,7 @@ sealed class BehaviorOnBoardingScreenUiEvents{
 @HiltViewModel
 class BehaviorOnboardingViewModel @Inject constructor(
     private val getAppBehaviorsUseCase: AppBehaviorUseCase
-): BaseViewModel(){
+): OnboardingBaseViewModel(){
     // region properties
     private val _state = MutableStateFlow(BehaviorOnboardingScreenState())
     val state = _state.asStateFlow()

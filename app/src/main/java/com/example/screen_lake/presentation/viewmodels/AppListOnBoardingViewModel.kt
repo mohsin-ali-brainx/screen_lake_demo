@@ -1,13 +1,13 @@
 package com.example.screen_lake.presentation.viewmodels
 
 import androidx.lifecycle.viewModelScope
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.ZERO
+import com.example.screen_lake.appUtils.Constants.StringConstants.EMPTY
 import com.example.screen_lake.appUtils.Resource
 import com.example.screen_lake.appUtils.enums.AppDistractions
-import com.example.screen_lake.base.BaseViewModel
+import com.example.screen_lake.base.OnboardingBaseViewModel
 import com.example.screen_lake.domain.models.AppInfo
 import com.example.screen_lake.domain.useCases.InstalledAppInfoWithDistractionUseCase
-import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
-import com.example.screenlake.utils.Constants.StringConstants.EMPTY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -46,7 +46,7 @@ sealed class AppListOnBoardingScreenUiEvents{
 @HiltViewModel
 class AppListOnBoardingViewModel @Inject constructor(
     private val getInstalledAppInfoWithDistractionUseCase: InstalledAppInfoWithDistractionUseCase,
-): BaseViewModel(){
+): OnboardingBaseViewModel(){
     // region properties
     private val _state = MutableStateFlow(AppListOnboardingScreenState())
     val state = _state.asStateFlow()

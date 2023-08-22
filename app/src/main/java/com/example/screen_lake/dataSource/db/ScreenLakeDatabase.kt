@@ -12,7 +12,7 @@ import com.example.screen_lake.domain.models.Behavior
 import com.example.screen_lake.domain.models.BitmapConverter
 import com.example.screen_lake.domain.models.OnboardingTracker
 import com.example.screen_lake.domain.models.SocialMediaUser
-import com.example.screenlake.utils.Constants.IntegerConstants.ONE
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.ONE
 
 @Database(entities = [OnboardingTracker::class, AppInfo::class, Behavior::class, SocialMediaUser::class],
     version = ONE,

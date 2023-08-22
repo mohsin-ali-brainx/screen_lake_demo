@@ -37,8 +37,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.screen_lake.R
-import com.example.screenlake.utils.Constants
-import com.example.screenlake.utils.Constants.TestTags.ONBOARDING_NEXT_BUTTON_TEST_TAG
+import com.example.screen_lake.appUtils.Constants
+import com.example.screen_lake.appUtils.Constants.TestTags.ONBOARDING_NEXT_BUTTON_TEST_TAG
 
 @Composable
 fun TopBodyContent(

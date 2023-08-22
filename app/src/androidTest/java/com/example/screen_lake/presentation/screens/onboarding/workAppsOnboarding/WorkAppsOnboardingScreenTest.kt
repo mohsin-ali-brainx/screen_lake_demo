@@ -3,10 +3,12 @@ package com.example.screen_lake.presentation.screens.onboarding.workAppsOnboardi
 import android.content.Context
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.assertAny
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onAllNodesWithText
@@ -22,16 +24,16 @@ import com.example.screen_lake.domain.models.OnboardingTracker
 import com.example.screen_lake.presentation.theme.ScreenLakeTheme
 import com.example.screen_lake.presentation.viewmodels.WorkAppAppListOnBoardingScreenUiEvents
 import com.example.screen_lake.presentation.viewmodels.WorkAppListOnboardingScreenState
-import com.example.screenlake.utils.Constants.IntegerConstants.FIVE
-import com.example.screenlake.utils.Constants.IntegerConstants.ONE
-import com.example.screenlake.utils.Constants.IntegerConstants.TWO
-import com.example.screenlake.utils.Constants.IntegerConstants.ZERO
-import com.example.screenlake.utils.Constants.TestTags.CHECKED_ICON_TEST_TAG
-import com.example.screenlake.utils.Constants.TestTags.CUSTOM_EDIT_TEXT_TEST_TAG
-import com.example.screenlake.utils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
-import com.example.screenlake.utils.Constants.TestTags.ONBOARDING_BOTTOM_SHEET_TEST_TAG
-import com.example.screenlake.utils.Constants.TestTags.ONBOARDING_NEXT_BUTTON_TEST_TAG
-import com.example.screenlake.utils.Constants.TestTags.SHOW_MORE_OR_LESS_TEST_TAG
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.FIVE
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.ONE
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.TWO
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.ZERO
+import com.example.screen_lake.appUtils.Constants.TestTags.CHECKED_ICON_TEST_TAG
+import com.example.screen_lake.appUtils.Constants.TestTags.CUSTOM_EDIT_TEXT_TEST_TAG
+import com.example.screen_lake.appUtils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
+import com.example.screen_lake.appUtils.Constants.TestTags.ONBOARDING_BOTTOM_SHEET_TEST_TAG
+import com.example.screen_lake.appUtils.Constants.TestTags.ONBOARDING_NEXT_BUTTON_TEST_TAG
+import com.example.screen_lake.appUtils.Constants.TestTags.SHOW_MORE_OR_LESS_TEST_TAG
 import com.google.common.truth.Truth
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -307,6 +309,9 @@ class WorkAppsOnboardingScreenTest {
         }
         val subList = workApps.subList(ZERO,FIVE)
         composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).onChildren().assertCountEquals(subList.size)
+        composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG,useUnmergedTree = true).onChildren().assertAny(
+            hasTestTag(CHECKED_ICON_TEST_TAG)
+        )
         composeTestRule.onAllNodesWithTag(CHECKED_ICON_TEST_TAG,useUnmergedTree = true).assertCountEquals(subList.filter { it.isChecked }.size)
     }
 

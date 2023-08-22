@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.screen_lake.presentation.theme.appFonts
-import com.example.screenlake.utils.Constants
-import com.example.screenlake.utils.Constants.TestTags.TEXT_FIELD_PLACE_HOLDER_TEST_TAG
+import com.example.screen_lake.appUtils.Constants
+import com.example.screen_lake.appUtils.Constants.TestTags.TEXT_FIELD_PLACE_HOLDER_TEST_TAG
 
 @Composable
 fun CustomTextField(
