@@ -4,10 +4,12 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -86,11 +88,13 @@ fun TopBodyContent(
 @Composable
 fun BottomButtonContent(
     buttonText:String?=null,
+    bottomText:String?=null,
     stateDisabled:Boolean,
     modifier: Modifier,
-    onClick:()->Unit
+    onClick:()->Unit,
+    onBottomTextClicked: (() -> Unit)?=null
 ){
-    Box(modifier = modifier) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
         RoundedCorneredButton(buttonText = buttonText?:stringResource(id = R.string.next),
             buttonColor = if (stateDisabled) MaterialTheme.colors.onPrimary else MaterialTheme.colors.surface,
             textColor = if (stateDisabled) MaterialTheme.colors.onError else MaterialTheme.colors.primary,
@@ -98,6 +102,20 @@ fun BottomButtonContent(
             onClickAction = {
                 onClick()
             })
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(text = bottomText?: stringResource(id = R.string.skip_for_now),
+            color = MaterialTheme.colors.onError,
+            style = MaterialTheme.typography.button,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.clickable(
+                interactionSource = NoRippleInteractionSource(),
+                indication = null
+            ) {
+                if (onBottomTextClicked != null) {
+                    onBottomTextClicked()
+                }
+            }
+        )
     }
 }
 
@@ -113,7 +131,7 @@ fun OptionSelectedItem(text:String,background:Color,textColor:Color) {
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.body2,
+            style = MaterialTheme.typography.body1,
             color = textColor,
             maxLines = 1,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)

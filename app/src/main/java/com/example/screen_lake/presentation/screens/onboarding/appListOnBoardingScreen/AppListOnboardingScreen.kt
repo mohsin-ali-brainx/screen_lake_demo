@@ -193,6 +193,7 @@ private fun MainScreenContent(
             )
             AppListMainBodyContent(
                 state=state,
+                bottomSheetScaffoldState = bottomSheetScaffoldState,
                 modifier = Modifier
                     .constrainAs(body) {
                         top.linkTo(topBody.bottom)
@@ -213,20 +214,25 @@ private fun MainScreenContent(
                         start.linkTo(parent.start, margin = 16.dp)
                         end.linkTo(parent.end, margin = 16.dp)
                         width = Dimension.fillToConstraints
+                    },
+                onClick = {
+                    if (!state.disableButton){
+                        onEvent(AppListOnBoardingScreenEvent.OnNextClicked)
                     }
-            ) {
-                if (!state.disableButton){
-                    onEvent(AppListOnBoardingScreenEvent.OnNextClicked)
+                },
+                onBottomTextClicked = {
+
                 }
-            }
+            )
         }
     }
 }
 
 
-
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AppListMainBodyContent(
+    bottomSheetScaffoldState: BottomSheetScaffoldState,
     state: AppListOnboardingScreenState,
     modifier: Modifier,
     onEvent : (AppListOnBoardingScreenEvent)->Unit,
@@ -289,13 +295,15 @@ fun AppListMainBodyContent(
                             FIVE
                         )
                     ) { index, item ->
-                        InstalledAppItems(info = item) {
-                            onEvent(
-                                AppListOnBoardingScreenEvent.OnAppSelected(
-                                    index,
-                                    item.copy(distractionLevel = it.key)
+                        InstalledAppItems(info = item,bottomSheetScaffoldState.bottomSheetState.isCollapsed) {
+                            if (!bottomSheetScaffoldState.bottomSheetState.isExpanded) {
+                                onEvent(
+                                    AppListOnBoardingScreenEvent.OnAppSelected(
+                                        index,
+                                        item.copy(distractionLevel = it.key)
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                 }
@@ -327,7 +335,7 @@ fun AppListMainBodyContent(
 }
 
 @Composable
-private fun InstalledAppItems(info: AppInfo, onClick: (AppDistractions) -> Unit) {
+private fun InstalledAppItems(info: AppInfo,isClickable:Boolean ,onClick: (AppDistractions) -> Unit) {
         val appIcon = info.bitmapResource?.asImageBitmap()
 
         var isContextMenuVisible by rememberSaveable {
@@ -404,6 +412,7 @@ private fun InstalledAppItems(info: AppInfo, onClick: (AppDistractions) -> Unit)
                                 shape = RoundedCornerShape(20.dp)
                             )
                             .clickable(
+                                enabled =isClickable,
                                 interactionSource = NoRippleInteractionSource(),
                                 indication = null
                             ) {

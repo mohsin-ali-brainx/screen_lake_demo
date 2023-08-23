@@ -2,6 +2,7 @@ package com.example.screen_lake.presentation.screens.onboarding.appListOnboardin
 
 import android.content.Context
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertAny
 import androidx.compose.ui.test.assertCountEquals
@@ -16,16 +17,6 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.navigation.compose.rememberNavController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.screen_lake.appUtils.enums.AppDistractions
-import com.example.screen_lake.appUtils.enums.OnboardingTrackStep
-import com.example.screen_lake.appUtils.enums.getAppDistractionFromKey
-import com.example.screen_lake.domain.models.AppInfo
-import com.example.screen_lake.domain.models.OnboardingTracker
-import com.example.screen_lake.presentation.screens.onboarding.appListOnBoardingScreen.AppListMainBodyContent
-import com.example.screen_lake.presentation.viewmodels.AppListOnBoardingScreenUiEvents
-import com.example.screen_lake.presentation.screens.onboarding.appListOnBoardingScreen.AppListOnboardingScreen
-import com.example.screen_lake.presentation.viewmodels.AppListOnboardingScreenState
-import com.example.screen_lake.presentation.theme.ScreenLakeTheme
 import com.example.screen_lake.appUtils.Constants.IntegerConstants.ONE
 import com.example.screen_lake.appUtils.Constants.IntegerConstants.TWO
 import com.example.screen_lake.appUtils.Constants.IntegerConstants.ZERO
@@ -34,6 +25,16 @@ import com.example.screen_lake.appUtils.Constants.TestTags.CUSTOM_EDIT_TEXT_TEST
 import com.example.screen_lake.appUtils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
 import com.example.screen_lake.appUtils.Constants.TestTags.ONBOARDING_BOTTOM_SHEET_TEST_TAG
 import com.example.screen_lake.appUtils.Constants.TestTags.SHOW_MORE_OR_LESS_TEST_TAG
+import com.example.screen_lake.appUtils.enums.AppDistractions
+import com.example.screen_lake.appUtils.enums.OnboardingTrackStep
+import com.example.screen_lake.appUtils.enums.getAppDistractionFromKey
+import com.example.screen_lake.domain.models.AppInfo
+import com.example.screen_lake.domain.models.OnboardingTracker
+import com.example.screen_lake.presentation.screens.onboarding.appListOnBoardingScreen.AppListMainBodyContent
+import com.example.screen_lake.presentation.screens.onboarding.appListOnBoardingScreen.AppListOnboardingScreen
+import com.example.screen_lake.presentation.theme.ScreenLakeTheme
+import com.example.screen_lake.presentation.viewmodels.AppListOnBoardingScreenUiEvents
+import com.example.screen_lake.presentation.viewmodels.AppListOnboardingScreenState
 import com.google.common.truth.Truth
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -140,7 +141,9 @@ class AppListOnboardingScreenTest {
     fun CheckLazyColumnIsEmpty(){
         composeTestRule.setContent {
             ScreenLakeTheme {
-                AppListMainBodyContent(state = AppListOnboardingScreenState(
+                AppListMainBodyContent(
+                    bottomSheetScaffoldState = rememberBottomSheetScaffoldState(),
+                    state = AppListOnboardingScreenState(
                     filteredList = emptyList(),
                     installedApps = emptyList()
                 ), modifier = Modifier){
@@ -155,7 +158,9 @@ class AppListOnboardingScreenTest {
     fun CheckLazyColumnNotEmpty(){
         composeTestRule.setContent {
             ScreenLakeTheme {
-                AppListMainBodyContent(state = AppListOnboardingScreenState(
+                AppListMainBodyContent(
+                    bottomSheetScaffoldState = rememberBottomSheetScaffoldState(),
+                    state = AppListOnboardingScreenState(
                     filteredList = appInfoList,
                     installedApps = appInfoList
                 ), modifier = Modifier){
@@ -166,11 +171,14 @@ class AppListOnboardingScreenTest {
         Truth.assertThat(composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).onChildren()).isNotEqualTo(ZERO)
     }
 
+    @OptIn(ExperimentalMaterialApi::class)
     @Test
     fun CheckLazyColumnIfDistractionVisible(){
         composeTestRule.setContent {
             ScreenLakeTheme {
-                AppListMainBodyContent(state = AppListOnboardingScreenState(
+                AppListMainBodyContent(
+                    bottomSheetScaffoldState = rememberBottomSheetScaffoldState(),
+                    state = AppListOnboardingScreenState(
                     filteredList = appInfoList,
                     installedApps = appInfoList
                 ), modifier = Modifier){
@@ -178,6 +186,7 @@ class AppListOnboardingScreenTest {
                 }
             }
         }
+        composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).onChildren()
         composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).onChildren().assertAny(
             hasText(getAppDistractionFromKey(appInfoList[ZERO].distractionLevel?: EMPTY).distraction)
         )

@@ -151,7 +151,8 @@ private fun MainScreenContent(
 ) {
     Box(
         modifier = Modifier
-            .clickable(enabled = !bottomSheetScaffoldState.bottomSheetState.isExpanded,
+            .clickable(
+                enabled = !bottomSheetScaffoldState.bottomSheetState.isExpanded,
                 interactionSource = NoRippleInteractionSource(),
                 indication = null){
 
@@ -179,6 +180,7 @@ private fun MainScreenContent(
                     }
             )
             WorkAppMainBodyContent(
+                bottomSheetScaffoldState,
                 state,
                 modifier = Modifier
                     .constrainAs(body) {
@@ -202,18 +204,24 @@ private fun MainScreenContent(
                         start.linkTo(parent.start, margin = 16.dp)
                         end.linkTo(parent.end, margin = 16.dp)
                         width = Dimension.fillToConstraints
+                    },
+                onClick = {
+                    if (!state.disableButton){
+                        onEvent(WorkAppListOnBoardingScreenEvent.OnNextClicked)
                     }
-            ) {
-                if (!state.disableButton){
-                    onEvent(WorkAppListOnBoardingScreenEvent.OnNextClicked)
+                },
+                onBottomTextClicked = {
+
                 }
-            }
+            )
         }
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun WorkAppMainBodyContent(
+    bottomSheetScaffoldState: BottomSheetScaffoldState,
     state: WorkAppListOnboardingScreenState,
     modifier: Modifier,
     onEvent:(WorkAppListOnBoardingScreenEvent)->Unit
@@ -277,7 +285,7 @@ fun WorkAppMainBodyContent(
                             )
                         ) {index, item ->
                             AppItems(
-                                info = item
+                                info = item, isClickable = bottomSheetScaffoldState.bottomSheetState.isCollapsed
                             ) {selected->
                                 onEvent(
                                     WorkAppListOnBoardingScreenEvent.OnAppSelected(
@@ -316,7 +324,7 @@ fun WorkAppMainBodyContent(
 }
 
 @Composable
-private fun AppItems(info: AppInfo, onClick: (Boolean) -> Unit) {
+private fun AppItems(info: AppInfo,isClickable:Boolean ,onClick: (Boolean) -> Unit) {
         val appIcon = info.bitmapResource?.asImageBitmap()
         SelectableItem(
             modifier= Modifier
@@ -325,7 +333,8 @@ private fun AppItems(info: AppInfo, onClick: (Boolean) -> Unit) {
             bitmap = appIcon,
             painter = if (appIcon==null) painterResource(id = R.drawable.ic_android) else null,
             textTitle = info.realAppName ?: EMPTY,
-            isChecked = info.isChecked
+            isChecked = info.isChecked,
+            isClickable = isClickable
         ) {
             onClick(!info.isChecked)
         }

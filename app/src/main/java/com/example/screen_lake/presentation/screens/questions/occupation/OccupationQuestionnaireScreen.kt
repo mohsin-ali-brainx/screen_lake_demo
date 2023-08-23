@@ -116,12 +116,16 @@ private fun MainScreenContent(
                     start.linkTo(parent.start, margin = 16.dp)
                     end.linkTo(parent.end, margin = 16.dp)
                     width = Dimension.fillToConstraints
-                }
-        ) {
-            if (!state.disableButton){
+                },
+            onClick = {
+                if (!state.disableButton){
 
+                }
+            },
+            onBottomTextClicked = {
+                
             }
-        }
+        )
     }
 }
 

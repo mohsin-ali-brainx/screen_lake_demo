@@ -38,11 +38,13 @@ fun SelectableItem(
     textTitle:String,
     isChecked:Boolean=false,
     imageContentScale: ContentScale=ContentScale.Crop,
+    isClickable:Boolean=true,
     onClick:()->Unit
 ){
     Box(
         modifier = modifier
             .clickable(
+                enabled = isClickable,
                 interactionSource = NoRippleInteractionSource(),
                 indication = null
             ) {

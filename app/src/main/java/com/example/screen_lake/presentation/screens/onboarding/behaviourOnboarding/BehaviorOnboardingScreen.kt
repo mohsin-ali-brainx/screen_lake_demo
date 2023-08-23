@@ -154,12 +154,16 @@ fun BehaviorMainScreenContent(
                     start.linkTo(parent.start, margin = 16.dp)
                     end.linkTo(parent.end, margin = 16.dp)
                     width = Dimension.fillToConstraints
+                },
+            onClick = {
+                if (!state.disableButton){
+                    onEvent(BehaviorOnBoardingScreenEvent.OnNextClicked)
                 }
-        ) {
-            if (!state.disableButton){
-                onEvent(BehaviorOnBoardingScreenEvent.OnNextClicked)
+            },
+            onBottomTextClicked = {
+
             }
-        }
+        )
 
     }
 }
