@@ -2,6 +2,7 @@ package com.example.screen_lake.presentation.screens.onboarding.workAppsOnboardi
 
 import android.content.Context
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertAny
 import androidx.compose.ui.test.assertCountEquals
@@ -17,13 +18,6 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.navigation.compose.rememberNavController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.screen_lake.appUtils.enums.AppUse
-import com.example.screen_lake.appUtils.enums.OnboardingTrackStep
-import com.example.screen_lake.domain.models.AppInfo
-import com.example.screen_lake.domain.models.OnboardingTracker
-import com.example.screen_lake.presentation.theme.ScreenLakeTheme
-import com.example.screen_lake.presentation.viewmodels.WorkAppAppListOnBoardingScreenUiEvents
-import com.example.screen_lake.presentation.viewmodels.WorkAppListOnboardingScreenState
 import com.example.screen_lake.appUtils.Constants.IntegerConstants.FIVE
 import com.example.screen_lake.appUtils.Constants.IntegerConstants.ONE
 import com.example.screen_lake.appUtils.Constants.IntegerConstants.TWO
@@ -34,6 +28,13 @@ import com.example.screen_lake.appUtils.Constants.TestTags.MAIN_CONTENT_BODY_LAZ
 import com.example.screen_lake.appUtils.Constants.TestTags.ONBOARDING_BOTTOM_SHEET_TEST_TAG
 import com.example.screen_lake.appUtils.Constants.TestTags.ONBOARDING_NEXT_BUTTON_TEST_TAG
 import com.example.screen_lake.appUtils.Constants.TestTags.SHOW_MORE_OR_LESS_TEST_TAG
+import com.example.screen_lake.appUtils.enums.AppUse
+import com.example.screen_lake.appUtils.enums.OnboardingTrackStep
+import com.example.screen_lake.domain.models.AppInfo
+import com.example.screen_lake.domain.models.OnboardingTracker
+import com.example.screen_lake.presentation.theme.ScreenLakeTheme
+import com.example.screen_lake.presentation.viewmodels.WorkAppAppListOnBoardingScreenUiEvents
+import com.example.screen_lake.presentation.viewmodels.WorkAppListOnboardingScreenState
 import com.google.common.truth.Truth
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -133,6 +134,7 @@ class WorkAppsOnboardingScreenTest {
         composeTestRule.setContent {
             ScreenLakeTheme {
                 WorkAppMainBodyContent(
+                    bottomSheetScaffoldState = rememberBottomSheetScaffoldState(),
                     state = WorkAppListOnboardingScreenState(
                         filteredList = emptyList(),
                         workAppsList = emptyList()
@@ -151,6 +153,7 @@ class WorkAppsOnboardingScreenTest {
         composeTestRule.setContent {
             ScreenLakeTheme {
                 WorkAppMainBodyContent(
+                    bottomSheetScaffoldState = rememberBottomSheetScaffoldState(),
                     state = WorkAppListOnboardingScreenState(
                         filteredList = emptyList(),
                         workAppsList = emptyList()
@@ -297,6 +300,7 @@ class WorkAppsOnboardingScreenTest {
         composeTestRule.setContent {
             ScreenLakeTheme {
                 WorkAppMainBodyContent(
+                    bottomSheetScaffoldState = rememberBottomSheetScaffoldState(),
                     state = WorkAppListOnboardingScreenState(
                         filteredList = workApps,
                         workAppsList = workApps,
@@ -321,6 +325,7 @@ class WorkAppsOnboardingScreenTest {
         composeTestRule.setContent {
             ScreenLakeTheme {
                 WorkAppMainBodyContent(
+                    bottomSheetScaffoldState = rememberBottomSheetScaffoldState(),
                     state = WorkAppListOnboardingScreenState(
                         filteredList = workApps,
                         workAppsList = workApps,
