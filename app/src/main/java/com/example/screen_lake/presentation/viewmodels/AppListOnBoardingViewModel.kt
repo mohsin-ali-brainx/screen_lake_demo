@@ -1,7 +1,6 @@
 package com.example.screen_lake.presentation.viewmodels
 
 import androidx.lifecycle.viewModelScope
-import com.example.screen_lake.appUtils.Constants.IntegerConstants.ONE
 import com.example.screen_lake.appUtils.Constants.IntegerConstants.ZERO
 import com.example.screen_lake.appUtils.Constants.StringConstants.EMPTY
 import com.example.screen_lake.appUtils.Resource
@@ -28,7 +27,7 @@ data class AppListOnboardingScreenState(
     val filteredList:List<AppInfo> = arrayListOf(),
     val expandedList:Boolean=false,
     val dismissBottomSheet:Boolean=false,
-    val progress:Float = 0.0f
+    val progress:Float = 0.33f
 )
 
 sealed class AppListOnBoardingScreenEvent{
@@ -84,7 +83,7 @@ class AppListOnBoardingViewModel @Inject constructor(
                         newList[position]=app
                         newFilteredList[index]=app
                     }
-                    _state.value= _state.value.copy(installedApps = newList, filteredList = newFilteredList, disableButton = false, progress = getProgress(ONE))
+                    _state.value= _state.value.copy(installedApps = newList, filteredList = newFilteredList, disableButton = false)
                 }
                 is AppListOnBoardingScreenEvent.SearchAppTextUpdated ->{
                     val filteredList = _state.value.installedApps.filter { it.doesMatchSearchQuery(newText) }
@@ -114,7 +113,7 @@ class AppListOnBoardingViewModel @Inject constructor(
                 is Resource.Success->{
                     resource.data?.apply {
                         val disableButton =  filter { it.distractionLevel!= AppDistractions.NOT_DEFINED.key }.isEmpty()
-                        _state.value = _state.value.copy(isLoading = false, installedApps = this, filteredList = this, disableButton = disableButton, progress = getProgress(if (disableButton) ZERO else ONE) )
+                        _state.value = _state.value.copy(isLoading = false, installedApps = this, filteredList = this, disableButton = disableButton )
                     }
                 }
                 is Resource.Error->{}

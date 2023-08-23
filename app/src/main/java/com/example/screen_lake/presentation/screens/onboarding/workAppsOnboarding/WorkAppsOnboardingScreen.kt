@@ -50,6 +50,11 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.FIVE
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.ZERO
+import com.example.screen_lake.appUtils.Constants.StringConstants.EMPTY
+import com.example.screen_lake.appUtils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
+import com.example.screen_lake.appUtils.Constants.TestTags.SHOW_MORE_OR_LESS_TEST_TAG
 import com.example.screen_lake.appUtils.enums.AppUse
 import com.example.screen_lake.appUtils.enums.OnboardingTrackStep
 import com.example.screen_lake.domain.models.AppInfo
@@ -64,11 +69,6 @@ import com.example.screen_lake.presentation.utils.TopBodyContent
 import com.example.screen_lake.presentation.viewmodels.WorkAppAppListOnBoardingScreenUiEvents
 import com.example.screen_lake.presentation.viewmodels.WorkAppListOnBoardingScreenEvent
 import com.example.screen_lake.presentation.viewmodels.WorkAppListOnboardingScreenState
-import com.example.screen_lake.appUtils.Constants.IntegerConstants.FIVE
-import com.example.screen_lake.appUtils.Constants.IntegerConstants.ZERO
-import com.example.screen_lake.appUtils.Constants.StringConstants.EMPTY
-import com.example.screen_lake.appUtils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
-import com.example.screen_lake.appUtils.Constants.TestTags.SHOW_MORE_OR_LESS_TEST_TAG
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -197,11 +197,10 @@ private fun MainScreenContent(
                 buttonText=if (state.checkedItems== ZERO) null else "${stringResource(id = R.string.next)} (${state.checkedItems})",
                 stateDisabled = state.disableButton,
                 modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 0.dp)
                     .constrainAs(nextButton) {
                         bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
+                        start.linkTo(parent.start, margin = 16.dp)
+                        end.linkTo(parent.end, margin = 16.dp)
                         width = Dimension.fillToConstraints
                     }
             ) {
@@ -298,7 +297,10 @@ fun WorkAppMainBodyContent(
                             modifier = Modifier
                                 .testTag(SHOW_MORE_OR_LESS_TEST_TAG)
                                 .padding(horizontal = 8.dp, vertical = 2.dp)
-                                .clickable {
+                                .clickable(
+                                    interactionSource = NoRippleInteractionSource(),
+                                    indication = null
+                                ) {
                                     onEvent(
                                         WorkAppListOnBoardingScreenEvent.OnExpandAppList(
                                             !expandedList

@@ -47,6 +47,8 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
+import com.example.screen_lake.appUtils.Constants
+import com.example.screen_lake.appUtils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
 import com.example.screen_lake.appUtils.enums.AppBehaviors
 import com.example.screen_lake.appUtils.enums.getAppBehaviorFromImportance
 import com.example.screen_lake.appUtils.enums.getAppBehaviorList
@@ -56,13 +58,12 @@ import com.example.screen_lake.presentation.navigation.Screen
 import com.example.screen_lake.presentation.utils.BottomButtonContent
 import com.example.screen_lake.presentation.utils.DropDownSelectionItem
 import com.example.screen_lake.presentation.utils.Extensions.noRippleClickable
+import com.example.screen_lake.presentation.utils.NoRippleInteractionSource
 import com.example.screen_lake.presentation.utils.OptionSelectedItem
 import com.example.screen_lake.presentation.utils.TopBodyContent
 import com.example.screen_lake.presentation.viewmodels.BehaviorOnBoardingScreenEvent
 import com.example.screen_lake.presentation.viewmodels.BehaviorOnBoardingScreenUiEvents
 import com.example.screen_lake.presentation.viewmodels.BehaviorOnboardingScreenState
-import com.example.screen_lake.appUtils.Constants
-import com.example.screen_lake.appUtils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -148,11 +149,10 @@ fun BehaviorMainScreenContent(
         BottomButtonContent(
             stateDisabled = state.disableButton,
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 0.dp)
                 .constrainAs(nextButton) {
                     bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
+                    start.linkTo(parent.start, margin = 16.dp)
+                    end.linkTo(parent.end, margin = 16.dp)
                     width = Dimension.fillToConstraints
                 }
         ) {
@@ -245,7 +245,10 @@ private fun BehaviorItems(behavior: Behavior, onClick: (AppBehaviors)->Unit){
                                 color = MaterialTheme.colors.primaryVariant,
                                 shape = RoundedCornerShape(20.dp)
                             )
-                            .clickable {
+                            .clickable(
+                                interactionSource = NoRippleInteractionSource(),
+                                indication = null
+                            ) {
                                 isContextMenuVisible = true
                             },
                         contentAlignment = Alignment.Center,

@@ -23,10 +23,11 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.screen_lake.presentation.utils.RoundedCorneredButton
 import com.example.screen_lake.appUtils.Constants
 import com.example.screen_lake.appUtils.Constants.TestTags.BOTTOMSHEET_BUTTON_TEST_TAG
 import com.example.screen_lake.appUtils.Constants.TestTags.ONBOARDING_BOTTOM_SHEET_TEST_TAG
+import com.example.screen_lake.presentation.utils.NoRippleInteractionSource
+import com.example.screen_lake.presentation.utils.RoundedCorneredButton
 
 @Composable
 @ExperimentalMaterialApi
@@ -87,7 +88,10 @@ fun OnBoardingBottomSheet(
                 color = MaterialTheme.colors.onError,
                 style = MaterialTheme.typography.button,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.clickable {
+                modifier = Modifier.clickable(
+                    interactionSource = NoRippleInteractionSource(),
+                    indication = null
+                ) {
                     if (onBottomTextClicked != null) {
                         onBottomTextClicked()
                     }

@@ -111,11 +111,10 @@ private fun MainScreenContent(
         BottomButtonContent(
             stateDisabled = state.disableButton,
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 0.dp)
                 .constrainAs(nextButton) {
                     bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
+                    start.linkTo(parent.start, margin = 16.dp)
+                    end.linkTo(parent.end, margin = 16.dp)
                     width = Dimension.fillToConstraints
                 }
         ) {

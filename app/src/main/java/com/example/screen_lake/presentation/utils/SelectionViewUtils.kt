@@ -42,7 +42,10 @@ fun SelectableItem(
 ){
     Box(
         modifier = modifier
-            .clickable {
+            .clickable(
+                interactionSource = NoRippleInteractionSource(),
+                indication = null
+            ) {
                 onClick()
             }
             .then(
