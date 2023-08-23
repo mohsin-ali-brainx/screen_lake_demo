@@ -1,12 +1,14 @@
 package com.example.screen_lake.presentation.viewmodels
 
 import androidx.lifecycle.viewModelScope
+import com.example.screen_lake.appUtils.Constants
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.THREE
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.TWO
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.ZERO
 import com.example.screen_lake.appUtils.Resource
 import com.example.screen_lake.base.OnboardingBaseViewModel
 import com.example.screen_lake.domain.models.AppInfo
 import com.example.screen_lake.domain.useCases.WorkAppListUseCase
-import com.example.screen_lake.appUtils.Constants
-import com.example.screen_lake.appUtils.Constants.IntegerConstants.ZERO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -84,7 +86,7 @@ class WorkAppsOnboardingViewModel @Inject constructor(
                         newFilteredList[index]=app
                     }
                     val checkedItems = newList.filter { it.isChecked }.size
-                    _state.value= _state.value.copy(workAppsList = newList, filteredList = newFilteredList, disableButton = checkedItems==ZERO, checkedItems = checkedItems, progress = if (checkedItems== ZERO) 0.75f else 1.0f)
+                    _state.value= _state.value.copy(workAppsList = newList, filteredList = newFilteredList, disableButton = checkedItems==ZERO, checkedItems = checkedItems, progress =  getProgress(if (checkedItems== ZERO)TWO else THREE))
                 }
                 is WorkAppListOnBoardingScreenEvent.SearchAppTextUpdated ->{
                     val filteredList = _state.value.workAppsList.filter { it.doesMatchSearchQuery(newText) }
@@ -114,7 +116,7 @@ class WorkAppsOnboardingViewModel @Inject constructor(
                     resource.data?.apply {
                         val checkedItems = this.filter { it.isChecked }.size
                         _state.value = _state.value.copy(isLoading = false, workAppsList = this, filteredList = this, checkedItems = checkedItems, disableButton =checkedItems== ZERO,
-                           progress =  if (checkedItems == ZERO) 0.75f else 1.0f )
+                            progress =  getProgress(if (checkedItems== ZERO)TWO else THREE))
                     }
                 }
                 is Resource.Error->{}

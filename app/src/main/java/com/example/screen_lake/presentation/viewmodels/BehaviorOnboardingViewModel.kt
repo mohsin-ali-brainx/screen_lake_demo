@@ -1,6 +1,8 @@
 package com.example.screen_lake.presentation.viewmodels
 
 import androidx.lifecycle.viewModelScope
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.ONE
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.TWO
 import com.example.screen_lake.appUtils.Resource
 import com.example.screen_lake.appUtils.enums.AppBehaviors
 import com.example.screen_lake.base.OnboardingBaseViewModel
@@ -57,7 +59,7 @@ class BehaviorOnboardingViewModel @Inject constructor(
                        addAll(_state.value.appBehaviors)
                    }
                     newList[index]=behavior
-                    _state.value=_state.value.copy(appBehaviors = newList, disableButton = false, progress = 0.75f)
+                    _state.value=_state.value.copy(appBehaviors = newList, disableButton = false, progress = getProgress(TWO))
                 }
                 is BehaviorOnBoardingScreenEvent.OnNextClicked ->{
                     insertOnboardingTracker()
@@ -77,7 +79,7 @@ class BehaviorOnboardingViewModel @Inject constructor(
                 is Resource.Success->{
                     resource.data?.apply {
                         val disableButton =  filter { it.importance!= AppBehaviors.NOT_DEFINED.importance }.isEmpty()
-                        _state.value = _state.value.copy(isLoading = false, appBehaviors = this, disableButton = disableButton, progress = if (disableButton) 0.5f else 0.75f)
+                        _state.value = _state.value.copy(isLoading = false, appBehaviors = this, disableButton = disableButton, progress =  getProgress(if (disableButton)ONE else TWO) )
                     }
                 }
                 is Resource.Error->{

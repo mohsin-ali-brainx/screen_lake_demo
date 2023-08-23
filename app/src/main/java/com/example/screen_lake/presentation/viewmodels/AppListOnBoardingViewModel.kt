@@ -1,6 +1,7 @@
 package com.example.screen_lake.presentation.viewmodels
 
 import androidx.lifecycle.viewModelScope
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.ONE
 import com.example.screen_lake.appUtils.Constants.IntegerConstants.ZERO
 import com.example.screen_lake.appUtils.Constants.StringConstants.EMPTY
 import com.example.screen_lake.appUtils.Resource
@@ -83,7 +84,7 @@ class AppListOnBoardingViewModel @Inject constructor(
                         newList[position]=app
                         newFilteredList[index]=app
                     }
-                    _state.value= _state.value.copy(installedApps = newList, filteredList = newFilteredList, disableButton = false, progress = 0.5f)
+                    _state.value= _state.value.copy(installedApps = newList, filteredList = newFilteredList, disableButton = false, progress = getProgress(ONE))
                 }
                 is AppListOnBoardingScreenEvent.SearchAppTextUpdated ->{
                     val filteredList = _state.value.installedApps.filter { it.doesMatchSearchQuery(newText) }
@@ -113,7 +114,7 @@ class AppListOnBoardingViewModel @Inject constructor(
                 is Resource.Success->{
                     resource.data?.apply {
                         val disableButton =  filter { it.distractionLevel!= AppDistractions.NOT_DEFINED.key }.isEmpty()
-                        _state.value = _state.value.copy(isLoading = false, installedApps = this, filteredList = this, disableButton = disableButton, progress = if (disableButton) 0.0f else 0.5f)
+                        _state.value = _state.value.copy(isLoading = false, installedApps = this, filteredList = this, disableButton = disableButton, progress = getProgress(if (disableButton) ZERO else ONE) )
                     }
                 }
                 is Resource.Error->{}

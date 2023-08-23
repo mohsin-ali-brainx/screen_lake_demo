@@ -2,6 +2,7 @@ package com.example.screen_lake.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.screen_lake.appUtils.Constants.IntegerConstants.THREE
 import com.example.screen_lake.appUtils.enums.OnboardingTrackStep
 import com.example.screen_lake.dataSource.repositoryImp.OnboardingRepositoryImp
 import com.example.screen_lake.domain.models.OnboardingTracker
@@ -28,5 +29,9 @@ open class OnboardingBaseViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    fun getProgress(currentScreen:Int,totalScreens:Int=THREE):Float{
+      return  ((1.0f/totalScreens)*currentScreen)
     }
 }
