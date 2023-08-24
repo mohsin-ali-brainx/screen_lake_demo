@@ -23,6 +23,6 @@ fun getScreenFromStep(step: Int): Screen {
        OnboardingTrackStep.BEHAVIOUR_SCREEN_STEP.step-> Screen.BehaviorOnboardingScreenRoute
        OnboardingTrackStep.WORK_APP_SCREEN_STEP.step, OnboardingTrackStep.WORK_APP_BOTTOMSHEET_SCREEN_STEP.step-> Screen.WorkAppsOnboardingScreenRoute
        OnboardingTrackStep.OCCUPATION_SCREEN_STEP.step-> Screen.OccupationScreenRoute
-       else-> Screen.Splash
+       else-> Screen.AppListOnboardingScreenRoute
     }
 }

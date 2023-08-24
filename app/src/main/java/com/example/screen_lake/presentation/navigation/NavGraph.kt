@@ -17,6 +17,7 @@ import com.example.screen_lake.presentation.screens.splash.SplashScreen
 import com.example.screen_lake.presentation.viewmodels.AppListOnBoardingViewModel
 import com.example.screen_lake.presentation.viewmodels.BehaviorOnboardingViewModel
 import com.example.screen_lake.presentation.viewmodels.OccupationQuestionnaireViewModel
+import com.example.screen_lake.presentation.viewmodels.SplashViewModel
 import com.example.screen_lake.presentation.viewmodels.WorkAppsOnboardingViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -24,7 +25,7 @@ import com.example.screen_lake.presentation.viewmodels.WorkAppsOnboardingViewMod
 fun ScreenLakeNavGraph(navController: NavHostController,onboardingTracker: OnboardingTracker) {
     NavHost(
         navController = navController,
-        startDestination = getScreenFromStep(onboardingTracker.step).route
+        startDestination = ScreenRoutes.SPLASH.route
     ) {
         composable(route = Screen.Splash.route,
             exitTransition = {
@@ -39,7 +40,8 @@ fun ScreenLakeNavGraph(navController: NavHostController,onboardingTracker: Onboa
                     animationSpec = tween(700)
                 )
             }) { backStackEntry ->
-            SplashScreen(navController)
+            val viewModel = hiltViewModel<SplashViewModel>()
+            SplashScreen(navController,onboardingTracker,viewModel.eventFlow)
         }
 
         composable(route = Screen.AppListOnboardingScreenRoute.route,
