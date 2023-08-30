@@ -13,11 +13,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,19 +53,19 @@ fun SelectableItem(
             .then(
                 if (!isChecked) {
                     Modifier.background(
-                        color = MaterialTheme.colors.background,
+                        color = MaterialTheme.colorScheme.background,
                         shape = RoundedCornerShape(16.dp)
                     )
                 } else {
                     Modifier
                         .background(
-                            color = MaterialTheme.colors.onPrimary,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             shape = RoundedCornerShape(16.dp)
                         )
                         .clip(RoundedCornerShape(16.dp))
                         .border(
                             width = 1.dp,
-                            color = MaterialTheme.colors.onBackground,
+                            color = MaterialTheme.colorScheme.onBackground,
                             shape = RoundedCornerShape(16.dp)
                         )
                 }
@@ -94,7 +94,7 @@ fun SelectableItem(
                                     .size(32.dp)
                                     .clip(CircleShape)
                                     .background(
-                                        color = MaterialTheme.colors.onPrimary,
+                                        color = MaterialTheme.colorScheme.onPrimary,
                                         shape = CircleShape
                                     )
                             }else{
@@ -115,7 +115,7 @@ fun SelectableItem(
                                 Modifier
                                     .size(32.dp)
                                     .background(
-                                        color = MaterialTheme.colors.onPrimary,
+                                        color = MaterialTheme.colorScheme.onPrimary,
                                         shape = CircleShape
                                     )
                                     .clip(CircleShape)
@@ -129,8 +129,8 @@ fun SelectableItem(
                 }
                 Text(
                     text = textTitle,
-                    style = MaterialTheme.typography.h2,
-                    color = MaterialTheme.colors.onSurface,
+                    style = MaterialTheme.typography.displaySmall,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.padding(horizontal = 8.dp),
                     maxLines = 1,
                 )
@@ -140,14 +140,14 @@ fun SelectableItem(
                     Modifier
                         .size(20.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colors.onBackground, shape = CircleShape)
+                        .background(MaterialTheme.colorScheme.onBackground, shape = CircleShape)
                 }else{
                     Modifier
                         .size(20.dp)
                         .clip(CircleShape)
                         .border(
                             1.dp,
-                            color = MaterialTheme.colors.secondaryVariant,
+                            color = MaterialTheme.colorScheme.secondaryContainer,
                             shape = CircleShape
                         )
                 }
@@ -161,7 +161,7 @@ fun SelectableItem(
                             .testTag(CHECKED_ICON_TEST_TAG)
                             .size(16.dp),
                         imageVector = Icons.Default.Done,
-                        tint = MaterialTheme.colors.primary,
+                        tint = MaterialTheme.colorScheme.primary,
                         contentDescription = EMPTY
                     )
                 }

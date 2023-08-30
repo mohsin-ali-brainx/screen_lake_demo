@@ -8,7 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,13 +20,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -58,11 +57,11 @@ fun TopBodyContent(
     ) {
         LinearProgressIndicator(
             progress = linearProgress,
-            color = MaterialTheme.colors.surface,
+            color = MaterialTheme.colorScheme.background,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(8.dp),
-            backgroundColor = MaterialTheme.colors.background
+            trackColor = MaterialTheme.colorScheme.surface
         )
         Column(
             Modifier.padding(horizontal = 16.dp, vertical = 20.dp)
@@ -70,16 +69,16 @@ fun TopBodyContent(
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = title,
-                color = MaterialTheme.colors.onSurface,
-                style = MaterialTheme.typography.h1
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.displayLarge
             )
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
                 text = description,
-                color = MaterialTheme.colors.onSurface,
-                style = MaterialTheme.typography.h3
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.headlineLarge
             )
         }
     }
@@ -95,17 +94,17 @@ fun BottomButtonContent(
     onBottomTextClicked: (() -> Unit)?=null
 ){
     Column(modifier = modifier, verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-        RoundedCorneredButton(buttonText = buttonText?:stringResource(id = R.string.next),
-            buttonColor = if (stateDisabled) MaterialTheme.colors.onPrimary else MaterialTheme.colors.surface,
-            textColor = if (stateDisabled) MaterialTheme.colors.onError else MaterialTheme.colors.primary,
+        RoundedCorneredButton(buttonText = buttonText ?: stringResource(id = R.string.next),
+            buttonColor = if (stateDisabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.surface,
+            textColor = if (stateDisabled) MaterialTheme.colorScheme.onError else MaterialTheme.colorScheme.primary,
             modifier = Modifier.testTag(ONBOARDING_NEXT_BUTTON_TEST_TAG),
             onClickAction = {
                 onClick()
             })
         Spacer(modifier = Modifier.height(20.dp))
         Text(text = bottomText?: stringResource(id = R.string.skip_for_now),
-            color = MaterialTheme.colors.onError,
-            style = MaterialTheme.typography.button,
+            color = MaterialTheme.colorScheme.onError,
+            style = MaterialTheme.typography.labelLarge,
             textAlign = TextAlign.Center,
             modifier = Modifier.clickable(
                 interactionSource = NoRippleInteractionSource(),
@@ -131,7 +130,7 @@ fun OptionSelectedItem(text:String,background:Color,textColor:Color) {
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.bodyMedium,
             color = textColor,
             maxLines = 1,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
@@ -148,60 +147,59 @@ fun DropDownSelectionItem(
     onClick: () -> Unit
 ){
     DropdownMenuItem(
-        modifier = Modifier.heightIn(20.dp).widthIn(200.dp),
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
-        onClick = { onClick() },
-        interactionSource = NoRippleInteractionSource()
-    ) {
-        ConstraintLayout() {
-            val (iconStart, title, checkedIcon) = createRefs()
-            Box(
-                modifier = Modifier
-                    .size(6.dp)
-                    .constrainAs(iconStart) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                    }
-                    .background(background, shape = CircleShape)
-            ) {
-
-            }
-            Text(
-                text = text,
-                style = if (selectedKey==key) MaterialTheme.typography.subtitle2 else MaterialTheme.typography.body1 ,
-                color = if (selectedKey == key) MaterialTheme.colors.onBackground else MaterialTheme.colors.onError,
-                textAlign = TextAlign.Start,
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .constrainAs(title) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(iconStart.end)
-                        end.linkTo(checkedIcon.start)
-                    },
-                maxLines = 1,
-            )
-            if (selectedKey == key) {
+        modifier  = Modifier
+            .heightIn(20.dp)
+            .widthIn(200.dp),
+        text = {
+            ConstraintLayout {
+                val (iconStart, title, checkedIcon) = createRefs()
                 Box(
                     modifier = Modifier
-                        .size(16.dp)
-                        .constrainAs(checkedIcon) {
+                        .size(6.dp)
+                        .constrainAs(iconStart) {
                             top.linkTo(parent.top)
                             bottom.linkTo(parent.bottom)
-                            end.linkTo(parent.end)
+                            start.linkTo(parent.start)
                         }
-                        .background(MaterialTheme.colors.onBackground, shape = CircleShape),
-                    contentAlignment = Alignment.Center,
+                        .background(background, shape = CircleShape)
                 ) {
-                    Icon(
-                        modifier = Modifier.size(12.dp),
-                        imageVector = Icons.Default.Done,
-                        tint = MaterialTheme.colors.primary,
-                        contentDescription = Constants.StringConstants.EMPTY
-                    )
+
+                }
+                Text(text = text,
+                    style = if (selectedKey==key) MaterialTheme.typography.titleMedium else MaterialTheme.typography.bodyMedium ,
+                    color = if (selectedKey == key) MaterialTheme.colorScheme.onBackground else MaterialTheme. colorScheme.onError,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .constrainAs(title) {
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(iconStart.end)
+                            end.linkTo(checkedIcon.start)
+                        },
+                    maxLines = 1,
+                )
+                if (selectedKey == key) {
+                    Box(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .constrainAs(checkedIcon) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                end.linkTo(parent.end)
+                            }
+                            .background(MaterialTheme.colorScheme.onBackground, shape = CircleShape),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(12.dp),
+                            imageVector = Icons.Default.Done,
+                            tint = MaterialTheme.colorScheme.primary,
+                            contentDescription = Constants.StringConstants.EMPTY
+                        )
+                    }
                 }
             }
-        }
-    }
+        }, onClick = { onClick() },
+        interactionSource = NoRippleInteractionSource() )
 }

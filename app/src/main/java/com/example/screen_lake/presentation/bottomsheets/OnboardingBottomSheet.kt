@@ -13,9 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +29,6 @@ import com.example.screen_lake.presentation.utils.NoRippleInteractionSource
 import com.example.screen_lake.presentation.utils.RoundedCorneredButton
 
 @Composable
-@ExperimentalMaterialApi
 fun OnBoardingBottomSheet(
     image: Painter,
     title:String,
@@ -48,14 +46,13 @@ fun OnBoardingBottomSheet(
         .padding(vertical = 24.dp, horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-
         ){
         Box(
             Modifier
                 .width(96.dp)
                 .height(96.dp)
                 .background(
-                    color = MaterialTheme.colors.background,
+                    color = MaterialTheme.colorScheme.background,
                     shape = CircleShape
                 )
                 .padding(16.dp),
@@ -65,28 +62,28 @@ fun OnBoardingBottomSheet(
         }
         Spacer(modifier = Modifier.height(20.dp))
         Text(text = title,
-            color = MaterialTheme.colors.onSurface,
-            style = MaterialTheme.typography.h1
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.displayLarge
         )
         Spacer(modifier = Modifier.height(20.dp))
         Text(text = description,
-            color = MaterialTheme.colors.onSurface,
-            style = MaterialTheme.typography.h3,
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.headlineLarge,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(60.dp))
         RoundedCorneredButton(
             buttonText = buttonText,
-            buttonColor = MaterialTheme.colors.surface,
-            textColor =  MaterialTheme.colors.primary,
+            buttonColor = MaterialTheme.colorScheme.surface,
+            textColor =  MaterialTheme.colorScheme.primary,
             modifier = Modifier.testTag(BOTTOMSHEET_BUTTON_TEST_TAG),
             onClickAction = onButtonClicked
         )
         if (addBottomText){
             Spacer(modifier = Modifier.height(20.dp))
             Text(text = bottomText?: Constants.StringConstants.EMPTY,
-                color = MaterialTheme.colors.onError,
-                style = MaterialTheme.typography.button,
+                color = MaterialTheme.colorScheme.onError,
+                style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.clickable(
                     interactionSource = NoRippleInteractionSource(),
@@ -98,5 +95,7 @@ fun OnBoardingBottomSheet(
                 }
             )
         }
+
+        Spacer(modifier = Modifier.height(36.dp))
     }
 }

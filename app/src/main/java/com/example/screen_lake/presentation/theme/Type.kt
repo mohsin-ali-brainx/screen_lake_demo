@@ -1,6 +1,6 @@
 package com.example.screen_lake.presentation.theme
 
-import androidx.compose.material.Typography
+import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -12,42 +12,93 @@ val appFonts = FontFamily(
     Font(R.font.inter_tight_regular),
 )
 
-// Set of Material typography styles to start with
-val ScreenLakeTypography = Typography(
-    h1 = TextStyle(
-        fontWeight = FontWeight(500),
+val SiftTypography = Typography(
+    displayLarge = TextStyle(
+        fontWeight = FontWeight(600),
         fontFamily = appFonts,
         fontSize = 28.sp,
     ),
-    h2 = TextStyle(
+    displaySmall =  TextStyle(
         fontWeight = FontWeight(500),
         fontFamily = appFonts,
         fontSize = 16.sp,
     ),
-    h3 = TextStyle(
+    headlineLarge =TextStyle(
         fontWeight = FontWeight(400),
         fontFamily = appFonts,
         fontSize = 16.sp,
     ),
-    subtitle2 = TextStyle(
-        fontWeight =  FontWeight(500),
+    headlineMedium = TextStyle(
+        fontWeight = FontWeight(500),
         fontFamily = appFonts,
         fontSize = 14.sp,
     ),
-    body1 =  TextStyle(
-        fontWeight =  FontWeight(400),
+
+    titleMedium = TextStyle(
+        fontWeight = FontWeight(500),
         fontFamily = appFonts,
         fontSize = 14.sp,
     ),
-    body2 = TextStyle(
-        fontWeight =  FontWeight(400),
+
+    bodyLarge = TextStyle(
+        fontWeight = FontWeight(400),
+        fontFamily = appFonts,
+        fontSize = 16.sp,
+    ),
+    bodyMedium = TextStyle(
+        fontWeight = FontWeight(400),
+        fontFamily = appFonts,
+        fontSize = 14.sp,
+    ),
+    bodySmall = TextStyle(
+        fontWeight = FontWeight(400),
         fontFamily = appFonts,
         fontSize = 12.sp,
     ),
-    button=TextStyle(
+    labelLarge = TextStyle(
         fontWeight =  FontWeight(600),
         fontFamily = appFonts,
         fontSize = 16.sp,
-    )
+    ),
+)
 
-    )
+//// Set of Material typography styles to start with
+//val ScreenLakeTypography = Typography(
+//
+//    h1 = TextStyle(
+//        fontWeight = FontWeight(500),
+//        fontFamily = appFonts,
+//        fontSize = 28.sp,
+//    ),
+//    h2 = TextStyle(
+//        fontWeight = FontWeight(500),
+//        fontFamily = appFonts,
+//        fontSize = 16.sp,
+//    ),
+//    h3 = TextStyle(
+//        fontWeight = FontWeight(400),
+//        fontFamily = appFonts,
+//        fontSize = 16.sp,
+//    ),
+//    subtitle2 = TextStyle(
+//        fontWeight =  FontWeight(500),
+//        fontFamily = appFonts,
+//        fontSize = 14.sp,
+//    ),
+//    body1 =  TextStyle(
+//        fontWeight =  FontWeight(400),
+//        fontFamily = appFonts,
+//        fontSize = 14.sp,
+//    ),
+//    body2 = TextStyle(
+//        fontWeight =  FontWeight(400),
+//        fontFamily = appFonts,
+//        fontSize = 12.sp,
+//    ),
+//    button=TextStyle(
+//        fontWeight =  FontWeight(600),
+//        fontFamily = appFonts,
+//        fontSize = 16.sp,
+//    )
+//
+//    )

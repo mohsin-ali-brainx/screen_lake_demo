@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,9 +23,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.screen_lake.presentation.theme.appFonts
 import com.example.screen_lake.appUtils.Constants
 import com.example.screen_lake.appUtils.Constants.TestTags.TEXT_FIELD_PLACE_HOLDER_TEST_TAG
+import com.example.screen_lake.presentation.theme.appFonts
 
 @Composable
 fun CustomTextField(
@@ -54,11 +52,11 @@ fun CustomTextField(
                     .testTag(Constants.TestTags.CUSTOM_EDIT_TEXT_TEST_TAG)
                     .fillMaxWidth(),
                 value = text,
-                cursorBrush = SolidColor(MaterialTheme.colors.onSecondary),
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.onSecondary),
                 onValueChange = {
                     onValueChange(it)
                 },
-                textStyle = TextStyle(color = MaterialTheme.colors.onSecondary,
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.onSecondary,
                     fontWeight =  FontWeight(500),
                     fontFamily = appFonts,
                     fontSize = 14.sp,),
@@ -81,8 +79,7 @@ fun CustomTextField(
                                         .padding(0.dp),
                                     text = it,
                                     textAlign = TextAlign.Start,
-                                    style = MaterialTheme.typography.body1,
-                                    color = LocalContentColor.current.copy(ContentAlpha.medium)
+                                    style = MaterialTheme.typography.bodyMedium,
                                 )
                             }
                         }

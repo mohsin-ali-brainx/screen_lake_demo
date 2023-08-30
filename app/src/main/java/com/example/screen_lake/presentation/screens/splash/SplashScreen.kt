@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -39,9 +39,9 @@ fun SplashScreen(
         }
     }
 
-    Box(modifier = Modifier
+    Box(modifier = androidx.compose.ui.Modifier
         .fillMaxSize(1f)
-        .background(MaterialTheme.colors.primary),
+        .background(MaterialTheme.colorScheme.primary),
         contentAlignment = Alignment.Center
     ) {
         Box(
@@ -49,7 +49,7 @@ fun SplashScreen(
                 .width(120.dp)
                 .height(120.dp)
                 .background(
-                    color = MaterialTheme.colors.background,
+                    color = MaterialTheme.colorScheme.background,
                     shape = CircleShape
                 )
                 .padding(16.dp),

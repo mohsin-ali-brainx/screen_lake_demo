@@ -1,14 +1,13 @@
 package com.example.screen_lake.presentation.theme
 
-import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-@VisibleForTesting
-private val LightDefaultColorScheme = lightColors(
+
+private val LightDefaultColorScheme = lightColorScheme(
     primary = PrimaryLight,
     background = ShapeBackgroundLightColor,
     onBackground = PrimaryDark,
@@ -16,14 +15,13 @@ private val LightDefaultColorScheme = lightColors(
     secondary = PrimaryLight,
     onSurface = PrimaryDark,
     onSecondary = DisableLightColor,
-    secondaryVariant = LightBorderColor,
-    primaryVariant = LightImageButtonBg,
+    secondaryContainer = LightBorderColor,
+    primaryContainer = LightImageButtonBg,
     onPrimary = DisableButtonLightColor,
     onError = DisableTextLightColor
 )
 
-@VisibleForTesting
-private val DarkDefaultColorScheme = darkColors(
+private val DarkDefaultColorScheme = darkColorScheme(
     primary = PrimaryDark,
     background = ShapeBackgroundDarkColor,
     onBackground = PrimaryLight,
@@ -31,8 +29,8 @@ private val DarkDefaultColorScheme = darkColors(
     secondary = PrimaryDark,
     onSurface = PrimaryLight,
     onSecondary = DisableDarkColor,
-    secondaryVariant = DarkBorderColor,
-    primaryVariant = DarkImageButtonBg,
+    secondaryContainer = DarkBorderColor,
+    primaryContainer = DarkImageButtonBg,
     onPrimary = DisableButtonDarkColor,
     onError = DisableTextDarkColor
 )
@@ -49,9 +47,9 @@ fun ScreenLakeTheme(
     }
 
     MaterialTheme(
-        colors = colors,
-        typography = ScreenLakeTypography,
-        shapes = Shapes,
+        colorScheme = colors,
+        typography = SiftTypography,
         content = content
     )
+
 }
