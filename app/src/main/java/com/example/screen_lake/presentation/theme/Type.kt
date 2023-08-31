@@ -22,9 +22,14 @@ val ScreenLakeTypography = Typography(
     h2 = TextStyle(
         fontWeight = FontWeight(500),
         fontFamily = appFonts,
-        fontSize = 16.sp,
+        fontSize = 20.sp,
     ),
     h3 = TextStyle(
+        fontWeight = FontWeight(500),
+        fontFamily = appFonts,
+        fontSize = 16.sp,
+    ),
+    subtitle1 = TextStyle(
         fontWeight = FontWeight(400),
         fontFamily = appFonts,
         fontSize = 16.sp,

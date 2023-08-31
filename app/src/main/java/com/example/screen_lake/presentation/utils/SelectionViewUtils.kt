@@ -129,7 +129,7 @@ fun SelectableItem(
                 }
                 Text(
                     text = textTitle,
-                    style = MaterialTheme.typography.h2,
+                    style = MaterialTheme.typography.h3,
                     color = MaterialTheme.colors.onSurface,
                     modifier = Modifier.padding(horizontal = 8.dp),
                     maxLines = 1,

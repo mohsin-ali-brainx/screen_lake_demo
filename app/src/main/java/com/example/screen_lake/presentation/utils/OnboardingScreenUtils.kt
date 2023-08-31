@@ -79,7 +79,7 @@ fun TopBodyContent(
                     .padding(vertical = 8.dp),
                 text = description,
                 color = MaterialTheme.colors.onSurface,
-                style = MaterialTheme.typography.h3
+                style = MaterialTheme.typography.subtitle1
             )
         }
     }

@@ -212,7 +212,7 @@ private fun BehaviorItems(behavior: Behavior, onClick: (AppBehaviors)->Unit){
                 val (title, action) = createRefs()
                 Text(
                     text = name,
-                    style = MaterialTheme.typography.h2,
+                    style = MaterialTheme.typography.h3,
                     color = MaterialTheme.colors.onSurface,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Start,

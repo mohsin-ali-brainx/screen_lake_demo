@@ -387,7 +387,7 @@ private fun InstalledAppItems(info: AppInfo,isClickable:Boolean ,onClick: (AppDi
 
                     Text(
                         text = info.realAppName ?: EMPTY,
-                        style = MaterialTheme.typography.h2,
+                        style = MaterialTheme.typography.h3,
                         color = MaterialTheme.colors.onSurface,
                         modifier = Modifier.padding(horizontal = 8.dp),
                         maxLines = 1,

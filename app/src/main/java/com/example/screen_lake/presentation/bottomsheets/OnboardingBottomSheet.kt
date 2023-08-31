@@ -71,7 +71,7 @@ fun OnBoardingBottomSheet(
         Spacer(modifier = Modifier.height(20.dp))
         Text(text = description,
             color = MaterialTheme.colors.onSurface,
-            style = MaterialTheme.typography.h3,
+            style = MaterialTheme.typography.subtitle1,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(60.dp))
