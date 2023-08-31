@@ -57,11 +57,11 @@ fun TopBodyContent(
     ) {
         LinearProgressIndicator(
             progress = linearProgress,
-            color = MaterialTheme.colorScheme.background,
+            color = MaterialTheme.colorScheme.surface,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(8.dp),
-            trackColor = MaterialTheme.colorScheme.surface
+            trackColor = MaterialTheme.colorScheme.background
         )
         Column(
             Modifier.padding(horizontal = 16.dp, vertical = 20.dp)

@@ -177,7 +177,7 @@ private fun MainScreenContent(
     Box(
         modifier = Modifier
             .clickable(
-                enabled = bottomSheetScaffoldState.currentValue != SheetValue.Expanded,
+//                enabled = bottomSheetScaffoldState.currentValue != SheetValue.Expanded,
                 interactionSource = NoRippleInteractionSource(),
                 indication = null
             ) {
@@ -309,7 +309,9 @@ fun AppListMainBodyContent(
                             FIVE
                         )
                     ) { index, item ->
-                        InstalledAppItems(info = item,bottomSheetScaffoldState.currentValue==SheetValue.Hidden) {
+                        InstalledAppItems(info = item,
+                            true//bottomSheetScaffoldState.currentValue==SheetValue.Hidden
+                        ) {
                             if (bottomSheetScaffoldState.currentValue!=SheetValue.Expanded) {
                                 onEvent(
                                     AppListOnBoardingScreenEvent.OnAppSelected(

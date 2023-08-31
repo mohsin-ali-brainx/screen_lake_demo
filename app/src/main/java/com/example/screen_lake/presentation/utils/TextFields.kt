@@ -80,6 +80,7 @@ fun CustomTextField(
                                     text = it,
                                     textAlign = TextAlign.Start,
                                     style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onError
                                 )
                             }
                         }
