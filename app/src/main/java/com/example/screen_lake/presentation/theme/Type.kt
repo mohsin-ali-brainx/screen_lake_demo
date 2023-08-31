@@ -18,6 +18,11 @@ val SiftTypography = Typography(
         fontFamily = appFonts,
         fontSize = 28.sp,
     ),
+    displayMedium = TextStyle(
+        fontWeight = FontWeight(500),
+        fontFamily = appFonts,
+        fontSize = 20.sp,
+    ),
     displaySmall =  TextStyle(
         fontWeight = FontWeight(500),
         fontFamily = appFonts,

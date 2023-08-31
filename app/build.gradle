@@ -128,7 +128,6 @@ dependencies {
     // GSON
     api 'com.google.code.gson:gson:2.10'
 
-
-    // The compose calendar library
-//    implementation 'com.kizitonwose.calendar:compose:2.4.0-beta01'
+//     The compose calendar library
+    implementation 'com.kizitonwose.calendar:compose:2.4.0-beta01'
 }
