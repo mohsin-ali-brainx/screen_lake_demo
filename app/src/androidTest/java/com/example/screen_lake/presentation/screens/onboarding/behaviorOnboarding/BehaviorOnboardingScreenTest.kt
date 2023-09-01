@@ -1,7 +1,7 @@
 package com.example.screen_lake.presentation.screens.onboarding.behaviorOnboarding
 
 import android.content.Context
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertAll
 import androidx.compose.ui.test.assertCountEquals
@@ -13,16 +13,16 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.screen_lake.R
-import com.example.screen_lake.appUtils.enums.AppBehaviors
-import com.example.screen_lake.domain.models.Behavior
-import com.example.screen_lake.presentation.screens.onboarding.behaviourOnboarding.BehaviorMainBodyContent
-import com.example.screen_lake.presentation.viewmodels.BehaviorOnboardingScreenState
-import com.example.screen_lake.presentation.theme.ScreenLakeTheme
 import com.example.screen_lake.appUtils.Constants.IntegerConstants.FOUR
 import com.example.screen_lake.appUtils.Constants.IntegerConstants.ONE
 import com.example.screen_lake.appUtils.Constants.IntegerConstants.TWO
 import com.example.screen_lake.appUtils.Constants.IntegerConstants.ZERO
 import com.example.screen_lake.appUtils.Constants.TestTags.MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG
+import com.example.screen_lake.appUtils.enums.AppBehaviors
+import com.example.screen_lake.domain.models.Behavior
+import com.example.screen_lake.presentation.screens.onboarding.behaviourOnboarding.BehaviorMainBodyContent
+import com.example.screen_lake.presentation.theme.ScreenLakeTheme
+import com.example.screen_lake.presentation.viewmodels.BehaviorOnboardingScreenState
 import com.google.common.truth.Truth
 import org.junit.Before
 import org.junit.Rule
@@ -55,7 +55,7 @@ class BehaviorOnboardingScreenTest {
         }
     }
 
-    @OptIn(ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Test
     fun CheckLazyColumnIsEmpty(){
         composeTestRule.setContent {
@@ -71,7 +71,7 @@ class BehaviorOnboardingScreenTest {
         composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).onChildren().assertCountEquals(ZERO)
     }
 
-    @OptIn(ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Test
     fun CheckLazyColumnIsNotEmpty(){
         composeTestRule.setContent {
