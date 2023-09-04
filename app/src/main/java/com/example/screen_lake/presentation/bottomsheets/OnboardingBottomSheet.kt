@@ -95,7 +95,5 @@ fun OnBoardingBottomSheet(
                 }
             )
         }
-
-        Spacer(modifier = Modifier.height(36.dp))
     }
 }

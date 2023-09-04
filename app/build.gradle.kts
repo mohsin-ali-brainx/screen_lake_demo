@@ -62,6 +62,7 @@ dependencies {
     implementation ("androidx.compose.foundation:foundation:1.6.0-beta04")
     implementation("androidx.compose.material3:material3:1.2.0-alpha06")
     implementation("androidx.compose.material3:material3-window-size-class:1.2.0-alpha06")
+    implementation("androidx.compose.material:material:1.5.0")
 
     // testing
     testImplementation ("junit:junit:4.13.2")

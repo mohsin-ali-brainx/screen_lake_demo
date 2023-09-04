@@ -28,10 +28,17 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.BottomSheetScaffoldState
+import androidx.compose.material.BottomSheetValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
@@ -42,8 +49,6 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SheetState
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -57,6 +62,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
@@ -104,6 +110,7 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
+@ExperimentalMaterialApi
 fun AppListOnboardingScreen(
     navHostController: NavHostController,
     onboardingTracker: OnboardingTracker,
@@ -114,13 +121,15 @@ fun AppListOnboardingScreen(
 
     val state by dataState.collectAsState()
 
-    var openBottomSheet by rememberSaveable {
-        mutableStateOf(onboardingTracker.step== OnboardingTrackStep.APP_LIST_BOTTOMSHEET_SCREEN_STEP.step)
-    }
-    var skipPartiallyExpanded by remember { mutableStateOf(false) }
-    var edgeToEdgeEnabled by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    val bottomSheetState = rememberModalBottomSheetState()
+
+    val bottomSheetState = rememberBottomSheetState(
+        initialValue = if (onboardingTracker.step== OnboardingTrackStep.APP_LIST_BOTTOMSHEET_SCREEN_STEP.step) BottomSheetValue.Expanded else BottomSheetValue.Collapsed,
+        animationSpec = SwipeableDefaults.AnimationSpec,
+        confirmStateChange = { false },
+    )
+    val bottomSheetScaffoldState =
+        rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
 
     LaunchedEffect(key1 = true){
         uiEvents.collectLatest {
@@ -133,22 +142,9 @@ fun AppListOnboardingScreen(
         }
     }
 
-    MainScreenContent(bottomSheetState, state){
-        onEvent(it)
-    }
-
-    if (openBottomSheet){
-        val windowInsets = if (edgeToEdgeEnabled) WindowInsets(ZERO) else BottomSheetDefaults.windowInsets
-        ModalBottomSheet(
-            onDismissRequest = {
-                openBottomSheet = false
-                onEvent(AppListOnBoardingScreenEvent.UpdateOnBoardingTracker)
-            },
-            sheetState = bottomSheetState,
-            windowInsets = windowInsets,
-            containerColor = MaterialTheme.colorScheme.secondary,
-            tonalElevation = 16.dp,
-        ) {
+    BottomSheetScaffold(
+        scaffoldState = bottomSheetScaffoldState,
+        sheetContent = {
             OnBoardingBottomSheet(
                 image = painterResource(id = R.drawable.iv_rocket),
                 title = stringResource(id = R.string.shift_your_distraction),
@@ -157,32 +153,41 @@ fun AppListOnboardingScreen(
                 addBottomText = false,
                 onButtonClicked = {
                     scope.launch {
-                        bottomSheetState.hide()
+                        bottomSheetScaffoldState.bottomSheetState.collapse()
                         onEvent(AppListOnBoardingScreenEvent.UpdateOnBoardingTracker)
                     }
                 })
+        },
+        sheetElevation = 20.dp,
+        sheetGesturesEnabled = false,
+        sheetBackgroundColor = MaterialTheme.colorScheme.secondary,
+        sheetPeekHeight = 0.dp,
+        sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+    ) {
+        MainScreenContent(bottomSheetScaffoldState, state){
+            onEvent(it)
         }
     }
 
-
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 private fun MainScreenContent(
-    bottomSheetScaffoldState: SheetState,
+    bottomSheetScaffoldState: BottomSheetScaffoldState,
     state: AppListOnboardingScreenState,
     onEvent : (AppListOnBoardingScreenEvent)->Unit
 ) {
     Box(
         modifier = Modifier
             .clickable(
-//                enabled = bottomSheetScaffoldState.currentValue != SheetValue.Expanded,
+                enabled = !bottomSheetScaffoldState.bottomSheetState.isExpanded,
                 interactionSource = NoRippleInteractionSource(),
                 indication = null
             ) {
 
             }
+            .alpha(if (bottomSheetScaffoldState.bottomSheetState.isExpanded) 0.5f else 1f)
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.primary)
     ) {
@@ -243,10 +248,10 @@ private fun MainScreenContent(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun AppListMainBodyContent(
-    bottomSheetScaffoldState: SheetState,
+    bottomSheetScaffoldState: BottomSheetScaffoldState,
     state: AppListOnboardingScreenState,
     modifier: Modifier,
     onEvent : (AppListOnBoardingScreenEvent)->Unit,
@@ -309,10 +314,8 @@ fun AppListMainBodyContent(
                             FIVE
                         )
                     ) { index, item ->
-                        InstalledAppItems(info = item,
-                            true//bottomSheetScaffoldState.currentValue==SheetValue.Hidden
-                        ) {
-                            if (bottomSheetScaffoldState.currentValue!=SheetValue.Expanded) {
+                        InstalledAppItems(info = item,bottomSheetScaffoldState.bottomSheetState.isCollapsed) {
+                            if (!bottomSheetScaffoldState.bottomSheetState.isExpanded) {
                                 onEvent(
                                     AppListOnBoardingScreenEvent.OnAppSelected(
                                         index,

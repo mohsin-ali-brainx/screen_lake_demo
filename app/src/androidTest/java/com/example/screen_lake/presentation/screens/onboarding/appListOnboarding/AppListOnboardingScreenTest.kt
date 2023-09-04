@@ -1,12 +1,14 @@
 package com.example.screen_lake.presentation.screens.onboarding.appListOnboarding
 
 import android.content.Context
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertAny
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -71,6 +73,7 @@ class AppListOnboardingScreenTest {
         }
     }
 
+    @OptIn(ExperimentalMaterialApi::class)
     @Test
     fun BottomSheetIsExpanded_WhenOnBoardingTrackerStepIs__APP_LIST_BOTTOMSHEET_SCREEN_STEP(){
         composeTestRule.setContent {
@@ -87,7 +90,7 @@ class AppListOnboardingScreenTest {
         composeTestRule.onNodeWithTag(ONBOARDING_BOTTOM_SHEET_TEST_TAG).assertIsDisplayed()
     }
 
-///
+    @OptIn(ExperimentalMaterialApi::class)
     @Test
     fun BottomSheetIsCollapsed_WhenOnBoardingTrackerStepIs__APP_LIST_SCREEN_STEP(){
         composeTestRule.setContent {
@@ -105,9 +108,10 @@ class AppListOnboardingScreenTest {
                 )
             }
         }
-        composeTestRule.onNodeWithTag(ONBOARDING_BOTTOM_SHEET_TEST_TAG).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(ONBOARDING_BOTTOM_SHEET_TEST_TAG).assertIsNotDisplayed()
     }
 
+    @OptIn(ExperimentalMaterialApi::class)
     @Test
     fun CheckSearchTextIsNotEmpty(){
         val chrome ="chrome"
@@ -134,13 +138,13 @@ class AppListOnboardingScreenTest {
     }
 
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
     @Test
     fun CheckLazyColumnIsEmpty(){
         composeTestRule.setContent {
             ScreenLakeTheme {
                 AppListMainBodyContent(
-                    bottomSheetScaffoldState = rememberModalBottomSheetState(),
+                    bottomSheetScaffoldState =  rememberBottomSheetScaffoldState(),
                     state = AppListOnboardingScreenState(
                     filteredList = emptyList(),
                     installedApps = emptyList()
@@ -151,13 +155,13 @@ class AppListOnboardingScreenTest {
         }
         composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).assertDoesNotExist()
     }
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
     @Test
     fun CheckLazyColumnNotEmpty(){
         composeTestRule.setContent {
             ScreenLakeTheme {
                 AppListMainBodyContent(
-                    bottomSheetScaffoldState = rememberModalBottomSheetState(),
+                    bottomSheetScaffoldState = rememberBottomSheetScaffoldState(),
                     state = AppListOnboardingScreenState(
                     filteredList = appInfoList,
                     installedApps = appInfoList
@@ -169,13 +173,13 @@ class AppListOnboardingScreenTest {
         Truth.assertThat(composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).onChildren()).isNotEqualTo(ZERO)
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
     @Test
     fun CheckLazyColumnIfDistractionVisible(){
         composeTestRule.setContent {
             ScreenLakeTheme {
                 AppListMainBodyContent(
-                    bottomSheetScaffoldState = rememberModalBottomSheetState(),
+                    bottomSheetScaffoldState =  rememberBottomSheetScaffoldState(),
                     state = AppListOnboardingScreenState(
                     filteredList = appInfoList,
                     installedApps = appInfoList
@@ -191,6 +195,7 @@ class AppListOnboardingScreenTest {
     }
 
 
+    @OptIn(ExperimentalMaterialApi::class)
     @Test
     fun CheckSearchTextIsNotEmptyAndFilterItemIsCorrect(){
         val chrome ="Chrome"
@@ -220,6 +225,7 @@ class AppListOnboardingScreenTest {
     }
 
 //
+    @OptIn(ExperimentalMaterialApi::class)
     @Test
     fun CheckSearchTextIsNotEmptyAndFilterItemIsIncorrect(){
         val chrome ="Chrome"
@@ -249,6 +255,7 @@ class AppListOnboardingScreenTest {
     }
 
 
+    @OptIn(ExperimentalMaterialApi::class)
     @Test
     fun CheckShowMoreText(){
         composeTestRule.setContent {
@@ -277,6 +284,7 @@ class AppListOnboardingScreenTest {
         composeTestRule.onNodeWithTag(SHOW_MORE_OR_LESS_TEST_TAG).assertTextEquals("Show more apps (${appInfoList.size-5})")
     }
 
+    @OptIn(ExperimentalMaterialApi::class)
     @Test
     fun CheckShowMoreTestWithNonEmptySearchText(){
         composeTestRule.setContent {
@@ -302,6 +310,7 @@ class AppListOnboardingScreenTest {
         composeTestRule.onNodeWithTag(SHOW_MORE_OR_LESS_TEST_TAG).assertDoesNotExist()
     }
 
+    @OptIn(ExperimentalMaterialApi::class)
     @Test
     fun CheckShowMoreTestWithSmallSizeList(){
         composeTestRule.setContent {

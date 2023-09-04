@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,25 +20,25 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.BottomSheetScaffoldState
+import androidx.compose.material.BottomSheetValue
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SwipeableDefaults
+import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -77,9 +76,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 fun WorkAppListOnboardingScreen(
     navHostController: NavHostController,
     onboardingTracker: OnboardingTracker,
@@ -89,12 +89,14 @@ fun WorkAppListOnboardingScreen(
 ) {
     val scope = rememberCoroutineScope()
 
-    var openBottomSheet by rememberSaveable {
-        mutableStateOf(onboardingTracker.step== OnboardingTrackStep.WORK_APP_BOTTOMSHEET_SCREEN_STEP.step)
-    }
-    var skipPartiallyExpanded by remember { mutableStateOf(false) }
-    var edgeToEdgeEnabled by remember { mutableStateOf(false) }
-    val bottomSheetState = rememberModalBottomSheetState()
+    val bottomSheetState = rememberBottomSheetState(
+        initialValue = if (onboardingTracker.step== OnboardingTrackStep.WORK_APP_BOTTOMSHEET_SCREEN_STEP.step) BottomSheetValue.Expanded else BottomSheetValue.Collapsed,
+        animationSpec = SwipeableDefaults.AnimationSpec,
+        confirmStateChange = { false },
+    )
+
+    val bottomSheetScaffoldState =
+        rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
 
     val state by dataState.collectAsState()
 
@@ -102,10 +104,7 @@ fun WorkAppListOnboardingScreen(
         uiEvents.collectLatest {
             when(it){
                 is WorkAppAppListOnBoardingScreenUiEvents.OpenQuestionsBottomSheet->{
-                    scope.launch {
-                        openBottomSheet = true
-                        bottomSheetState.expand()
-                    }
+                    bottomSheetScaffoldState.bottomSheetState.expand()
                 }
                 is WorkAppAppListOnBoardingScreenUiEvents.OpenOccupationQuestionnaireScreen->{
                     navigateOccupationQuestionnaireScreen(navHostController)
@@ -115,21 +114,10 @@ fun WorkAppListOnboardingScreen(
         }
     }
 
-    MainScreenContent(bottomSheetState, state){
-        onEvent(it)
-    }
 
-    if (openBottomSheet){
-        val windowInsets = if (edgeToEdgeEnabled) WindowInsets(ZERO) else BottomSheetDefaults.windowInsets
-        ModalBottomSheet(
-            onDismissRequest = {
-                openBottomSheet = false
-            },
-            sheetState = bottomSheetState,
-            windowInsets = windowInsets,
-            containerColor = MaterialTheme.colorScheme.secondary,
-            tonalElevation = 16.dp,
-        ) {
+    BottomSheetScaffold(
+        scaffoldState = bottomSheetScaffoldState,
+        sheetContent = {
             OnBoardingBottomSheet(
                 image = painterResource(id = R.drawable.iv_light_bulb),
                 title = stringResource(id = R.string.sift_ai_work_best_title),
@@ -139,32 +127,43 @@ fun WorkAppListOnboardingScreen(
                 bottomText = stringResource(id = R.string.skip_for_now),
                 onButtonClicked = {
                     scope.launch {
-                        bottomSheetState.hide()
+                        bottomSheetScaffoldState.bottomSheetState.collapse()
                         onEvent(WorkAppListOnBoardingScreenEvent.OnAnswerQuestionsButtonClicked)
                     }
                 },
                 onBottomTextClicked = {
 
                 })
+        },
+        sheetElevation = 20.dp,
+        sheetGesturesEnabled = false,
+        sheetBackgroundColor = androidx.compose.material.MaterialTheme.colors.secondary,
+        sheetPeekHeight = 0.dp,
+        sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+    ) {
+        MainScreenContent(bottomSheetScaffoldState, state){
+            onEvent(it)
         }
     }
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 private fun MainScreenContent(
-    bottomSheetScaffoldState: SheetState,
+    bottomSheetScaffoldState: BottomSheetScaffoldState,
     state: WorkAppListOnboardingScreenState,
     onEvent:(WorkAppListOnBoardingScreenEvent)->Unit
 ) {
     Box(
         modifier = Modifier
             .clickable(
+                enabled = !bottomSheetScaffoldState.bottomSheetState.isExpanded,
                 interactionSource = NoRippleInteractionSource(),
                 indication = null){
 
             }
+            .alpha(if (bottomSheetScaffoldState.bottomSheetState.isExpanded) 0.5f else 1f)
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.primary)
     ) {
@@ -225,10 +224,10 @@ private fun MainScreenContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun WorkAppMainBodyContent(
-    bottomSheetScaffoldState: SheetState,
+    bottomSheetScaffoldState: BottomSheetScaffoldState,
     state: WorkAppListOnboardingScreenState,
     modifier: Modifier,
     onEvent:(WorkAppListOnBoardingScreenEvent)->Unit
@@ -292,8 +291,7 @@ fun WorkAppMainBodyContent(
                             )
                         ) {index, item ->
                             AppItems(
-                                info = item,
-                                isClickable = true,
+                                info = item, isClickable = bottomSheetScaffoldState.bottomSheetState.isCollapsed
                             ) {selected->
                                 onEvent(
                                     WorkAppListOnBoardingScreenEvent.OnAppSelected(

@@ -1,11 +1,13 @@
 package com.example.screen_lake.presentation.screens.onboarding.workAppsOnboarding
 
 import android.content.Context
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
@@ -104,7 +106,7 @@ class WorkAppsOnboardingScreenTest {
                 )
             }
         }
-        composeTestRule.onNodeWithTag(ONBOARDING_BOTTOM_SHEET_TEST_TAG).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(ONBOARDING_BOTTOM_SHEET_TEST_TAG).assertIsNotDisplayed()
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -125,13 +127,13 @@ class WorkAppsOnboardingScreenTest {
         composeTestRule.onNodeWithTag(CUSTOM_EDIT_TEXT_TEST_TAG).assertTextEquals(chrome)
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
     @Test
     fun CheckLazyColumnIsEmpty(){
         composeTestRule.setContent {
             ScreenLakeTheme {
                 WorkAppMainBodyContent(
-                    bottomSheetScaffoldState = rememberModalBottomSheetState(),
+                    bottomSheetScaffoldState = rememberBottomSheetScaffoldState(),
                     state = WorkAppListOnboardingScreenState(
                         filteredList = emptyList(),
                         workAppsList = emptyList()
@@ -144,13 +146,13 @@ class WorkAppsOnboardingScreenTest {
         composeTestRule.onNodeWithTag(MAIN_CONTENT_BODY_LAZY_COLUMN_TEST_TAG).assertDoesNotExist()
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
     @Test
     fun CheckLazyColumnNotEmpty(){
         composeTestRule.setContent {
             ScreenLakeTheme {
                 WorkAppMainBodyContent(
-                    bottomSheetScaffoldState = rememberModalBottomSheetState(),
+                    bottomSheetScaffoldState = rememberBottomSheetScaffoldState(),
                     state = WorkAppListOnboardingScreenState(
                         filteredList = emptyList(),
                         workAppsList = emptyList()
@@ -291,13 +293,13 @@ class WorkAppsOnboardingScreenTest {
         composeTestRule.onNodeWithTag(ONBOARDING_NEXT_BUTTON_TEST_TAG).assertTextEquals("Next (${checkedList.size})")
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
     @Test
     fun CheckLazyColumnIfCheckedAreCorrect(){
         composeTestRule.setContent {
             ScreenLakeTheme {
                 WorkAppMainBodyContent(
-                    bottomSheetScaffoldState = rememberModalBottomSheetState(),
+                    bottomSheetScaffoldState =  rememberBottomSheetScaffoldState(),
                     state = WorkAppListOnboardingScreenState(
                         filteredList = workApps,
                         workAppsList = workApps,
@@ -313,13 +315,13 @@ class WorkAppsOnboardingScreenTest {
         composeTestRule.onAllNodesWithTag(CHECKED_ICON_TEST_TAG,useUnmergedTree = true).assertCountEquals(subList.filter { it.isChecked }.size)
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
     @Test
     fun CheckLazyColumnIfCheckedAreCorrectWithExpandedList(){
         composeTestRule.setContent {
             ScreenLakeTheme {
                 WorkAppMainBodyContent(
-                    bottomSheetScaffoldState = rememberModalBottomSheetState(),
+                    bottomSheetScaffoldState =  rememberBottomSheetScaffoldState(),
                     state = WorkAppListOnboardingScreenState(
                         filteredList = workApps,
                         workAppsList = workApps,
