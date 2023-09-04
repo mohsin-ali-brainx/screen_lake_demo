@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 internal val PrimaryLight= Color(0xFFFFFFFF)
 internal val PrimaryDark= Color(0xFF1A1D1E)
-internal val Divider=Color(0xFF2F3133)
+internal val Divider=Color(0xFFD4D7DA)
 internal val ShapeBackgroundLightColor= Color(0xFFF8F8F8)
 internal val ShapeBackgroundDarkColor= Color(0xFF26292B)
 internal val PrimaryLightButtonBackground = Color(0xFF151718)

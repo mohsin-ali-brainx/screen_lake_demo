@@ -130,4 +130,7 @@ dependencies {
 
 //     The compose calendar library
     implementation ("com.kizitonwose.calendar:compose:2.4.0-beta01")
+
+// number picker
+    implementation("com.chargemap.compose:numberpicker:1.0.3")
 }
