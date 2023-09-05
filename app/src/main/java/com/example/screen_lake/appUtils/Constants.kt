@@ -11,8 +11,22 @@ object Constants {
         const val FIVE=5
     }
 
+    object FloatConstants{
+        const val ZERO=0.0f
+        const val POINT_ONE=0.1f
+        const val POINT_FIVE=0.5f
+        const val ONE=1.0f
+    }
+
+    object DoubleConstants{
+        const val ZERO=0.0
+        const val POINT_ONE=0.1
+        const val ONE=1.0
+    }
+
     object StringConstants{
         const val EMPTY=""
+        const val DIVIDER_TEXT="   "
     }
 
     object DBConstants{
