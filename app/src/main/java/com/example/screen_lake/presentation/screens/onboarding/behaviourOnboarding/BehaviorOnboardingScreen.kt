@@ -54,7 +54,7 @@ import com.example.screen_lake.appUtils.enums.getAppBehaviorFromImportance
 import com.example.screen_lake.appUtils.enums.getAppBehaviorList
 import com.example.screen_lake.domain.models.Behavior
 import com.example.screen_lake.domain.models.OnboardingTracker
-import com.example.screen_lake.presentation.navigation.Screen
+import com.example.screen_lake.presentation.navigation.OnboardingScreen
 import com.example.screen_lake.presentation.utils.BottomButtonContent
 import com.example.screen_lake.presentation.utils.DropDownSelectionItem
 import com.example.screen_lake.presentation.utils.Extensions.noRippleClickable
@@ -308,5 +308,5 @@ private fun BehaviorDropDownMenu(
 
 private fun navigateToWorkAppsOnBoardingScreen(navController: NavController) {
     navController.popBackStack()
-    navController.navigate(Screen.WorkAppsOnboardingScreenRoute.route)
+    navController.navigate(OnboardingScreen.WorkAppsOnboardingScreenRoute.route)
 }

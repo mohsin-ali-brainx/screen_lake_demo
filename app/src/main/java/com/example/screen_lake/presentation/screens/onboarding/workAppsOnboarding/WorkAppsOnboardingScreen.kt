@@ -62,7 +62,7 @@ import com.example.screen_lake.appUtils.enums.OnboardingTrackStep
 import com.example.screen_lake.domain.models.AppInfo
 import com.example.screen_lake.domain.models.OnboardingTracker
 import com.example.screen_lake.presentation.bottomsheets.OnBoardingBottomSheet
-import com.example.screen_lake.presentation.navigation.Screen
+import com.example.screen_lake.presentation.navigation.OnboardingScreen
 import com.example.screen_lake.presentation.utils.BottomButtonContent
 import com.example.screen_lake.presentation.utils.CustomTextField
 import com.example.screen_lake.presentation.utils.NoRippleInteractionSource
@@ -348,5 +348,5 @@ private fun AppItems(info: AppInfo,isClickable:Boolean ,onClick: (Boolean) -> Un
 
 private fun navigateOccupationQuestionnaireScreen(navController: NavController) {
     navController.popBackStack()
-    navController.navigate(Screen.OccupationScreenRoute.route)
+    navController.navigate(OnboardingScreen.OccupationScreenRoute.route)
 }

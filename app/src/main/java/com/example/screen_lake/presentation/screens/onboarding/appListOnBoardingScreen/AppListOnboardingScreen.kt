@@ -92,7 +92,7 @@ import com.example.screen_lake.appUtils.enums.getAppDistractionList
 import com.example.screen_lake.domain.models.AppInfo
 import com.example.screen_lake.domain.models.OnboardingTracker
 import com.example.screen_lake.presentation.bottomsheets.OnBoardingBottomSheet
-import com.example.screen_lake.presentation.navigation.Screen
+import com.example.screen_lake.presentation.navigation.OnboardingScreen
 import com.example.screen_lake.presentation.utils.BottomButtonContent
 import com.example.screen_lake.presentation.utils.CustomTextField
 import com.example.screen_lake.presentation.utils.DropDownSelectionItem
@@ -492,7 +492,7 @@ private fun AppDistractionDropDownMenu(
 
 private fun navigateToBehaviorOnBoardingScreen(navController: NavController) {
     navController.popBackStack()
-    navController.navigate(Screen.BehaviorOnboardingScreenRoute.route)
+    navController.navigate(OnboardingScreen.BehaviorOnboardingScreenRoute.route)
 }
 
 
