@@ -7,7 +7,6 @@ import com.example.screen_lake.base.OnboardingBaseViewModel
 import com.example.screen_lake.domain.models.Behavior
 import com.example.screen_lake.domain.useCases.AppBehaviorUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -61,7 +60,7 @@ class BehaviorOnboardingViewModel @Inject constructor(
                 }
                 is BehaviorOnBoardingScreenEvent.OnNextClicked ->{
                     insertOnboardingTracker()
-                    viewModelScope.launch {
+                    viewModelScope.launch(ioDispatcher) {
                         _eventFlow.emit(BehaviorOnBoardingScreenUiEvents.NavigateToWorkAppsOnboardingScreen)
                     }
                 }
@@ -91,7 +90,7 @@ class BehaviorOnboardingViewModel @Inject constructor(
     }
 
     private fun insertBehavior(behavior: Behavior){
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             val existingBehavior = repository.getAppBehaviorByName(behavior.name)?.apply {
                importance = behavior.importance
             }

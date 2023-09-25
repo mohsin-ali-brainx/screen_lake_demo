@@ -33,7 +33,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -49,6 +48,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
@@ -98,7 +98,7 @@ fun WorkAppListOnboardingScreen(
     val bottomSheetScaffoldState =
         rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
 
-    val state by dataState.collectAsState()
+    val state by dataState.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = true){
         uiEvents.collectLatest {
@@ -137,7 +137,7 @@ fun WorkAppListOnboardingScreen(
         },
         sheetElevation = 20.dp,
         sheetGesturesEnabled = false,
-        sheetBackgroundColor = androidx.compose.material.MaterialTheme.colors.secondary,
+        sheetBackgroundColor = MaterialTheme.colorScheme.secondary,
         sheetPeekHeight = 0.dp,
         sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
     ) {

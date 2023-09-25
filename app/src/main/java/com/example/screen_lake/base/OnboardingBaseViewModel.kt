@@ -2,10 +2,12 @@ package com.example.screen_lake.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.screen_lake.appUtils.Dispatcher
+import com.example.screen_lake.appUtils.SiftDispatchers
 import com.example.screen_lake.appUtils.enums.OnboardingTrackStep
 import com.example.screen_lake.dataSource.repositoryImp.OnboardingRepositoryImp
 import com.example.screen_lake.domain.models.OnboardingTracker
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -13,8 +15,11 @@ open class OnboardingBaseViewModel : ViewModel() {
     @Inject
     lateinit var repository: OnboardingRepositoryImp
 
+    @Inject
+    @Dispatcher(SiftDispatchers.IO) lateinit var  ioDispatcher: CoroutineDispatcher
+
     fun insertOnboardingTracker(){
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(ioDispatcher){
             repository.apply {
                 getOnboardingTracker().firstOrNull().let {
                     if (it==null){

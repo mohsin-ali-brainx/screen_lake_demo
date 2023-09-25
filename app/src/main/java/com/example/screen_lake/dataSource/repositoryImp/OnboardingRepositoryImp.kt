@@ -1,11 +1,12 @@
 package com.example.screen_lake.dataSource.repositoryImp
 
 import android.content.Context
+import com.example.screen_lake.appUtils.Dispatcher
+import com.example.screen_lake.appUtils.SiftDispatchers
+import com.example.screen_lake.appUtils.extensions.getInstalledApps
 import com.example.screen_lake.dataSource.db.repository.AppInfoRepository
 import com.example.screen_lake.dataSource.db.repository.BehaviorRepository
 import com.example.screen_lake.dataSource.db.repository.OnboardingTrackerRepository
-import com.example.screen_lake.domain.repository.OnboardingRepository
-import com.example.screen_lake.appUtils.extensions.getInstalledApps
 import com.example.screen_lake.domain.models.AppInfo
 import com.example.screen_lake.domain.models.Behavior
 import com.example.screen_lake.domain.models.GenericSelectionModel
@@ -15,16 +16,17 @@ import com.example.screen_lake.domain.models.getOccupationList
 import com.example.screen_lake.domain.models.getUpdatedBehaviorList
 import com.example.screen_lake.domain.models.toAppList
 import com.example.screen_lake.domain.models.toWorkAppList
+import com.example.screen_lake.domain.repository.OnboardingRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class OnboardingRepositoryImp @Inject constructor(
     @ApplicationContext private val context: Context,
     private val onboardingTrackerRepository: OnboardingTrackerRepository,
     private val appInfoRepository: AppInfoRepository,
-    private val behaviorRepository: BehaviorRepository
+    private val behaviorRepository: BehaviorRepository,
+    @Dispatcher(SiftDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : OnboardingRepository {
 
     override suspend fun getInstalledAppListWithDistraction():ArrayList<AppInfo>{
@@ -56,9 +58,7 @@ class OnboardingRepositoryImp @Inject constructor(
     }
 
     override suspend fun insertOnboardingTracker(onboardingTracker: OnboardingTracker){
-        withContext(Dispatchers.IO){
-            onboardingTrackerRepository.insertOnboardingTracker(onboardingTracker)
-        }
+        onboardingTrackerRepository.insertOnboardingTracker(onboardingTracker)
     }
 
     override suspend fun getOnboardingTracker(): List<OnboardingTracker> {

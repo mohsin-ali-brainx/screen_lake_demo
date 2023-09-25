@@ -73,6 +73,11 @@ dependencies {
     testImplementation (libs.truth)
     androidTestImplementation (libs.truth)
     androidTestImplementation (libs.androidx.core.testing)
+    testImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.core.testing)
+    androidTestImplementation(libs.mockito.core)
+    androidTestImplementation(libs.mockito.kotlin)
 
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
 

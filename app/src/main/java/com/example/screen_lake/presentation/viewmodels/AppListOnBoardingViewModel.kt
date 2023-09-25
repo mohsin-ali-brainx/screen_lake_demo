@@ -9,7 +9,6 @@ import com.example.screen_lake.base.OnboardingBaseViewModel
 import com.example.screen_lake.domain.models.AppInfo
 import com.example.screen_lake.domain.useCases.InstalledAppInfoWithDistractionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -94,7 +93,7 @@ class AppListOnBoardingViewModel @Inject constructor(
                 }
                 is AppListOnBoardingScreenEvent.OnNextClicked ->{
                     insertOnboardingTracker()
-                    viewModelScope.launch {
+                    viewModelScope.launch(ioDispatcher) {
                         _eventFlow.emit(AppListOnBoardingScreenUiEvents.NavigateToBehaviorOnboardingScreen)
                     }
                 }
@@ -125,7 +124,7 @@ class AppListOnBoardingViewModel @Inject constructor(
     }
 
     private fun insertAppInfo(appInfo: AppInfo){
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             val existingAppInfo =  repository.getAppInfoFromPackageName(appInfo.apk)?.apply {
                 distractionLevel = appInfo.distractionLevel
             }

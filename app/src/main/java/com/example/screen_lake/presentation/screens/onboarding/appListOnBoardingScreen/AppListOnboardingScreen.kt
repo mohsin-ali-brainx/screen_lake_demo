@@ -53,7 +53,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -76,6 +75,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
@@ -119,7 +119,7 @@ fun AppListOnboardingScreen(
     onEvent : (AppListOnBoardingScreenEvent)->Unit
 ) {
 
-    val state by dataState.collectAsState()
+    val state by dataState.collectAsStateWithLifecycle()
 
     val scope = rememberCoroutineScope()
 

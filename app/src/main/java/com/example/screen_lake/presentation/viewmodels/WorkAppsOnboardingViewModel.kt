@@ -8,7 +8,6 @@ import com.example.screen_lake.base.OnboardingBaseViewModel
 import com.example.screen_lake.domain.models.AppInfo
 import com.example.screen_lake.domain.useCases.WorkAppListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -95,11 +94,11 @@ class WorkAppsOnboardingViewModel @Inject constructor(
                 }
                 is WorkAppListOnBoardingScreenEvent.OnNextClicked ->{
                     insertOnboardingTracker()
-                    viewModelScope.launch { _eventFlow.emit(WorkAppAppListOnBoardingScreenUiEvents.OpenQuestionsBottomSheet) }
+                    viewModelScope.launch(ioDispatcher) { _eventFlow.emit(WorkAppAppListOnBoardingScreenUiEvents.OpenQuestionsBottomSheet) }
                 }
                 is WorkAppListOnBoardingScreenEvent.OnAnswerQuestionsButtonClicked ->{
                     insertOnboardingTracker()
-                    viewModelScope.launch { _eventFlow.emit(WorkAppAppListOnBoardingScreenUiEvents.OpenOccupationQuestionnaireScreen) }
+                    viewModelScope.launch(ioDispatcher) { _eventFlow.emit(WorkAppAppListOnBoardingScreenUiEvents.OpenOccupationQuestionnaireScreen) }
                 }
                 else->{}
             }
@@ -125,7 +124,7 @@ class WorkAppsOnboardingViewModel @Inject constructor(
     }
 
     private fun insertWorkApp(appInfo: AppInfo){
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             val existingAppInfo =  repository.getAppInfoFromPackageName(appInfo.apk)?.apply{
                 appPrimaryUse = appInfo.appPrimaryUse
                 isChecked = appInfo.isChecked

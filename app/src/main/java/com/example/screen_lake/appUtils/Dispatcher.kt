@@ -9,4 +9,5 @@ annotation class Dispatcher(val siftDispatchers: SiftDispatchers)
 enum class SiftDispatchers {
     Default,
     IO,
+    MAIN
 }

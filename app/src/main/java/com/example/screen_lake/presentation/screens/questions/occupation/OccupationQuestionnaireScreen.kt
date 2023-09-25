@@ -15,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -25,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
 import com.example.screen_lake.presentation.utils.BottomButtonContent
@@ -47,7 +47,7 @@ fun OccupationQuestionnaireOnboardingScreen(
     onEvent:(OccupationQuestionnaireScreenEvent)->Unit
 ) {
     val scope = rememberCoroutineScope()
-    val state by dataState.collectAsState()
+    val state by dataState.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = true){
         uiEvents.collectLatest {

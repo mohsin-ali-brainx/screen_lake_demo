@@ -29,7 +29,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -44,6 +43,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.screen_lake.R
@@ -79,7 +79,7 @@ fun BehaviorOnboardingScreen(
     onEvent:(BehaviorOnBoardingScreenEvent)->Unit
 ) {
     val scope = rememberCoroutineScope()
-    val state by dataState.collectAsState()
+    val state by dataState.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = true){
         uiEvents.collectLatest {
