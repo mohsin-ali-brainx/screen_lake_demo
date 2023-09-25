@@ -18,6 +18,9 @@ open class OnboardingBaseViewModel : ViewModel() {
     @Inject
     @Dispatcher(SiftDispatchers.IO) lateinit var  ioDispatcher: CoroutineDispatcher
 
+    @Inject
+    @Dispatcher(SiftDispatchers.Default) lateinit var  defaultDispatcher: CoroutineDispatcher
+
     fun insertOnboardingTracker(){
         viewModelScope.launch(ioDispatcher){
             repository.apply {

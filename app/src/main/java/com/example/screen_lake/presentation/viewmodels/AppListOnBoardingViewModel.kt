@@ -93,7 +93,7 @@ class AppListOnBoardingViewModel @Inject constructor(
                 }
                 is AppListOnBoardingScreenEvent.OnNextClicked ->{
                     insertOnboardingTracker()
-                    viewModelScope.launch(ioDispatcher) {
+                    viewModelScope.launch(defaultDispatcher) {
                         _eventFlow.emit(AppListOnBoardingScreenUiEvents.NavigateToBehaviorOnboardingScreen)
                     }
                 }
