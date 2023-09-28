@@ -60,7 +60,7 @@ class BehaviorOnboardingViewModel @Inject constructor(
                 }
                 is BehaviorOnBoardingScreenEvent.OnNextClicked ->{
                     insertOnboardingTracker()
-                    viewModelScope.launch(defaultDispatcher) {
+                    viewModelScope.launch {
                         _eventFlow.emit(BehaviorOnBoardingScreenUiEvents.NavigateToWorkAppsOnboardingScreen)
                     }
                 }

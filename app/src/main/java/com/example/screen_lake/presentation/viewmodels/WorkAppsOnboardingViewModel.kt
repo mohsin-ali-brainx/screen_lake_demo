@@ -94,11 +94,11 @@ class WorkAppsOnboardingViewModel @Inject constructor(
                 }
                 is WorkAppListOnBoardingScreenEvent.OnNextClicked ->{
                     insertOnboardingTracker()
-                    viewModelScope.launch(defaultDispatcher) { _eventFlow.emit(WorkAppAppListOnBoardingScreenUiEvents.OpenQuestionsBottomSheet) }
+                    viewModelScope.launch { _eventFlow.emit(WorkAppAppListOnBoardingScreenUiEvents.OpenQuestionsBottomSheet) }
                 }
                 is WorkAppListOnBoardingScreenEvent.OnAnswerQuestionsButtonClicked ->{
                     insertOnboardingTracker()
-                    viewModelScope.launch(defaultDispatcher) { _eventFlow.emit(WorkAppAppListOnBoardingScreenUiEvents.OpenOccupationQuestionnaireScreen) }
+                    viewModelScope.launch { _eventFlow.emit(WorkAppAppListOnBoardingScreenUiEvents.OpenOccupationQuestionnaireScreen) }
                 }
                 else->{}
             }
